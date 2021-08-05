@@ -1,2 +1,7 @@
 ### Jet Brains ###
 .idea/
+
+### CMake ###
+build/
+cmake-build-debug/
+cmake-build-release/
