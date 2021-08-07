@@ -1,6 +1,7 @@
 [requires]
 eastl/3.17.06
 spdlog/1.9.1
+glfw/3.3.4
 
 [generators]
 cmake

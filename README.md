@@ -8,3 +8,4 @@ All the dependencies are installed using [Conan](https://conan.io/)
 ---|---
 | [eastl](https://github.com/electronicarts/EASTL) | 3.17.06 | 
 | [spdlog](https://github.com/gabime/spdlog) | 1.8.2 | 
+| [GLFW](https://github.com/glfw/glfw) | 3.3.4 | 
