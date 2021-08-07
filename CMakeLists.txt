@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(RavenEngine)
 
 set(CMAKE_CXX_STANDARD 17)
-set(EXECUTABLE_OUTPUT_PATH bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 ### ThirdParty ###
 set(CONAN_DISABLE_CHECK_COMPILER OFF)
