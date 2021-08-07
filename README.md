@@ -8,3 +8,22 @@ All the dependencies are installed using [Conan](https://conan.io/)
 ---|---
 | [spdlog](https://github.com/gabime/spdlog) | 1.8.2 | 
 | [GLFW](https://github.com/glfw/glfw) | 3.3.4 | 
+
+## Build
+### Requirements
+* CMake 3.18
+* Python 3.9.6
+* Conan 1.38.0
+
+#### Conan
+For install and config conan there is the [Getting Started](https://docs.conan.io/en/latest/getting_started.html).
+
+### Linux
+* GCC 11.1.0
+```commandline
+mkdir build
+cd build
+conan install ..
+cmake ..
+make
+```
