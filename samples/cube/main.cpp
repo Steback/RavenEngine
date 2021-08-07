@@ -1,10 +1,10 @@
 #include "spdlog/spdlog.h"
 
 #include "Cube.hpp"
-#include "logs/Logs.hpp"
 
 
 int main() {
+    re::FilesManager::setupDefaultPaths();
     re::Logger::setup();
 
     try {

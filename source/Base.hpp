@@ -6,6 +6,8 @@
 #include "EASTL/unique_ptr.h"
 
 #include "utils/NonCopyable.hpp"
+#include "logs/Logs.hpp"
+#include "files/FilesManager.hpp"
 
 
 namespace re {
