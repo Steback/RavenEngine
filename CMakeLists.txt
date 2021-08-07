@@ -10,8 +10,8 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(NO_OUTPUT_DIRS)
 
 ### Source ###
-include_directories(sources)
-add_subdirectory(sources)
+include_directories(source)
+add_subdirectory(source)
 
 ### Samples ###
 add_subdirectory(samples)
