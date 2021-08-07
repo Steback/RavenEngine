@@ -3,11 +3,14 @@
 
 
 #include "EASTL/string.h"
+#include "EASTL/shared_ptr.h"
 
 #include "utils/NonCopyable.hpp"
 
 
 namespace re {
+
+    class Window;
 
     class Base : NonCopyable {
     public:
@@ -24,7 +27,7 @@ namespace re {
         void run();
 
     private:
-
+        eastl::shared_ptr<Window> window;
     };
 
 } // namespace re
