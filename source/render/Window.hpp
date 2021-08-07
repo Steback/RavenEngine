@@ -2,15 +2,16 @@
 #define RAVENENGINE_WINDOW_HPP
 
 
+#include <string>
+
 #include "GLFW/glfw3.h"
-#include "EASTL/string.h"
 
 
 namespace re {
 
     class Window {
     public:
-        Window(eastl::string  name, int width, int height);
+        Window(std::string  name, int width, int height);
 
         ~Window();
 
@@ -18,7 +19,7 @@ namespace re {
 
     private:
         GLFWwindow* window{};
-        eastl::string name;
+        std::string name;
         int width;
         int height;
     };

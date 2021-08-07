@@ -2,8 +2,9 @@
 #define RAVENENGINE_LOGGER_HPP
 
 
-#include "EASTL/string.h"
-#include "EASTL/hash_map.h"
+#include <string>
+#include <unordered_map>
+
 #include "spdlog/sinks/basic_file_sink.h"
 
 
@@ -13,15 +14,15 @@ namespace re {
     public:
         static void setup();
 
-        static void addFile(const eastl::string& name);
+        static void addFile(const char* name);
 
-        static std::shared_ptr<spdlog::logger> getFile(const eastl::string& name);
+        static std::shared_ptr<spdlog::logger> getFile(const char* name);
 
     private:
         Logger() = default;
 
     private:
-        static eastl::hash_map<eastl::string, std::shared_ptr<spdlog::logger>> files;
+        static std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> files;
     };
 
 } // namespace re

@@ -7,8 +7,8 @@
 
 namespace re {
 
-    Base::Base(const eastl::string& appName) {
-        renderer = eastl::make_unique<Renderer>(appName);
+    Base::Base(const std::string& appName) {
+        renderer = std::make_unique<Renderer>(appName);
     }
 
     Base::~Base() = default;

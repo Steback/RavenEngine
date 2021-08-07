@@ -5,8 +5,8 @@
 
 namespace re {
 
-    Renderer::Renderer(const eastl::string& appName) {
-        window = eastl::make_shared<Window>(appName, 800, 600);
+    Renderer::Renderer(const std::string& appName) {
+        window = std::make_shared<Window>(appName, 800, 600);
     }
 
     Renderer::~Renderer() = default;

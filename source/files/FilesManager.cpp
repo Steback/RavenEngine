@@ -5,7 +5,7 @@
 
 namespace re {
 
-    eastl::hash_map<eastl::string, std::filesystem::path> FilesManager::paths;
+    std::unordered_map<std::string, std::filesystem::path> FilesManager::paths;
 
     FilesManager::FilesManager() = default;
 

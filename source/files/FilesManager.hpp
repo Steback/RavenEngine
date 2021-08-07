@@ -3,9 +3,8 @@
 
 
 #include <filesystem>
-
-#include "EASTL/string.h"
-#include "EASTL/hash_map.h"
+#include <unordered_map>
+#include <string>
 
 
 namespace re {
@@ -26,7 +25,7 @@ namespace re {
         FilesManager();
 
     private:
-        static eastl::hash_map<eastl::string, std::filesystem::path> paths;
+        static std::unordered_map<std::string, std::filesystem::path> paths;
     };
 
 } // namespace re

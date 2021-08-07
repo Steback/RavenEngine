@@ -13,13 +13,13 @@ namespace re {
 
     }
 
-    eastl::vector<uint32_t> File::readBytes() {
+    std::vector<uint32_t> File::readBytes() {
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) RE_THROW_EX("failed to open file: " + path.string());
 
         size_t fileSize = static_cast<size_t>(file.tellg());
-        eastl::vector<uint32_t> buffer(fileSize);
+        std::vector<uint32_t> buffer(fileSize);
 
         file.seekg(0);
         file.read(reinterpret_cast<char*>(buffer.data()), static_cast<std::streamsize>(fileSize));
@@ -29,7 +29,7 @@ namespace re {
         return buffer;
     }
 
-    eastl::string File::getName() const {
+    std::string File::getName() const {
         return path.filename().c_str();
     }
 

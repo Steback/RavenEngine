@@ -5,7 +5,7 @@
 
 namespace re {
 
-    Window::Window(eastl::string name, int width, int height) : name(std::move(name)), width(width), height(height) {
+    Window::Window(std::string name, int width, int height) : name(std::move(name)), width(width), height(height) {
         if (!glfwInit()) RE_THROW_EX("Failed to init GLFW");
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

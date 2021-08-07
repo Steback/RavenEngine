@@ -2,8 +2,8 @@
 #define RAVENENGINE_RENDERER_HPP
 
 
-#include "EASTL/string.h"
-#include "EASTL/shared_ptr.h"
+#include <string>
+#include <memory>
 
 
 namespace re {
@@ -12,14 +12,14 @@ namespace re {
 
     class Renderer {
     public:
-        Renderer(const eastl::string& appName);
+        Renderer(const std::string& appName);
 
         ~Renderer();
 
         [[nodiscard]] bool isWindowOpen() const;
 
     private:
-        eastl::shared_ptr<Window> window;
+        std::shared_ptr<Window> window;
     };
 
 } // namespace re

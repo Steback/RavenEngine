@@ -7,17 +7,17 @@
 
 namespace re {
 
-    eastl::hash_map<eastl::string, std::shared_ptr<spdlog::logger>> Logger::files;
+    std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> Logger::files;
 
     void Logger::setup() {
         addFile("error.log");
     }
 
-    void Logger::addFile(const eastl::string &name) {
-        files[name] = spdlog::basic_logger_mt("RE", FilesManager::getPath("logs") / name.c_str());
+    void Logger::addFile(const char* name) {
+        files[name] = spdlog::basic_logger_mt("RE", FilesManager::getPath("logs") / name);
     }
 
-    std::shared_ptr<spdlog::logger> Logger::getFile(const eastl::string &name) {
+    std::shared_ptr<spdlog::logger> Logger::getFile(const char* name) {
         return files[name];
     }
 

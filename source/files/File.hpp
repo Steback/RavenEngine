@@ -3,9 +3,8 @@
 
 
 #include <filesystem>
-
-#include "EASTL/string.h"
-#include "EASTL/vector.h"
+#include <string>
+#include <vector>
 
 
 namespace re {
@@ -16,9 +15,9 @@ namespace re {
 
         explicit File(std::filesystem::path  path);
 
-        eastl::vector<uint32_t> readBytes();
+        std::vector<uint32_t> readBytes();
 
-        [[nodiscard]] eastl::string getName() const;
+        [[nodiscard]] std::string getName() const;
 
     private:
         std::filesystem::path path;

@@ -2,8 +2,7 @@
 #define RAVENENGINE_BASE_HPP
 
 
-#include "EASTL/string.h"
-#include "EASTL/unique_ptr.h"
+#include <memory>
 
 #include "utils/NonCopyable.hpp"
 #include "logs/Logs.hpp"
@@ -16,7 +15,7 @@ namespace re {
 
     class Base : NonCopyable {
     public:
-        explicit Base(const eastl::string& appName);
+        explicit Base(const std::string& appName);
 
         ~Base() override;
 
@@ -29,7 +28,7 @@ namespace re {
         void run();
 
     private:
-        eastl::unique_ptr<Renderer> renderer;
+        std::unique_ptr<Renderer> renderer;
     };
 
 } // namespace re
