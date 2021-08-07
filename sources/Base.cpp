@@ -3,13 +3,15 @@
 
 namespace re {
 
-    Base::Base() = default;
+    Base::Base(const eastl::string& appName) {
+
+    }
 
     Base::~Base() = default;
 
     void Base::loop() {
         while (true) {
-            update()
+            update();
         }
     }
 

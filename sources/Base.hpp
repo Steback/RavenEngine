@@ -2,6 +2,8 @@
 #define RAVENENGINE_BASE_HPP
 
 
+#include "EASTL/string.h"
+
 #include "utils/NonCopyable.hpp"
 
 
@@ -9,9 +11,9 @@ namespace re {
 
     class Base : NonCopyable {
     public:
-        Base();
+        explicit Base(const eastl::string& appName);
 
-        ~Base();
+        ~Base() override;
 
         virtual void start() = 0;
 
