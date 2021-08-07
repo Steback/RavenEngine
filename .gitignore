@@ -8,3 +8,6 @@ cmake-build-release/
 
 ### Binaries ###
 bin/
+
+### Logs ###
+*.log
