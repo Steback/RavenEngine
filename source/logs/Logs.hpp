@@ -4,7 +4,9 @@
 
 #include "Logger.hpp"
 
-
+/**
+ * @brief Default error log macro
+ */
 #define RE_ERROR_LOG(message) re::Logger::getFile("error.log")->error(message);
 
 

@@ -21,7 +21,6 @@ namespace re {
     }
 
     void Base::run() {
-        start();
         loop();
     }
 

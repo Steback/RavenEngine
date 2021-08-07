@@ -11,14 +11,44 @@ namespace re {
 
     class File;
 
+    /**
+     * @brief Static class for all files and paths management.
+     *
+     * Not need a instance.
+     */
     class FilesManager {
     public:
+        /**
+         * @bried Setup all default paths needed by the engine.
+         *
+         * Default paths:
+         * root(Project folder),
+         * assets,
+         * logs,
+         * data,
+         * shaders,
+         * bin/shaders
+         */
         static void setupDefaultPaths();
 
+        /**
+         * @brief Add a new path for the search paths
+         * @param name New path name
+         */
         static void addPath(const char* name);
 
+        /**
+         *
+         * @param name Path name
+         * @return std::path object will the specific path if exists
+         */
         static std::filesystem::path getPath(const char* name);
 
+        /**
+         *
+         * @param name File name
+         * @return File object with the specific file if exists
+         */
         static File getFile(const char* name);
 
     private:

@@ -13,18 +13,33 @@ namespace re {
 
     class Renderer;
 
+    /**
+     * @brief Base class. this have all the engine's core functionalities
+     */
     class Base : NonCopyable {
     public:
+        /**
+         * @param appName Application/Game name
+         */
         explicit Base(const std::string& appName);
 
         ~Base() override;
 
-        virtual void start() = 0;
-
+        /**
+         * @brief Update function for App/Game class. Will executed during the loop, before render.
+         *
+         * Pure virtual method, will be implemented by the Application/Game class.
+         */
         virtual void update() = 0;
 
+        /**
+         * @brief Main loop, execute all update and render functionalities
+         */
         void loop();
 
+        /**
+         * @brief
+         */
         void run();
 
     private:
