@@ -5,8 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH bin)
 
 ### ThirdParty ###
-include_directories(thirdparty/include)
-file(GLOB_RECURSE THIRD_PARTY_LIBS thirdparty/lib/*.a)
+set(CONAN_DISABLE_CHECK_COMPILER OFF)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(NO_OUTPUT_DIRS)
 
 ### Source ###
 include_directories(sources)
