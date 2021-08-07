@@ -1,18 +1,20 @@
 #include "Base.hpp"
 
-#include "render/Window.hpp"
+#include "GLFW/glfw3.h"
+
+#include "render/Renderer.hpp"
 
 
 namespace re {
 
     Base::Base(const eastl::string& appName) {
-        window = eastl::make_shared<Window>(appName, 800, 600);
+        renderer = eastl::make_unique<Renderer>(appName);
     }
 
     Base::~Base() = default;
 
     void Base::loop() {
-        while (window->isOpen()) {
+        while (renderer->isWindowOpen()) {
             glfwPollEvents();
             update();
         }
