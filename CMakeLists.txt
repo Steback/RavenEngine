@@ -8,5 +8,8 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/Bin)
 include_directories(${PROJECT_SOURCE_DIR}/Source)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Source)
 
+### ThirdParty ###
+include_directories(${PROJECT_SOURCE_DIR}/ThirdParty/Include)
+
 ### Samples ###
 add_subdirectory(${PROJECT_SOURCE_DIR}/Samples)
