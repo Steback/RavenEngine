@@ -30,7 +30,7 @@ namespace re {
     }
 
     std::string File::getName() const {
-        return path.filename().c_str();
+        return path.filename().string();
     }
 
 } // namespace re

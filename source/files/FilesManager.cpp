@@ -12,8 +12,13 @@ namespace re {
     void FilesManager::setupDefaultPaths() {
         std::filesystem::path root = std::filesystem::current_path();
 
+#ifdef _WIN64
+        if (root.filename() == "Release")
+            root = root.parent_path().parent_path();
+#else
         if (root.filename() == "bin")
             root = root.parent_path();
+#endif
 
         paths["root"] = root;
 

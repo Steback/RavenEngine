@@ -14,7 +14,7 @@ namespace re {
     }
 
     void Logger::addFile(const char* name) {
-        files[name] = spdlog::basic_logger_mt("RE", FilesManager::getPath("logs") / name);
+        files[name] = spdlog::basic_logger_mt("RE", (FilesManager::getPath("logs") / name).string());
     }
 
     std::shared_ptr<spdlog::logger> Logger::getFile(const char* name) {
