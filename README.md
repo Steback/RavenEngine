@@ -9,6 +9,8 @@ All the dependencies are installed using [Conan](https://conan.io/)
 | [spdlog](https://github.com/gabime/spdlog) | 1.8.2 | 
 | [GLFW](https://github.com/glfw/glfw) | 3.3.4 | 
 | [nlohmann_json](https://github.com/nlohmann/json) | 3.9.1 | 
+| [Vulkan Headers](https://github.com/KhronosGroup/Vulkan-Headers) | 1.2.182 | 
+| [Vulkan Loader](https://github.com/KhronosGroup/Vulkan-Loader) | 1.2.182 | 
 
 ## Build
 ### Requirements
