@@ -21,9 +21,17 @@ For install and config conan there is the [Getting Started](https://docs.conan.i
 ### Linux
 * GCC 11.1.0
 ```commandline
-mkdir build
-cd build
+mkdir build && cd build
 conan install ..
 cmake ..
 make
+```
+
+### Windows
+* Visual Studio 2019
+```commandline
+mkdir build && cd build
+conan install ..
+cmake ..
+cmake --build . --config Release 
 ```
