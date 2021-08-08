@@ -61,6 +61,10 @@ void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create
 namespace re {
 
     Instance::Instance(const char* appName, const std::vector<const char*>& layers) {
+#ifdef RE_DEBUG
+        if (!checkLayersSupport(layers)) RE_THROW_EX("Validation layers requested, but not available!");
+#endif
+
         VkApplicationInfo appInfo{VK_STRUCTURE_TYPE_APPLICATION_INFO};
         appInfo.pApplicationName = appName;
         appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -97,6 +101,35 @@ namespace re {
         vkDestroyInstance(instance, nullptr);
     }
 
+    VkPhysicalDevice Instance::pickPhysicalDevice(const std::vector<const char *> &extensions) {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+
+        if (deviceCount == 0) RE_THROW_EX("Failed to find GPUs with Vulkan support!");
+
+        std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
+        vkEnumeratePhysicalDevices(instance, &deviceCount, physicalDevices.data());
+
+        for (auto& device : physicalDevices)
+            if (checkExtensionsSupport(device, extensions)) return device;
+
+        RE_THROW_EX("Failed to find a suitable GPU!");
+    }
+
+    bool Instance::checkExtensionsSupport(VkPhysicalDevice device, const std::vector<const char *> &extensions) {
+        uint32_t extensionsCount = 0;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionsCount, nullptr);
+
+        std::vector<VkExtensionProperties> properties(extensionsCount);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionsCount, properties.data());
+
+        return std::all_of(extensions.begin(), extensions.end(), [&properties](const char* name){
+            return std::find_if(properties.begin(), properties.end(), [&name](const VkExtensionProperties& property){
+                return std::strcmp(property.extensionName, name) == 0;
+            }) != properties.end();
+        });
+    }
+
     std::vector<const char *> Instance::getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;
@@ -109,6 +142,20 @@ namespace re {
 #endif
 
         return extensions;
+    }
+
+    bool Instance::checkLayersSupport(const std::vector<const char*>& layers) {
+        uint32_t layerCount;
+        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+        std::vector<VkLayerProperties> availableLayers(layerCount);
+        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+        return std::all_of(layers.begin(), layers.end(), [&availableLayers](const char* name){
+            return std::find_if(availableLayers.begin(), availableLayers.end(), [&name](const VkLayerProperties& property){
+                return std::strcmp(property.layerName, name) == 0;
+            }) != availableLayers.end();
+        });
     }
 
 } // namespace re

@@ -2,6 +2,7 @@
 
 #include "Window.hpp"
 #include "Instance.hpp"
+#include "Device.hpp"
 #include "config/Config.hpp"
 
 
@@ -17,6 +18,10 @@ namespace re {
 #endif
 
         instance = std::make_shared<Instance>(appName.c_str(), validationLayers);
+
+        VkPhysicalDeviceFeatures features{};
+        std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        device = std::make_shared<Device>(instance, extensions, features);
     }
 
     Renderer::~Renderer() = default;

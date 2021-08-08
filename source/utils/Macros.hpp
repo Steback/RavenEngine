@@ -12,7 +12,7 @@
 /**
  * @brief Default throw exception macro
  */
-#define RE_THROW_EX(message) throw std::runtime_error(message);
+#define RE_THROW_EX(message) throw std::runtime_error(message)
 
 /**
  * @brief Cast to uint32_t type

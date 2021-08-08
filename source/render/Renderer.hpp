@@ -13,6 +13,7 @@ namespace re {
     class Window;
     class Config;
     class Instance;
+    class Device;
 
     /**
      * @brief Main render class, execute all render commands with Vulkan API
@@ -36,6 +37,7 @@ namespace re {
     private:
         std::shared_ptr<Window> window;
         std::shared_ptr<Instance> instance;
+        std::shared_ptr<Device> device;
     };
 
 } // namespace re
