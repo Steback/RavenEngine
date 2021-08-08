@@ -7,6 +7,8 @@
 
 #include "vulkan/vulkan.h"
 
+#include "utils/NonCopyable.hpp"
+
 
 namespace re {
 
@@ -15,7 +17,7 @@ namespace re {
     /**
      * @brief Vulkan Physical Device and Device
      */
-    class Device {
+    class Device : NonCopyable {
     public:
         struct QueueFamilyIndices {
             uint32_t graphics;
