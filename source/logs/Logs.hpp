@@ -2,6 +2,8 @@
 #define RAVENENGINE_LOGS_HPP
 
 
+#include "spdlog/spdlog.h"
+
 #include "Logger.hpp"
 
 /**

@@ -1,0 +1,114 @@
+#include "Instance.hpp"
+
+#include "GLFW/glfw3.h"
+
+#include "logs/Logs.hpp"
+
+
+#ifdef RE_DEBUG
+static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT messageType,
+        const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+        void *pUserData) {
+    spdlog::error(pCallbackData->pMessage);
+    RE_ERROR_LOG(pCallbackData->pMessage);
+
+    return VK_FALSE;
+}
+
+VkResult CreateDebugUtilsMessengerEXT(
+        VkInstance instance,
+        const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+        const VkAllocationCallbacks *pAllocator,
+        VkDebugUtilsMessengerEXT *pDebugMessenger) {
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance,
+            "vkCreateDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+    } else {
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+void DestroyDebugUtilsMessengerEXT(
+        VkInstance instance,
+        VkDebugUtilsMessengerEXT debugMessenger,
+        const VkAllocationCallbacks *pAllocator) {
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance,
+            "vkDestroyDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        func(instance, debugMessenger, pAllocator);
+    }
+}
+
+void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
+    createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                                 VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                             VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                             VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo.pfnUserCallback = debugCallback;
+    createInfo.pUserData = nullptr;  // Optional
+}
+#endif
+
+
+namespace re {
+
+    Instance::Instance(const char* appName, const std::vector<const char*>& layers) {
+        VkApplicationInfo appInfo{VK_STRUCTURE_TYPE_APPLICATION_INFO};
+        appInfo.pApplicationName = appName;
+        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appInfo.pEngineName = "Raven Engine";
+        appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
+        appInfo.apiVersion = VK_API_VERSION_1_2;
+
+        VkInstanceCreateInfo instanceInfo{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+        instanceInfo.pApplicationInfo = &appInfo;
+        instanceInfo.enabledLayerCount = CAST_U32(layers.size());
+        instanceInfo.ppEnabledLayerNames = layers.data();
+
+        auto extensions = getRequiredExtensions();
+        instanceInfo.enabledExtensionCount = CAST_U32(extensions.size());
+        instanceInfo.ppEnabledExtensionNames = extensions.data();
+
+        RE_VK_CHECK_RESULT(vkCreateInstance(&instanceInfo, nullptr, &instance),
+                           "Failed to create Instance");
+
+#ifdef RE_DEBUG
+        VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerInfo{};
+        populateDebugMessengerCreateInfo(debugUtilsMessengerInfo);
+
+        RE_VK_CHECK_RESULT(CreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerInfo, nullptr, &debugMessenger),
+                           "Failed to create debug utils messenger");
+#endif
+    }
+
+    Instance::~Instance() {
+#ifdef RE_DEBUG
+        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+#endif
+
+        vkDestroyInstance(instance, nullptr);
+    }
+
+    std::vector<const char *> Instance::getRequiredExtensions() {
+        uint32_t glfwExtensionCount = 0;
+        const char **glfwExtensions;
+        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+        std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+#ifdef RE_DEBUG
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+#endif
+
+        return extensions;
+    }
+
+} // namespace re
