@@ -1,12 +1,13 @@
 #include "Renderer.hpp"
 
 #include "Window.hpp"
+#include "config/Config.hpp"
 
 
 namespace re {
 
-    Renderer::Renderer(const std::string& appName) {
-        window = std::make_shared<Window>(appName, 800, 600);
+    Renderer::Renderer(const std::string& appName, const Config& config) {
+        window = std::make_shared<Window>(appName, config.getWidth(), config.getHeight());
     }
 
     Renderer::~Renderer() = default;

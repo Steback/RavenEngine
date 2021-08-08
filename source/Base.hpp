@@ -7,6 +7,7 @@
 #include "utils/NonCopyable.hpp"
 #include "logs/Logs.hpp"
 #include "files/FilesManager.hpp"
+#include "config/Config.hpp"
 
 
 namespace re {
@@ -43,6 +44,7 @@ namespace re {
         void run();
 
     private:
+        Config config;
         std::unique_ptr<Renderer> renderer;
     };
 

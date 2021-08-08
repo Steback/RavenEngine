@@ -9,6 +9,7 @@
 namespace re {
 
     class Window;
+    class Config;
 
     /**
      * @brief Main render class, execute all render commands with Vulkan API
@@ -19,7 +20,7 @@ namespace re {
          *
          * @param appName Application/Game name
          */
-        Renderer(const std::string& appName);
+        Renderer(const std::string& appName, const Config& config);
 
         ~Renderer();
 

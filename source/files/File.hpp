@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "extras/Json.hpp"
+
 
 namespace re {
 
@@ -36,6 +38,18 @@ namespace re {
          * @return String with file name
          */
         [[nodiscard]] std::string getName() const;
+
+        /**
+         * Read the file for json serialization
+         * @param data nlohmann::json object
+         */
+        void read(json& data);
+
+        /**
+         * Write the file for json serialization
+         * @param data nlohmann::json object
+         */
+        void write(json& data);
 
     private:
         std::filesystem::path path;

@@ -8,7 +8,10 @@
 namespace re {
 
     Base::Base(const std::string& appName) {
-        renderer = std::make_unique<Renderer>(appName);
+        config = Config(appName + "/config.json");
+        config.load();
+
+        renderer = std::make_unique<Renderer>(appName, config);
     }
 
     Base::~Base() = default;

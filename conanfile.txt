@@ -1,6 +1,7 @@
 [requires]
 spdlog/1.9.1
 glfw/3.3.4
+nlohmann_json/3.9.1
 
 [generators]
 cmake

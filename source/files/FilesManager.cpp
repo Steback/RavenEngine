@@ -41,7 +41,7 @@ namespace re {
         for (auto& [id, path] : paths) {
             std::filesystem::path filePath(path / name);
             if (std::filesystem::exists(filePath))
-                return File(path);
+                return File(filePath);
         }
 
         return {};
