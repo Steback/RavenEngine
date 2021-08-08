@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 
+#include "utils/NonCopyable.hpp"
+
 
 namespace re {
 
@@ -14,7 +16,7 @@ namespace re {
     /**
      * @brief Main render class, execute all render commands with Vulkan API
      */
-    class Renderer {
+    class Renderer : NonCopyable {
     public:
         /**
          *
@@ -22,7 +24,7 @@ namespace re {
          */
         Renderer(const std::string& appName, const Config& config);
 
-        ~Renderer();
+        ~Renderer() override;
 
         /**
          *
