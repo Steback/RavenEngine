@@ -11,3 +11,7 @@ bin/
 
 ### Logs ###
 *.log
+
+### Doxygen ###
+html/
+latex/
