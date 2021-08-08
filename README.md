@@ -35,3 +35,6 @@ conan install ..
 cmake ..
 cmake --build . --config Release 
 ```
+
+## Samples
+All the examples are includes in the [samples](samples) folder.
