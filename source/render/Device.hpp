@@ -32,18 +32,21 @@ namespace re {
          *
          * @param instance shared_ptr of Instance class
          * @param extensions vector cf C-Style strings with the extensions names
+         * @param features Physical Device features
+         * @param surface Window surface for query present support by default is null
          */
-        Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features);
+        Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
+               VkSurfaceKHR surface = VK_NULL_HANDLE);
 
         ~Device() override;
 
         /**
          * @brief Get the required Queue Family Index
          * @param queue The specific Queue Flag
-         * @param surface Window surface for present support. By default is null
+         * @param surface_ Window surface for present support. By default is null
          * @return uint32_t value with the Queue Family Index
          */
-        uint32_t getQueueFamilyIndex(VkQueueFlagBits queue, VkSurfaceKHR surface = VK_NULL_HANDLE);
+        uint32_t getQueueFamilyIndex(VkQueueFlagBits queue, VkSurfaceKHR surface_ = VK_NULL_HANDLE);
 
         /**
          * @brief Find a format that support the Image tiling and the Features.
@@ -119,6 +122,24 @@ namespace re {
          */
         [[nodiscard]] QueueFamilyIndices getQueueFamilyIndices() const;
 
+        /**
+         *
+         * @return Get Vulkan Memory Allocator
+         */
+        [[nodiscard]] VmaAllocator getAllocator() const;
+
+        /**
+         *
+         * @return shared_ptr of Instance class
+         */
+        [[nodiscard]] std::shared_ptr<Instance> getInstance() const;
+
+        /**
+         *
+         * @return Current window surface
+         */
+        VkSurfaceKHR getSurface() const;
+
     private:
         /**
          * @brief Create the vulkan logical device
@@ -139,6 +160,8 @@ namespace re {
         const float DEFAULT_QUEUE_PRIORITY = 1.0f;
 
     private:
+        std::shared_ptr<Instance> instance;
+        VkSurfaceKHR surface{};
         QueueFamilyIndices queueFamilyIndices{};
         VkDevice device{};
         VkPhysicalDevice physicalDevice{};

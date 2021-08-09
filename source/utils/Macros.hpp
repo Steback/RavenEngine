@@ -20,6 +20,11 @@
 #define CAST_U32(num) static_cast<uint32_t>(num)
 
 /**
+ * @brief Cast to float type
+ */
+#define CAST_FLOAT(num) static_cast<float>(num)
+
+/**
  * @brief Default Vulkan result check.
  *
  * If result isn't success throw a exception

@@ -14,6 +14,7 @@ namespace re {
         window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
         glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
     }
 
     Window::~Window() {
@@ -23,6 +24,30 @@ namespace re {
 
     bool Window::isOpen() const {
         return !glfwWindowShouldClose(window);
+    }
+
+    void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {
+        RE_VK_CHECK_RESULT(glfwCreateWindowSurface(instance, window, nullptr, surface),
+                           "Failed to create window surface");
+    }
+
+    VkExtent2D Window::getExtent() const {
+        return {CAST_U32(width), CAST_U32(height)};
+    }
+
+    bool Window::wasWindowResized() const {
+        return framebufferResized;
+    }
+
+    void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) {
+        auto win = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        win->framebufferResized = true;
+        win->width = width;
+        win->height = height;
+    }
+
+    void Window::resetWindowResizedFlag() {
+        framebufferResized = false;
     }
 
 } // namespace re

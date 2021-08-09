@@ -20,7 +20,15 @@ namespace re {
         while (renderer->isWindowOpen()) {
             glfwPollEvents();
             update();
+
+            auto commandBuffer = renderer->beginFrame();
+            renderer->beginSwapChainRenderPass(commandBuffer);
+
+            renderer->endSwapChainRenderPass(commandBuffer);
+            renderer->endFrame();
         }
+
+        renderer->waitDeviceIde();
     }
 
     void Base::run() {

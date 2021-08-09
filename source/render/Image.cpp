@@ -9,13 +9,16 @@ namespace re {
 
     Image::Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage, VkImageAspectFlags aspectFlags)
             : device(device), allocator(allocator) {
-        createImage(imageInfo);
+        format = imageInfo.format;
+        extent = imageInfo.extent;
+        mipLevels = imageInfo.mipLevels;
+        createImage(imageInfo, usage);
         createView(aspectFlags);
     }
 
     Image::~Image() {
-        vkDestroyImageView(device, view, nullptr);
-        vmaDestroyImage(allocator, image, allocation);
+        if (!swapChainImages) vkDestroyImageView(device, view, nullptr);
+        if (!swapChainImages) vmaDestroyImage(allocator, image, allocation);
     }
 
     VkImage Image::getImage() const {

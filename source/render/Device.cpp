@@ -5,7 +5,8 @@
 
 namespace re {
 
-    Device::Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features) {
+    Device::Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
+                   VkSurfaceKHR surface) : instance(instance), surface(surface) {
         physicalDevice = instance->pickPhysicalDevice(extensions);
 
         createLogicalDevice(extensions, features);
@@ -15,12 +16,13 @@ namespace re {
     }
 
     Device::~Device() {
+        vkDestroySurfaceKHR(instance->getInstance(), surface, nullptr);
         vmaDestroyAllocator(allocator);
         vkDestroyCommandPool(device, transferCmdPool, nullptr);
         vkDestroyDevice(device, nullptr);
     }
 
-    uint32_t Device::getQueueFamilyIndex(VkQueueFlagBits queue, VkSurfaceKHR surface) {
+    uint32_t Device::getQueueFamilyIndex(VkQueueFlagBits queue, VkSurfaceKHR surface_) {
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 
@@ -43,9 +45,9 @@ namespace re {
 
         for (uint32_t i = 0; i < CAST_U32(properties.size()); ++i) {
             if (properties[i].queueFlags & queue) {
-                if (surface) {
+                if (surface_) {
                     VkBool32 supported = false;
-                    vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &supported);
+                    vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface_, &supported);
 
                     if (supported) return i;
                 }
@@ -150,12 +152,21 @@ namespace re {
         return queueFamilyIndices;
     }
 
+    VmaAllocator Device::getAllocator() const {
+        return allocator;
+    }
+
+    std::shared_ptr<Instance> Device::getInstance() const {
+        return instance;
+    }
+
     void Device::createLogicalDevice(const std::vector<const char *>& extensions, VkPhysicalDeviceFeatures features,
                                      VkQueueFlags queueFlags) {
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 
         if (queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             queueFamilyIndices.graphics = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT);
+            queueFamilyIndices.present = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT, surface);
 
             if (queueFamilyIndices.graphics == queueFamilyIndices.present) {
                 VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
@@ -230,6 +241,10 @@ namespace re {
 
         RE_VK_CHECK_RESULT(vmaCreateAllocator(&allocatorInfo, &allocator),
                            "Failed to create Vulkan Memory Allocator");
+    }
+
+    VkSurfaceKHR Device::getSurface() const {
+        return surface;
     }
 
 } // namespace re

@@ -10,10 +10,14 @@
 
 namespace re {
 
+    class SwapChain;
+
     /**
      * @brief Vulkan image wrapper
      */
     class Image : NonCopyable {
+        friend SwapChain;
+
     public:
         /**
          * @brief Default constructor
@@ -86,6 +90,7 @@ namespace re {
         VkFormat format{};
         VkExtent3D extent{};
         uint32_t mipLevels{1};
+        bool swapChainImages{false};
     };
 
 } // namespace re
