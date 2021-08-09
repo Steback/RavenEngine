@@ -11,7 +11,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [nlohmann_json](https://github.com/nlohmann/json) | 3.9.1 | 
 | [Vulkan Headers](https://github.com/KhronosGroup/Vulkan-Headers) | 1.2.182 | 
 | [Vulkan Loader](https://github.com/KhronosGroup/Vulkan-Loader) | 1.2.182 | 
-| [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) | 1.2.182 | 
+| [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) | 2.3.0 | 
 
 ## Build
 ### Requirements
