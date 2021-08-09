@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "vulkan/vulkan.h"
+#include "vk_mem_alloc.h"
 
 #include "utils/NonCopyable.hpp"
 
@@ -34,7 +35,7 @@ namespace re {
          */
         Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features);
 
-        ~Device();
+        ~Device() override;
 
         /**
          * @brief Get the required Queue Family Index
@@ -120,13 +121,19 @@ namespace re {
 
     private:
         /**
-         * Create the vulkan logical device
+         * @brief Create the vulkan logical device
          * @param extensions Vector of C-Style string with all the extensions names required for the device
          * @param features Physical device features struct with the requires features
          * @param queueFlags The requires Queue flags, by default are Graphics, Compute and Transfer
          */
         void createLogicalDevice(const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
                                  VkQueueFlags queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT);
+
+        /**
+         * @brief Create the allocator from Vulkan Memory Allocator
+         * @param instance shared_ptr of Instance class
+         */
+        void createAllocator(const std::shared_ptr<Instance>& instance);
 
     public:
         const float DEFAULT_QUEUE_PRIORITY = 1.0f;
@@ -137,6 +144,7 @@ namespace re {
         VkPhysicalDevice physicalDevice{};
         VkQueue transferQueue{};
         VkCommandPool transferCmdPool{};
+        VmaAllocator allocator{};
     };
 
 } // namespace re

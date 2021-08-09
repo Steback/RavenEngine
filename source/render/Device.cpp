@@ -10,10 +10,12 @@ namespace re {
 
         createLogicalDevice(extensions, features);
         vkGetDeviceQueue(device, queueFamilyIndices.transfer, 0, &transferQueue);
+        createAllocator(instance);
         createCommandPool(transferCmdPool, queueFamilyIndices.transfer);
     }
 
     Device::~Device() {
+        vmaDestroyAllocator(allocator);
         vkDestroyCommandPool(device, transferCmdPool, nullptr);
         vkDestroyDevice(device, nullptr);
     }
@@ -216,6 +218,18 @@ namespace re {
 
         RE_VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device),
                            "Failed to create logical device!");
+    }
+
+    void Device::createAllocator(const std::shared_ptr<Instance> &instance) {
+        VmaAllocatorCreateInfo allocatorInfo{};
+        // TODO: Check VMA bug. Set Vulkan version 1.0 to VMA because vkGetImageMemoryRequirements2KHR is NULL
+        allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_0;
+        allocatorInfo.device = device;
+        allocatorInfo.physicalDevice = physicalDevice;
+        allocatorInfo.instance = instance->getInstance();
+
+        RE_VK_CHECK_RESULT(vmaCreateAllocator(&allocatorInfo, &allocator),
+                           "Failed to create Vulkan Memory Allocator");
     }
 
 } // namespace re

@@ -130,6 +130,10 @@ namespace re {
         });
     }
 
+    VkInstance Instance::getInstance() const {
+        return instance;
+    }
+
     std::vector<const char *> Instance::getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;

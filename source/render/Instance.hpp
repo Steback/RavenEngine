@@ -41,6 +41,12 @@ namespace re {
          */
         static bool checkExtensionsSupport(VkPhysicalDevice device, const std::vector<const char*>& extensions);
 
+        /**
+         *
+         * @return Vulkan raw Instance
+         */
+        [[nodiscard]] VkInstance getInstance() const;
+
     private:
         /**
          * @brief Get all needed extensions by GLFW for create the instance
