@@ -2,7 +2,7 @@
 #define RAVENENGINE_MATHTESTS_HPP
 
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 
 #include "math/Vector2.hpp"
