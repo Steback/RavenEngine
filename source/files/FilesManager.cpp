@@ -9,8 +9,8 @@ namespace re {
 
     FilesManager::FilesManager() = default;
 
-    void FilesManager::setupDefaultPaths() {
-        std::filesystem::path root = std::filesystem::current_path();
+    void FilesManager::setupDefaultPaths(const std::filesystem::path& rootPath) {
+        std::filesystem::path root = rootPath;
 
 #ifdef _WIN64
         if (root.filename() == "Release")

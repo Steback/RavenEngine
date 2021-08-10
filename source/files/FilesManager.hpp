@@ -20,7 +20,7 @@ namespace re {
     public:
         /**
          * @bried Setup all default paths needed by the engine.
-         *
+         * @param rootPath Project root directory
          * Default paths:
          * root(Project folder),
          * assets,
@@ -29,7 +29,7 @@ namespace re {
          * shaders,
          * bin/shaders
          */
-        static void setupDefaultPaths();
+        static void setupDefaultPaths(const std::filesystem::path& rootPath);
 
         /**
          * @brief Add a new path for the search paths
