@@ -45,12 +45,12 @@ namespace re {
 
     protected:
         /**
-         * @brief Main update function. Can be overwrites
+         * @brief Main update function. Can be overwritten
          */
         virtual void update();
 
         /**
-         * @brief Main render function. Can be overwrites
+         * @brief Main render function. Can be overwritten
          */
         virtual void render();
 
