@@ -1,5 +1,5 @@
-#ifndef RAVENENGINE_VECTOR2_HPP
-#define RAVENENGINE_VECTOR2_HPP
+#ifndef RAVENENGINE_VECTOR4_HPP
+#define RAVENENGINE_VECTOR4_HPP
 
 
 #include <string>
@@ -7,47 +7,46 @@
 
 namespace re {
 
-    /**
-     * @brief Vector 2D class
-     */
-    class Vector2 {
+    class Vector4 {
     public:
         /**
-         * @brief Default constructor
+         * Default constructor
          */
-        Vector2();
+        Vector4();
 
         /**
          * Constructor for set each axis with the same value
          * @param n Real number
          */
-        explicit Vector2(float n);
+        explicit Vector4(float n);
 
         /**
          * Constructor from specific values for each axis
          * @param x Value of x-axis
          * @param y Value of y-axis
+         * @param z Value of z-axis
+         * @param w Value of w
          */
-        Vector2(float x, float y);
+        Vector4(float x, float y, float z, float w);
 
         /**
          * @brief Constructor from C-Style array
-         * @param p C-Style array of size 2
+         * @param p C-Style array of size 4
          */
-        explicit Vector2(const float p[2]);
+        explicit Vector4(const float p[4]);
 
         /**
          * @brief Copy constructor
-         * @param v const reference of Vector2
+         * @param v const reference of Vector3
          */
-        Vector2(const Vector2& v);
+        Vector4(const Vector4& v);
 
         /**
          * @brief Copy operator
-         * @param v const reference of Vector2
-         * @return Vector2 reference
+         * @param v const reference of Vector3
+         * @return Vector4 reference
          */
-        Vector2& operator=(const Vector2& v);
+        Vector4& operator=(const Vector4& v);
 
         /**
          * @brief Random access operator
@@ -68,105 +67,105 @@ namespace re {
          * @param n Scalar
          * @return Copy of vector summed by scalar
          */
-        Vector2 operator+(float n) const;
+        Vector4 operator+(float n) const;
 
         /**
          * @brief Vector addition operator
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return Copy of vector summed by other vector
          */
-        Vector2 operator+(const Vector2& v) const;
+        Vector4 operator+(const Vector4& v) const;
 
         /**
          * @brief Vector subtraction operator
          * @param n Scalar
          * @return Copy of vector subtracted by scalar
          */
-        Vector2 operator-(float n) const;
+        Vector4 operator-(float n) const;
 
         /**
          * @brief Vector subtraction operator
-         * @param v Vector2 Object
+         * @param v Vector4 Object
          * @return Copy of vector subtracted by scalar
          */
-        Vector2 operator-(const Vector2& v) const;
+        Vector4 operator-(const Vector4& v) const;
 
         /**
          * @brief Scalar multiplication operator
          * @param n Scalar
          * @return Copy of vector scaled by real number
          */
-        Vector2 operator*(float n) const;
+        Vector4 operator*(float n) const;
 
         /**
          * @brief Vectors dot product
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return Dot product of vectors
          */
-        float operator*(const Vector2& v) const;
+        float operator*(const Vector4& v) const;
 
         /**
          * @brief Vector division operations
          * @param n Scalar
          * @return Copy of vector scaled by 1 / n
          */
-        Vector2 operator/(float n) const;
+        Vector4 operator/(float n) const;
 
         /**
          * @brief Vector addition and assigment operator
          * @param n Scalar
          * @return Reference of this vector
          */
-        Vector2& operator+=(float n);
+        Vector4& operator+=(float n);
 
         /**
          * @brief Vector addition and assigment operator
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return Reference of this vector
          */
-        Vector2& operator+=(const Vector2& v);
+        Vector4& operator+=(const Vector4& v);
 
         /**
          * @brief Vector subtraction and assigment operator
          * @param n Scalar
          * @return Reference of this vector
          */
-        Vector2& operator-=(float n);
+        Vector4& operator-=(float n);
 
         /**
          * @brief Vector subtraction and assigment operator
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return Reference of this vector
          */
-        Vector2& operator-=(const Vector2& v);
+        Vector4& operator-=(const Vector4& v);
 
         /**
          * @brief Vector multiplication and assigment operator
          * @param n Scalar
          * @return Reference of this vector
          */
-        Vector2& operator*=(float n);
+        Vector4& operator*=(float n);
 
         /**
          * @brief Vector division and assigment operator
          * @param n Scala
          * @return Reference of this vector scaled by 1 / n
          */
-        Vector2& operator/=(float n);
+        Vector4& operator/=(float n);
 
         /**
          * @brief Vector comparison bool
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return The two vectors are equal
          */
-        bool operator==(const Vector2& v) const;
+        bool operator==(const Vector4& v) const;
 
         /**
          * @brief Vector comparison bool
-         * @param v Vector2 object
+         * @param v Vector4 object
          * @return The two vectors are not equal
          */
-        bool operator!=(const Vector2& v) const;
+        bool operator!=(const Vector4& v) const;
 
         /**
          *
@@ -182,15 +181,15 @@ namespace re {
 
         /**
          *
-         * @return Normal vector
+         * @return Magnitude of vector
          */
-        [[nodiscard]] Vector2 normal() const;
+        [[nodiscard]] Vector4 normal() const;
 
         /**
          * @brief Normalize this vector
          * @return Reference of this vector
          */
-        Vector2& normalize();
+        Vector4& normalize();
 
         /**
          *
@@ -205,25 +204,25 @@ namespace re {
         [[nodiscard]] std::string str() const;
 
     public:
-        float x{}, y{};
+        float x{}, y{}, z{}, w{};
     };
 
-    inline Vector2 operator+(float n, const Vector2& v) {
-        return  v + n;
+    inline Vector4 operator+(float n,  const Vector4& v) {
+        return v + n;
     }
 
-    inline Vector2 operator-(float n, const Vector2& v) {
-        return  v - n;
+    inline Vector4 operator-(float n,  const Vector4& v) {
+        return v - n;
     }
 
-    inline Vector2 operator*(float n, const Vector2& v) {
-        return  v * n;
+    inline Vector4 operator*(float n,  const Vector4& v) {
+        return v * n;
     }
 
-    using vec2 = Vector2;
+    using vec4 = Vector4;
 
 
 } // namespace re
 
 
-#endif //RAVENENGINE_VECTOR2_HPP
+#endif //RAVENENGINE_VECTOR4_HPP

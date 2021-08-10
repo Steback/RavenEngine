@@ -155,14 +155,14 @@ namespace re {
         /**
          * @brief Vector comparison bool
          * @param v Vector3 object
-         * @return The two vectors are equal or not
+         * @return The two vectors are equal
          */
         bool operator==(const Vector3& v) const;
 
         /**
          * @brief Vector comparison bool
          * @param v Vector3 object
-         * @return The two vectors are not equal or not
+         * @return The two vectors are not equal
          */
         bool operator!=(const Vector3& v) const;
 
