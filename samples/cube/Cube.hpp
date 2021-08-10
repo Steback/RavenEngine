@@ -11,7 +11,7 @@ public:
 
     ~Cube() override;
 
-    void update() override;
+    void onUpdate() override;
 
 private:
 

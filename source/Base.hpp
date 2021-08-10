@@ -31,7 +31,7 @@ namespace re {
          *
          * Pure virtual method, will be implemented by the Application/Game class.
          */
-        virtual void update() = 0;
+        virtual void onUpdate() = 0;
 
         /**
          * @brief Main loop, execute all update and render functionalities
@@ -43,7 +43,18 @@ namespace re {
          */
         void run();
 
-    private:
+    protected:
+        /**
+         * @brief Main update function. Can be overwrites
+         */
+        virtual void update();
+
+        /**
+         * @brief Main render function. Can be overwrites
+         */
+        virtual void render();
+
+    protected:
         Config config;
         std::unique_ptr<Renderer> renderer;
     };

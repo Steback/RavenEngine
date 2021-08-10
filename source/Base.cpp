@@ -20,12 +20,7 @@ namespace re {
         while (renderer->isWindowOpen()) {
             glfwPollEvents();
             update();
-
-            auto commandBuffer = renderer->beginFrame();
-            renderer->beginSwapChainRenderPass(commandBuffer);
-
-            renderer->endSwapChainRenderPass(commandBuffer);
-            renderer->endFrame();
+            render();
         }
 
         renderer->waitDeviceIde();
@@ -33,6 +28,18 @@ namespace re {
 
     void Base::run() {
         loop();
+    }
+
+    void Base::update() {
+        onUpdate();
+    }
+
+    void Base::render() {
+        auto commandBuffer = renderer->beginFrame();
+        renderer->beginSwapChainRenderPass(commandBuffer);
+
+        renderer->endSwapChainRenderPass(commandBuffer);
+        renderer->endFrame();
     }
 
 } // namespace re
