@@ -52,7 +52,7 @@ namespace re {
     }
 
     float Vector4::operator*(const Vector4 &v) const {
-        return x * x + y * y + z * z + w * w;
+        return x * v.x + y * v.y + z * v.z + w * v.w;
     }
 
     Vector4 Vector4::operator/(float n) const {
