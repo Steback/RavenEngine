@@ -15,3 +15,6 @@ add_subdirectory(source)
 
 ### Samples ###
 add_subdirectory(samples)
+
+### Tests ###
+add_subdirectory(tests)
