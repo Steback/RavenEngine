@@ -15,15 +15,15 @@ The dependencies are installed using [Conan](https://conan.io/)
 
 ## Build
 ### Requirements
-* CMake 3.18
-* Python 3.9.6
-* Conan 1.38.0
+* CMake 3.18 or higher
+* Python 3.x
+* Conan 1.38.0 or higher
 
 #### Conan
 For install and config conan there is the [Getting Started](https://docs.conan.io/en/latest/getting_started.html).
 
 ### Linux
-* GCC 11.1.0
+* GCC 11.1.0 
 ```commandline
 mkdir build && cd build
 conan install ..
