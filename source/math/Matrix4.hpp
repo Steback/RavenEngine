@@ -1,156 +1,159 @@
-#ifndef RAVENENGINE_MATRIX3_HPP
-#define RAVENENGINE_MATRIX3_HPP
+#ifndef RAVENENGINE_MATRIX4_HPP
+#define RAVENENGINE_MATRIX4_HPP
 
 
-#include "Vector3.hpp"
+#include <string>
+
+#include "Vector4.hpp"
 
 
 namespace re {
 
-    class Matrix3 {
+    class Matrix4 {
     public:
         /**
          * @brief Default Constructor
          */
-        Matrix3();
+        Matrix4();
 
         /**
          * Constructor for set each axis with the same value
          * @param n Real number
          */
-        explicit Matrix3(float n);
+        explicit Matrix4(float n);
 
         /**
          * Constructor from specific values for each row
-         * @param a Vector3 object 1rt row
-         * @param b Vector3 object 2nd row
-         * @param c Vector3 object 3rd row
+         * @param a Vector4 object 1rt row
+         * @param b Vector4 object 2nd row
+         * @param c Vector4 object 3rd row
+         * @param d Vector4 object 4th row
          */
-        Matrix3(const Vector3& a, const Vector3& b, const Vector3& c);
+        Matrix4(const Vector4& a, const Vector4& b, const Vector4& c, const Vector4& d);
 
         /**
          * @brief Constructor from C-Style array
-         * @param m C-Style array of Vector3
+         * @param m C-Style array of Vector4
          */
-        explicit Matrix3(const Vector3 m[3]);
+        explicit Matrix4(const Vector4 m[4]);
 
         /**
          * @brief Copy constructor
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          */
-        Matrix3(const Matrix3& m);
+        Matrix4(const Matrix4& m);
 
         /**
          * @brief Copy operator
-         * @param m Matrix3 object
-         * @return Vector3 reference
+         * @param m Matrix4 object
+         * @return Vector4 reference
          */
-        Matrix3& operator=(const Matrix3& m);
+        Matrix4& operator=(const Matrix4& m);
 
         /**
          * @brief Random access operator
          * @param row Row access index
          * @return Reference of row
          */
-        Vector3& operator[](size_t row);
+        Vector4& operator[](size_t row);
 
         /**
          * @brief Random access operator
          * @param row Row access index
          * @return Const reference of row
          */
-        const Vector3& operator[](size_t row) const;
+        const Vector4& operator[](size_t row) const;
 
         /**
          * @brief Matrix addition operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return Copy of this matrix summed by other matrix
          */
-        Matrix3 operator+(const Matrix3& m) const;
+        Matrix4 operator+(const Matrix4& m) const;
 
         /**
          * @brief Matrix subtraction operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return Copy of this matrix subtracted by other matrix
          */
-        Matrix3 operator-(const Matrix3& m) const;
+        Matrix4 operator-(const Matrix4& m) const;
 
         /**
          * @brief Scalar multiplication operator
          * @param n Scalar
          * @return Copy of this matrix scaled by real number
          */
-        Matrix3 operator*(float n) const;
+        Matrix4 operator*(float n) const;
 
         /**
          * @brief Matrix-Vector multiplication operator
-         * @param v Vector3 object
+         * @param v Vector4 object
          * @return Vector result of multiplication
          */
-        Vector3 operator*(const Vector3& v) const;
+        Vector4 operator*(const Vector4& v) const;
 
         /**
          * @brief Matrix multiplication operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return Matrix multiplication result
          */
-        Matrix3 operator*(const Matrix3& m) const;
+        Matrix4 operator*(const Matrix4& m) const;
 
         /**
          * @brief Matrix division operations
          * @param n Scalar
          * @return Copy of matrix scaled by 1 / n
          */
-        Matrix3 operator/(float n) const;
+        Matrix4 operator/(float n) const;
 
         /**
          * @brief Matrix addition and assigment operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return This matrix reference
          */
-        Matrix3& operator+=(const Matrix3& m);
+        Matrix4& operator+=(const Matrix4& m);
 
         /**
          * @brief Matrix subtraction and assigment operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return This matrix reference
          */
-        Matrix3& operator-=(const Matrix3& m);
+        Matrix4& operator-=(const Matrix4& m);
 
         /**
          * @brief Matrix multiplication and assigment operator
          * @param n Scalar
          * @return This matrix reference
          */
-        Matrix3& operator*=(float n);
+        Matrix4& operator*=(float n);
 
         /**
          * @brief Matrix multiplication and assigment operator
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return This matrix reference
          */
-        Matrix3& operator*=(const Matrix3& m);
+        Matrix4& operator*=(const Matrix4& m);
 
         /**
          * @brief Vector division and assigment operator
          * @param n Scalar
          * @return This matrix reference
          */
-        Matrix3& operator/=(float n);
+        Matrix4& operator/=(float n);
 
         /**
          * @brief Matrix comparison bool
-         * @param m Matrix3 object
+         * @param m Matrix4 object
          * @return The two matrices are equal
          */
-        bool operator==(const Matrix3& m);
+        bool operator==(const Matrix4& m) const;
 
         /**
          * @brief Matrix comparison bool
          * @param m Matrix3 object
          * @return The two matrices are not equal
          */
-        bool operator!=(const Matrix3& m);
+        bool operator!=(const Matrix4& m) const;
 
         /**
          *
@@ -162,19 +165,19 @@ namespace re {
          *
          * @return Adjugate matrix
          */
-        [[nodiscard]] Matrix3 adjugate() const;
+        [[nodiscard]] Matrix4 adjugate() const;
 
         /**
          *
          * @return Matrix inverse
          */
-        [[nodiscard]] Matrix3 inverse() const;
+        [[nodiscard]] Matrix4 inverse() const;
 
         /**
          *
          * @return Matrix transpose
          */
-        [[nodiscard]] Matrix3 transpose() const;
+        [[nodiscard]] Matrix4 transpose() const;
 
         /**
          *
@@ -184,21 +187,21 @@ namespace re {
         [[nodiscard]] std::string str(bool newLine = true) const;
 
     private:
-        Vector3 rows[3];
+        Vector4 rows[4];
     };
 
-    inline Matrix3 operator*(float n, const Matrix3& m) {
+    inline Matrix4 operator*(float n, const Matrix4& m) {
         return m * n;
     }
 
-    inline Matrix3 operator/(float n, const Matrix3& m) {
-        return m * n;
+    inline Matrix4 operator/(float n, const Matrix4& m) {
+        return m / n;
     }
 
-    using mat3 = Matrix3;
+    using mat4 = Matrix4;
 
 
 } // namespace re
 
 
-#endif //RAVENENGINE_MATRIX3_HPP
+#endif //RAVENENGINE_MATRIX4_HPP
