@@ -57,23 +57,23 @@ namespace re {
     Matrix3 Matrix3::operator*(const Matrix3 &m) const {
         return {
             {
-                rows[0][0] * m[0][0] + rows[0][1] * m[1][0] + rows[0][2] + m[2][0],
-                rows[0][0] * m[0][1] + rows[0][1] * m[1][1] + rows[0][2] + m[2][1],
-                rows[0][0] * m[0][2] + rows[0][1] * m[1][2] + rows[0][2] + m[2][2]
+                rows[0][0] * m[0][0] + rows[0][1] * m[1][0] + rows[0][2] * m[2][0],
+                rows[0][0] * m[0][1] + rows[0][1] * m[1][1] + rows[0][2] * m[2][1],
+                rows[0][0] * m[0][2] + rows[0][1] * m[1][2] + rows[0][2] * m[2][2]
             },{
-                rows[1][0] * m[0][0] + rows[1][1] * m[1][0] + rows[1][2] + m[2][0],
-                rows[1][0] * m[0][1] + rows[1][1] * m[1][1] + rows[1][2] + m[2][1],
-                rows[1][0] * m[0][2] + rows[1][1] * m[1][2] + rows[1][2] + m[2][2]
+                rows[1][0] * m[0][0] + rows[1][1] * m[1][0] + rows[1][2] * m[2][0],
+                rows[1][0] * m[0][1] + rows[1][1] * m[1][1] + rows[1][2] * m[2][1],
+                rows[1][0] * m[0][2] + rows[1][1] * m[1][2] + rows[1][2] * m[2][2]
             },{
-                rows[2][0] * m[0][0] + rows[2][1] * m[1][0] + rows[2][2] + m[2][0],
-                rows[2][0] * m[0][1] + rows[2][1] * m[1][1] + rows[2][2] + m[2][1],
-                rows[2][0] * m[0][2] + rows[2][2] * m[1][0] + rows[2][2] + m[2][2]
+                rows[2][0] * m[0][0] + rows[2][1] * m[1][0] + rows[2][2] * m[2][0],
+                rows[2][0] * m[0][1] + rows[2][1] * m[1][1] + rows[2][2] * m[2][1],
+                rows[2][0] * m[0][2] + rows[2][2] * m[1][0] + rows[2][2] * m[2][2]
             }
         };
     }
 
     Matrix3 Matrix3::operator/(float n) const {
-        float f = 1.0f;
+        float f = 1.0f / n;
         return *this * f;
     }
 
@@ -107,11 +107,11 @@ namespace re {
 
     float Matrix3::determinant() const {
         return (rows[0][0] * rows[1][1] * rows[2][2]) +
-               (rows[1][0] * rows[2][1] * rows[0][2]) +
-               (rows[2][0] * rows[0][1] * rows[1][2]) -
+               (rows[0][1] * rows[1][2] * rows[2][0]) +
+               (rows[0][2] * rows[1][0] * rows[2][1]) -
                (rows[0][2] * rows[1][1] * rows[2][0]) -
-               (rows[1][2] * rows[2][1] * rows[0][1]) -
-               (rows[2][2] * rows[0][1] * rows[1][0]);
+               (rows[0][0] * rows[1][2] * rows[2][1]) -
+               (rows[0][1] * rows[1][0] * rows[2][2]);
     }
 
     Matrix3 Matrix3::adjugate() const {
@@ -145,7 +145,7 @@ namespace re {
     std::string Matrix3::str(bool newLine) const {
         return  rows[0].str() + NEW_LINE(newLine) +
                 rows[1].str() + NEW_LINE(newLine) +
-                rows[0].str() + NEW_LINE(newLine);
+                rows[2].str() + NEW_LINE(newLine);
     }
 
 } // namespace re

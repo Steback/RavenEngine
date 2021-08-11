@@ -4,10 +4,12 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
+#include "fmt/printf.h"
 
 #include "math/Vector2.hpp"
 #include "math/Vector3.hpp"
 #include "math/Vector4.hpp"
+#include "math/Matrix3.hpp"
 
 
 namespace re {
@@ -43,9 +45,10 @@ namespace re {
         CHECK(a * b == 6);
         CHECK(b / 2.0f == a);
         CHECK(b.lengthSqrt() == 12);
+        CHECK(a.cross(b) == re::vec3(0.0f, 0.0f, 0.0f));
     }
 
-    TEST_CASE("Vector3 Tests") {
+    TEST_CASE("Vector4 Tests") {
         re::Vector4 a = {1.0f, 1.0f, 1.0f, 1.0f};
         re::Vector4 b = {2.0f, 2.0f, 2.0f, 2.0f};
 
@@ -59,6 +62,36 @@ namespace re {
         CHECK(a * b == 8);
         CHECK(b / 2.0f == a);
         CHECK(b.lengthSqrt() == 16);
+    }
+
+    TEST_CASE("Matrix3 Tests") {
+        re::mat3 a = {
+                { 1.0f, 1.0f, 1.0f },
+                { 1.0f, 1.0f, 1.0f },
+                { 1.0f, 1.0f, 1.0f }
+        };
+
+        re::mat3 b = {
+                { 2.0f, 2.0f, 2.0f },
+                { 2.0f, 2.0f, 2.0f },
+                { 2.0f, 2.0f, 2.0f }
+        };
+
+        re::mat3 c = {
+                { 6, 1, 1 },
+                { 4, -2, 5 },
+                { 2, 8, 7 }
+        };
+
+        CHECK(a != b);
+        CHECK(a + b == re::mat3({3, 3, 3}, {3, 3, 3}, {3, 3, 3}));
+        CHECK(a - b == re::mat3({-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}));
+        CHECK(a * 2 == b);
+        CHECK(b * re::vec3(2, 2, 2) == re::vec3(12, 12, 12));
+        CHECK(a * b == re::mat3({6, 6, 6}, {6, 6, 6}, {6, 6, 6}));
+        CHECK(b / 2 == a);
+        CHECK(c.determinant() == -306);
+        CHECK(c.adjugate() == re::mat3({-54, 1, 7}, {-18, 40, -26}, {36, -46, -16}));
     }
 
 } // namespace re
