@@ -10,6 +10,7 @@
 #include "math/Vector3.hpp"
 #include "math/Vector4.hpp"
 #include "math/Matrix3.hpp"
+#include "math/Matrix4.hpp"
 
 
 namespace re {
@@ -92,6 +93,39 @@ namespace re {
         CHECK(b / 2 == a);
         CHECK(c.determinant() == -306);
         CHECK(c.adjugate() == re::mat3({-54, 1, 7}, {-18, 40, -26}, {36, -46, -16}));
+    }
+
+    TEST_CASE("Matrix4 Tests") {
+        re::mat4 a = {
+                { 1.0f, 1.0f, 1.0f, 1.0f },
+                { 1.0f, 1.0f, 1.0f, 1.0f },
+                { 1.0f, 1.0f, 1.0f, 1.0f },
+                { 1.0f, 1.0f, 1.0f, 1.0f }
+        };
+
+        re::mat4 b = {
+                { 2.0f, 2.0f, 2.0f, 2.0f },
+                { 2.0f, 2.0f, 2.0f, 2.0f },
+                { 2.0f, 2.0f, 2.0f, 2.0f },
+                { 2.0f, 2.0f, 2.0f, 2.0f }
+        };
+
+        re::mat4 c = {
+                { 4, 3, 2, 2 },
+                { 0, 1, -3, 3 },
+                { 0, -1, 3, 3 },
+                { 0, 3, 1, 1 }
+        };
+
+        CHECK(a != b);
+        CHECK(a + b == re::mat4({3, 3, 3, 3}, {3, 3, 3, 3}, {3, 3, 3, 3}, {3, 3, 3, 3}));
+        CHECK(a - b == re::mat4({-1, -1, -1, -1}, {-1, -1, -1, -1}, {-1, -1, -1, -1}, {-1, -1, -1, -1}));
+        CHECK(a * 2 == b);
+        CHECK(b * re::vec4(2, 2, 2, 2) == re::vec4(16, 16, 16, 16));
+        CHECK(a * b == re::mat4({8, 8, 8, 8}, {8, 8, 8, 8}, {8, 8, 8, 8}, {8, 8, 8, 8}));
+        CHECK(b / 2 == a);
+        CHECK(c.determinant() == -240);
+        CHECK(c.adjugate() == re::mat4({-60, 0, 18, 66}, {0, 0, 24, -72}, {0, 40, -32, -24}, {0, -40, -40, 0}));
     }
 
 } // namespace re
