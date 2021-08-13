@@ -97,11 +97,11 @@ namespace re {
         return *this = *this / n;
     }
 
-    bool Matrix3::operator==(const Matrix3 &m) {
+    bool Matrix3::operator==(const Matrix3 &m) const {
         return rows[0] == m[0] && rows[1] == m[1] && rows[2] == m[2];
     }
 
-    bool Matrix3::operator!=(const Matrix3 &m) {
+    bool Matrix3::operator!=(const Matrix3 &m) const {
         return rows[0] != m[0] && rows[1] != m[1] && rows[2] != m[2];
     }
 

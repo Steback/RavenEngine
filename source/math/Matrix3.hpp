@@ -143,14 +143,14 @@ namespace re {
          * @param m Matrix3 object
          * @return The two matrices are equal
          */
-        bool operator==(const Matrix3& m);
+        bool operator==(const Matrix3& m) const;
 
         /**
          * @brief Matrix comparison bool
          * @param m Matrix3 object
          * @return The two matrices are not equal
          */
-        bool operator!=(const Matrix3& m);
+        bool operator!=(const Matrix3& m) const;
 
         /**
          *
