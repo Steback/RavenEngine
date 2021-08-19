@@ -10,6 +10,10 @@ namespace re {
     std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> Logger::files;
 
     void Logger::setup() {
+        for (auto& file : std::filesystem::directory_iterator(FilesManager::getPath("logs"))) {
+            std::filesystem::remove(file);
+        }
+
         addFile("error.log");
     }
 
