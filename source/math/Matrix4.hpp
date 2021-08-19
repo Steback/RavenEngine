@@ -64,41 +64,20 @@ namespace re {
          */
         const Vector4& operator[](size_t row) const;
 
+        bool operator==(const Matrix4& m) const;
+
+        bool operator!=(const Matrix4& m) const;
+
         Matrix4 operator-() const;
 
-        /**
-         * @brief Matrix addition operator
-         * @param m Matrix4 object
-         * @return Copy of this matrix summed by other matrix
-         */
         Matrix4 operator+(const Matrix4& m) const;
 
-        /**
-         * @brief Matrix subtraction operator
-         * @param m Matrix4 object
-         * @return Copy of this matrix subtracted by other matrix
-         */
         Matrix4 operator-(const Matrix4& m) const;
 
-        /**
-         * @brief Scalar multiplication operator
-         * @param n Scalar
-         * @return Copy of this matrix scaled by real number
-         */
         Matrix4 operator*(float n) const;
 
-        /**
-         * @brief Matrix-Vector multiplication operator
-         * @param v Vector4 object
-         * @return Vector result of multiplication
-         */
         Vector4 operator*(const Vector4& v) const;
 
-        /**
-         * @brief Matrix multiplication operator
-         * @param m Matrix4 object
-         * @return Matrix multiplication result
-         */
         Matrix4 operator*(const Matrix4& m) const;
 
         /**
@@ -108,54 +87,15 @@ namespace re {
          */
         Matrix4 operator/(float n) const;
 
-        /**
-         * @brief Matrix addition and assigment operator
-         * @param m Matrix4 object
-         * @return This matrix reference
-         */
         Matrix4& operator+=(const Matrix4& m);
 
-        /**
-         * @brief Matrix subtraction and assigment operator
-         * @param m Matrix4 object
-         * @return This matrix reference
-         */
         Matrix4& operator-=(const Matrix4& m);
 
-        /**
-         * @brief Matrix multiplication and assigment operator
-         * @param n Scalar
-         * @return This matrix reference
-         */
         Matrix4& operator*=(float n);
 
-        /**
-         * @brief Matrix multiplication and assigment operator
-         * @param m Matrix4 object
-         * @return This matrix reference
-         */
         Matrix4& operator*=(const Matrix4& m);
 
-        /**
-         * @brief Vector division and assigment operator
-         * @param n Scalar
-         * @return This matrix reference
-         */
         Matrix4& operator/=(float n);
-
-        /**
-         * @brief Matrix comparison bool
-         * @param m Matrix4 object
-         * @return The two matrices are equal
-         */
-        bool operator==(const Matrix4& m) const;
-
-        /**
-         * @brief Matrix comparison bool
-         * @param m Matrix3 object
-         * @return The two matrices are not equal
-         */
-        bool operator!=(const Matrix4& m) const;
 
         /**
          *

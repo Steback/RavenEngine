@@ -31,6 +31,14 @@ namespace re {
         return (&x)[index];
     }
 
+    bool Vector4::operator==(const Vector4 &v) const {
+        return x == v.x && y == v.y && z == v.z && w == v.w;
+    }
+
+    bool Vector4::operator!=(const Vector4 &v) const {
+        return x != v.x && y != v.y && z != v.z && w != v.w;
+    }
+
     Vector4 Vector4::operator-() const {
         return {-x, -y, -z, -w};
     }
@@ -86,14 +94,6 @@ namespace re {
 
     Vector4 &Vector4::operator/=(float n) {
         return *this = *this / n;
-    }
-
-    bool Vector4::operator==(const Vector4 &v) const {
-        return x == v.x && y == v.y && z == v.z && w == v.w;
-    }
-
-    bool Vector4::operator!=(const Vector4 &v) const {
-        return x != v.x && y != v.y && z != v.z && w != v.w;
     }
 
     float Vector4::lengthSqrt() const {

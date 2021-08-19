@@ -41,6 +41,14 @@ namespace re {
         return rows[row];
     }
 
+    bool Matrix4::operator==(const Matrix4 &m) const {
+        return rows[0] == m[0] && rows[1] == m[1] && rows[2] == m[2] && rows[3] == m[3];
+    }
+
+    bool Matrix4::operator!=(const Matrix4 &m) const {
+        return rows[0] != m[0] && rows[1] != m[1] && rows[2] != m[2] && rows[3] != m[3];
+    }
+
     Matrix4 Matrix4::operator-() const {
         return {-rows[0], -rows[1], -rows[2], -rows[3]};
     }
@@ -110,14 +118,6 @@ namespace re {
 
     Matrix4 &Matrix4::operator/=(float n) {
         return *this = *this / n;
-    }
-
-    bool Matrix4::operator==(const Matrix4 &m) const {
-        return rows[0] == m[0] && rows[1] == m[1] && rows[2] == m[2] && rows[3] == m[3];
-    }
-
-    bool Matrix4::operator!=(const Matrix4 &m) const {
-        return rows[0] != m[0] && rows[1] != m[1] && rows[2] != m[2] && rows[3] != m[3];
     }
 
     float Matrix4::determinant() const {

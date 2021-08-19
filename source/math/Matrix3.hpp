@@ -40,119 +40,44 @@ namespace re {
          */
         Matrix3(const Matrix3& m);
 
-        /**
-         * @brief Copy operator
-         * @param m Matrix3 object
-         * @return Vector3 reference
-         */
         Matrix3& operator=(const Matrix3& m);
 
-        /**
-         * @brief Random access operator
-         * @param row Row access index
-         * @return Reference of row
-         */
         Vector3& operator[](size_t row);
 
-        /**
-         * @brief Random access operator
-         * @param row Row access index
-         * @return Const reference of row
-         */
         const Vector3& operator[](size_t row) const;
+
+        bool operator==(const Matrix3& m) const;
+
+        bool operator!=(const Matrix3& m) const;
 
         Matrix3 operator-() const;
 
-        /**
-         * @brief Matrix addition operator
-         * @param m Matrix3 object
-         * @return Copy of this matrix summed by other matrix
-         */
         Matrix3 operator+(const Matrix3& m) const;
 
-        /**
-         * @brief Matrix subtraction operator
-         * @param m Matrix3 object
-         * @return Copy of this matrix subtracted by other matrix
-         */
         Matrix3 operator-(const Matrix3& m) const;
 
-        /**
-         * @brief Scalar multiplication operator
-         * @param n Scalar
-         * @return Copy of this matrix scaled by real number
-         */
         Matrix3 operator*(float n) const;
 
-        /**
-         * @brief Matrix-Vector multiplication operator
-         * @param v Vector3 object
-         * @return Vector result of multiplication
-         */
         Vector3 operator*(const Vector3& v) const;
 
-        /**
-         * @brief Matrix multiplication operator
-         * @param m Matrix3 object
-         * @return Matrix multiplication result
-         */
         Matrix3 operator*(const Matrix3& m) const;
 
         /**
-         * @brief Matrix division operations
+         * @brief Matrix division operation
          * @param n Scalar
          * @return Copy of matrix scaled by 1 / n
          */
         Matrix3 operator/(float n) const;
 
-        /**
-         * @brief Matrix addition and assigment operator
-         * @param m Matrix3 object
-         * @return This matrix reference
-         */
         Matrix3& operator+=(const Matrix3& m);
 
-        /**
-         * @brief Matrix subtraction and assigment operator
-         * @param m Matrix3 object
-         * @return This matrix reference
-         */
         Matrix3& operator-=(const Matrix3& m);
 
-        /**
-         * @brief Matrix multiplication and assigment operator
-         * @param n Scalar
-         * @return This matrix reference
-         */
         Matrix3& operator*=(float n);
 
-        /**
-         * @brief Matrix multiplication and assigment operator
-         * @param m Matrix3 object
-         * @return This matrix reference
-         */
         Matrix3& operator*=(const Matrix3& m);
 
-        /**
-         * @brief Vector division and assigment operator
-         * @param n Scalar
-         * @return This matrix reference
-         */
         Matrix3& operator/=(float n);
-
-        /**
-         * @brief Matrix comparison bool
-         * @param m Matrix3 object
-         * @return The two matrices are equal
-         */
-        bool operator==(const Matrix3& m) const;
-
-        /**
-         * @brief Matrix comparison bool
-         * @param m Matrix3 object
-         * @return The two matrices are not equal
-         */
-        bool operator!=(const Matrix3& m) const;
 
         /**
          *

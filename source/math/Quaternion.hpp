@@ -55,102 +55,32 @@ namespace re {
 
         Quaternion operator-() const;
 
-        /**
-         * @brief Quaternion addition
-         * @param n Scalar
-         * @return Result of addition
-         */
         Quaternion operator+(float n) const;
 
-        /**
-         * @brief Quaternion addition
-         * @param q Quaternion
-         * @return Result of addition
-         */
         Quaternion operator+(const Quaternion& q) const;
 
-        /**
-         * @brief Quaternion subtraction
-         * @param n Scalar
-         * @return Result of subtraction
-         */
         Quaternion operator-(float n) const;
 
-        /**
-         * @brief Quaternion subtraction
-         * @param q Quaternion
-         * @return Result of subtraction
-         */
         Quaternion operator-(const Quaternion& q) const;
 
-        /**
-         * @brief Quaternion multiplication
-         * @param n Scalar
-         * @return Result of multiplication
-         */
         Quaternion operator*(float n) const;
 
-        /**
-         * @brief Quaternion multiplication
-         * @param q Quaternion object
-         * @return Result of multiplication
-         */
         Quaternion operator*(const Quaternion& q) const;
 
-        /**
-         * @brief Quaternions division
-         * @param n Scalar
-         * @return Quaternion * (1 / n)
-         */
         Quaternion operator/(float n) const;
 
-        /**
-         * @brief Quaternion addition and assigment
-         * @param n Scalar
-         * @return Referee of Quaternions
-         */
         Quaternion& operator+=(float n);
 
-        /**
-         * @brief Quaternion addition and assigment
-         * @param q Quaternion
-         * @return Referee of Quaternions
-         */
         Quaternion& operator+=(const Quaternion& q);
 
-        /**
-         * @brief Quaternion subtraction and assigment
-         * @param n Scalar
-         * @return Referee of Quaternions
-         */
         Quaternion& operator-=(float n);
 
-        /**
-         * @brief Quaternion subtraction and assigment
-         * @param q Quaternion
-         * @return Referee of Quaternions
-         */
         Quaternion& operator-=(const Quaternion& q);
 
-        /**
-         * @brief Quaternion multiplication and assigment
-         * @param n Scalar
-         * @return Referee of Quaternions
-         */
         Quaternion& operator*=(float n);
 
-        /**
-         * @brief Quaternion multiplication and assigment
-         * @param q Quaternion
-         * @return Referee of Quaternions
-         */
         Quaternion& operator*=(const Quaternion& q);
 
-        /**
-         * @brief Quaternion division and assigment
-         * @param n Scalar
-         * @return Referee of Quaternions
-         */
         Quaternion& operator/=(float n);
 
         /**

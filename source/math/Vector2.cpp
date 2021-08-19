@@ -31,6 +31,14 @@ namespace re {
         return (&x)[index];
     }
 
+    bool Vector2::operator==(const Vector2 &v) const {
+        return x == v.x && y == v.y;
+    }
+
+    bool Vector2::operator!=(const Vector2 &v) const {
+        return x != v.x && y != v.y;
+    }
+
     Vector2 Vector2::operator-() const {
         return {-x, -y};
     }
@@ -86,14 +94,6 @@ namespace re {
 
     Vector2 &Vector2::operator/=(float n) {
         return *this = *this / n;
-    }
-
-    bool Vector2::operator==(const Vector2 &v) const {
-        return x == v.x && y == v.y;
-    }
-
-    bool Vector2::operator!=(const Vector2 &v) const {
-        return x != v.x && y != v.y;
     }
 
     float Vector2::lengthSqrt() const {

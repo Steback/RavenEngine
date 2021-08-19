@@ -63,41 +63,20 @@ namespace re {
          */
         const float& operator[](unsigned int index) const;
 
+        bool operator==(const Vector2& v) const;
+
+        bool operator!=(const Vector2& v) const;
+
         Vector2 operator-() const;
 
-        /**
-         * @brief Vector addition operator
-         * @param n Scalar
-         * @return Copy of vector summed by scalar
-         */
         Vector2 operator+(float n) const;
 
-        /**
-         * @brief Vector addition operator
-         * @param v Vector2 object
-         * @return Copy of vector summed by other vector
-         */
         Vector2 operator+(const Vector2& v) const;
 
-        /**
-         * @brief Vector subtraction operator
-         * @param n Scalar
-         * @return Copy of vector subtracted by scalar
-         */
         Vector2 operator-(float n) const;
 
-        /**
-         * @brief Vector subtraction operator
-         * @param v Vector2 Object
-         * @return Copy of vector subtracted by scalar
-         */
         Vector2 operator-(const Vector2& v) const;
 
-        /**
-         * @brief Scalar multiplication operator
-         * @param n Scalar
-         * @return Copy of vector scaled by real number
-         */
         Vector2 operator*(float n) const;
 
         /**
@@ -107,68 +86,19 @@ namespace re {
          */
         float operator*(const Vector2& v) const;
 
-        /**
-         * @brief Vector division operations
-         * @param n Scalar
-         * @return Copy of vector scaled by 1 / n
-         */
         Vector2 operator/(float n) const;
 
-        /**
-         * @brief Vector addition and assigment operator
-         * @param n Scalar
-         * @return Reference of this vector
-         */
         Vector2& operator+=(float n);
 
-        /**
-         * @brief Vector addition and assigment operator
-         * @param v Vector2 object
-         * @return Reference of this vector
-         */
         Vector2& operator+=(const Vector2& v);
 
-        /**
-         * @brief Vector subtraction and assigment operator
-         * @param n Scalar
-         * @return Reference of this vector
-         */
         Vector2& operator-=(float n);
 
-        /**
-         * @brief Vector subtraction and assigment operator
-         * @param v Vector2 object
-         * @return Reference of this vector
-         */
         Vector2& operator-=(const Vector2& v);
 
-        /**
-         * @brief Vector multiplication and assigment operator
-         * @param n Scalar
-         * @return Reference of this vector
-         */
         Vector2& operator*=(float n);
 
-        /**
-         * @brief Vector division and assigment operator
-         * @param n Scala
-         * @return Reference of this vector scaled by 1 / n
-         */
         Vector2& operator/=(float n);
-
-        /**
-         * @brief Vector comparison bool
-         * @param v Vector2 object
-         * @return The two vectors are equal
-         */
-        bool operator==(const Vector2& v) const;
-
-        /**
-         * @brief Vector comparison bool
-         * @param v Vector2 object
-         * @return The two vectors are not equal
-         */
-        bool operator!=(const Vector2& v) const;
 
         /**
          *

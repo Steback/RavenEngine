@@ -38,6 +38,14 @@ namespace re {
         return rows[row];
     }
 
+    bool Matrix3::operator==(const Matrix3 &m) const {
+        return rows[0] == m[0] && rows[1] == m[1] && rows[2] == m[2];
+    }
+
+    bool Matrix3::operator!=(const Matrix3 &m) const {
+        return rows[0] != m[0] && rows[1] != m[1] && rows[2] != m[2];
+    }
+
     Matrix3 Matrix3::operator-() const {
         return {-rows[0], -rows[1], -rows[2]};
     }
@@ -99,14 +107,6 @@ namespace re {
 
     Matrix3 &Matrix3::operator/=(float n) {
         return *this = *this / n;
-    }
-
-    bool Matrix3::operator==(const Matrix3 &m) const {
-        return rows[0] == m[0] && rows[1] == m[1] && rows[2] == m[2];
-    }
-
-    bool Matrix3::operator!=(const Matrix3 &m) const {
-        return rows[0] != m[0] && rows[1] != m[1] && rows[2] != m[2];
     }
 
     float Matrix3::determinant() const {
