@@ -33,6 +33,18 @@ namespace re {
         z = cr * cp * sy - sr * sp * cy;
     }
 
+    bool Quaternion::operator==(const Quaternion &q) const {
+        return w == q.w && x == q.x && y == q.y && z == q.z;
+    }
+
+    bool Quaternion::operator!=(const Quaternion &q) const {
+        return w != q.w && x != q.x && y != q.y && z != q.z;
+    }
+
+    Quaternion Quaternion::operator-() const {
+        return {-w, -x, -y, -z};
+    }
+
     Quaternion Quaternion::operator+(float n) const {
         return {w + n, x + n, y + n, z + n};
     }

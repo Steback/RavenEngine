@@ -61,6 +61,8 @@ namespace re {
          */
         const Vector3& operator[](size_t row) const;
 
+        Matrix3 operator-() const;
+
         /**
          * @brief Matrix addition operator
          * @param m Matrix3 object

@@ -45,9 +45,15 @@ namespace re {
          * @param eulerAngles Vector 3 with yaw (Z), pitch (Y), roll (X)
          *
          * This conversion use the sequence Z-Y-X.
-         * <a href="https://www.wikiwand.com/en/Conversion_between_quaternions_and_Euler_angles#/Euler_angles_to_quaternion_conversion">Explication<a/>
+         * <a href="https://www.wikiwand.com/en/Conversion_between_quaternions_and_Euler_angles#/Euler_angles_to_quaternion_conversion"> Explain </a>
          */
         explicit Quaternion(const Vector3& eulerAngles);
+
+        bool operator==(const Quaternion& q) const;
+
+        bool operator!=(const Quaternion& q) const;
+
+        Quaternion operator-() const;
 
         /**
          * @brief Quaternion addition

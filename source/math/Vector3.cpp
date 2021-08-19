@@ -31,6 +31,10 @@ namespace re {
         return (&x)[index];
     }
 
+    Vector3 Vector3::operator-() const {
+        return {-x, -y, -z};
+    }
+
     Vector3 Vector3::operator+(float n) const {
         return {x + n, y + n, z + n};
     }

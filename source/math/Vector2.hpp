@@ -63,6 +63,8 @@ namespace re {
          */
         const float& operator[](unsigned int index) const;
 
+        Vector2 operator-() const;
+
         /**
          * @brief Vector addition operator
          * @param n Scalar

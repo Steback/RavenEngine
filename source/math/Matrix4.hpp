@@ -64,6 +64,8 @@ namespace re {
          */
         const Vector4& operator[](size_t row) const;
 
+        Matrix4 operator-() const;
+
         /**
          * @brief Matrix addition operator
          * @param m Matrix4 object

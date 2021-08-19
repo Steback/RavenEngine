@@ -38,6 +38,10 @@ namespace re {
         return rows[row];
     }
 
+    Matrix3 Matrix3::operator-() const {
+        return {-rows[0], -rows[1], -rows[2]};
+    }
+
     Matrix3 Matrix3::operator+(const Matrix3 &m) const {
         return {rows[0] + m[0], rows[1] + m[1], rows[2] + m[2]};
     }

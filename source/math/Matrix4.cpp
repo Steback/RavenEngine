@@ -41,6 +41,10 @@ namespace re {
         return rows[row];
     }
 
+    Matrix4 Matrix4::operator-() const {
+        return {-rows[0], -rows[1], -rows[2], -rows[3]};
+    }
+
     Matrix4 Matrix4::operator+(const Matrix4 &m) const {
         return {rows[0] + m[0], rows[1] + m[1], rows[2] + m[2], rows[3] + m[3]};
     }

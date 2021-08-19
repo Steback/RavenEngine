@@ -31,6 +31,10 @@ namespace re {
         return (&x)[index];
     }
 
+    Vector2 Vector2::operator-() const {
+        return {-x, -y};
+    }
+
     Vector2 Vector2::operator+(float n) const {
         return {x + n,  y + n};
     }
