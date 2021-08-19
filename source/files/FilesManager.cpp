@@ -1,6 +1,7 @@
 #include "FilesManager.hpp"
 
 #include "File.hpp"
+#include "utils/Macros.hpp"
 
 
 namespace re {
@@ -9,8 +10,11 @@ namespace re {
 
     FilesManager::FilesManager() = default;
 
-    void FilesManager::setupDefaultPaths(const std::filesystem::path& rootPath) {
-        std::filesystem::path root = rootPath;
+    void FilesManager::setupDefaultPaths() {
+        std::filesystem::path root = std::filesystem::current_path();
+
+        if (root.filename() == "samples" || root.filename() == "tests")
+            root = root.parent_path();
 
 #ifdef _WIN64
         if (root.filename() == "Release")
@@ -19,6 +23,9 @@ namespace re {
         if (root.filename() == "bin")
             root = root.parent_path();
 #endif
+
+        if (!std::filesystem::exists(root / "bin"))
+            RE_THROW_EX("Failed to setup root path");
 
         paths["root"] = root;
 

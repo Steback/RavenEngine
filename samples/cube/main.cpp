@@ -4,7 +4,7 @@
 
 
 int main() {
-    re::FilesManager::setupDefaultPaths(std::filesystem::current_path().parent_path());
+    re::FilesManager::setupDefaultPaths();
     re::Logger::setup();
 
     try {
