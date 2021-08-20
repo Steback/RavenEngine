@@ -33,8 +33,9 @@ namespace re {
         /**
          * @brief Add a new path for the search paths
          * @param name New path name
+         * @param create Create directory of path. By default is false
          */
-        static void addPath(const char* name);
+        static void addPath(const char* name, bool create = false);
 
         /**
          *

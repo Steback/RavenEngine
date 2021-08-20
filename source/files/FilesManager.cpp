@@ -29,15 +29,17 @@ namespace re {
 
         paths["root"] = root;
 
-        addPath("logs");
+        addPath("logs", true);
         addPath("assets");
         addPath("shaders");
         addPath("data");
         addPath("bin/shaders");
     }
 
-    void FilesManager::addPath(const char* name) {
+    void FilesManager::addPath(const char* name, bool create) {
         paths[name] = paths["root"] / name;
+
+        if (create) std::filesystem::create_directory(paths[name]);
     }
 
     std::filesystem::path FilesManager::getPath(const char* name) {
