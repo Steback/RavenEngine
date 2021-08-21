@@ -3,20 +3,8 @@
 
 namespace re {
 
-    Buffer::Buffer() = default;
-
-    Buffer::Buffer(VmaAllocator allocator) : allocator(allocator) {
-
-    }
-
-    Buffer::~Buffer() = default;
-
-    void Buffer::destroy() {
-        vmaDestroyBuffer(allocator, buffer, allocation);
-    }
-
-    void Buffer::allocateMemory(VkDeviceSize size_, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) {
-        size = size_;
+    Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage)
+            : allocator(allocator), size(size) {
         VkBufferCreateInfo bufferCreateInfo{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
         bufferCreateInfo.usage = usageFlags;
         bufferCreateInfo.size = size;
@@ -27,6 +15,10 @@ namespace re {
         allocationCreateInfo.usage = memoryUsage;
 
         vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationCreateInfo, &buffer, &allocation, nullptr);
+    }
+
+    Buffer::~Buffer() {
+        vmaDestroyBuffer(allocator, buffer, allocation);
     }
 
     void Buffer::map() {

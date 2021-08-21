@@ -13,15 +13,9 @@ namespace re {
 
     class Buffer {
     public:
-        Buffer();
-
-        explicit Buffer(VmaAllocator allocator);
+        Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage);
 
         ~Buffer();
-
-        void destroy();
-
-        void allocateMemory(VkDeviceSize size_, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage);
 
         void map();
 
