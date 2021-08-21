@@ -14,6 +14,7 @@
 namespace re {
 
     class Instance;
+    class Buffer;
 
     /**
      * @brief Vulkan Physical Device and Device
@@ -138,7 +139,27 @@ namespace re {
          *
          * @return Current window surface
          */
-        VkSurfaceKHR getSurface() const;
+        [[nodiscard]] VkSurfaceKHR getSurface() const;
+
+        /**
+         * Create a begin a single time command buffer
+         * @return Vulkan command buffer
+         */
+        VkCommandBuffer beginSingleTimeCommands();
+
+        /**
+         * End and destroy single time command buffer
+         * @param commandBuffer Vulkan command buffer with commands to submit
+         */
+        void endSingleTimeCommands(const VkCommandBuffer& commandBuffer);
+
+        /**
+         * Copy Buffer from other Buffer
+         * @param src Source buffer
+         * @param dst Destination buffer
+         * @param size Buffer size. Must be equal to both buffers
+         */
+        void copyBuffer(Buffer& src, Buffer& dst, VkDeviceSize size);
 
     private:
         /**
