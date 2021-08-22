@@ -1,7 +1,5 @@
 #include "Mesh.hpp"
 
-#include <utility>
-
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
 #include "render/Buffer.hpp"
@@ -36,12 +34,12 @@ namespace re {
     Mesh::~Mesh() = default;
 
     void Mesh::bind(VkCommandBuffer commandBuffer) {
-        VkBuffer buffers[] = { vertexBuffer.getBuffer() };
+        VkBuffer buffers[] = { vertexBuffer->getBuffer() };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
         if (hasIndexBuffer) {
-            vkCmdBindIndexBuffer(commandBuffer, indexBuffer.getBuffer(), 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
         }
     }
 
