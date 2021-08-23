@@ -52,6 +52,10 @@ namespace re {
          */
         std::shared_ptr<Mesh> addMesh(const tinygltf::Model& model, const tinygltf::Node& node);
 
+        std::shared_ptr<Model> getModel(uint32_t name);
+
+        std::shared_ptr<Mesh> getMesh(uint32_t name);
+
     private:
         std::shared_ptr<Device> device;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;

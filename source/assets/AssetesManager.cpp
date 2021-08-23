@@ -193,4 +193,12 @@ namespace re {
         return meshes[std::hash<std::string>()(node.name)] = std::make_shared<Mesh>(device, Mesh::Data{vertices, indices});
     }
 
+    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
+        return models[name];
+    }
+
+    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
+        return meshes[name];
+    }
+
 } // namespace re
