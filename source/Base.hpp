@@ -10,12 +10,10 @@
 #include "config/Config.hpp"
 #include "render/Renderer.hpp"
 #include "assets/AssetsManager.hpp"
+#include "render/RenderSystem.hpp"
 
 
 namespace re {
-
-    class Renderer;
-    class AssetsManager;
 
     /**
      * @brief Base class. this have all the engine's core functionalities

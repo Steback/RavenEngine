@@ -1,5 +1,5 @@
-#ifndef LITTLEVULKANENGINE_MESH_HPP
-#define LITTLEVULKANENGINE_MESH_HPP
+#ifndef RAVENENGINE_MESH_HPP
+#define RAVENENGINE_MESH_HPP
 
 
 #include <memory>
@@ -101,4 +101,4 @@ namespace re {
 } // namespace re
 
 
-#endif //LITTLEVULKANENGINE_MESH_HPP
+#endif //RAVENENGINE_MESH_HPP
