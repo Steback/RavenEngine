@@ -38,6 +38,12 @@ namespace re {
         explicit Matrix4(const Vector4 m[4]);
 
         /**
+         * @brief Constructor form pointer
+         * @param p C_style array of floats
+         */
+        explicit Matrix4(const float* p);
+
+        /**
          * @brief Copy constructor
          * @param m Matrix4 object
          */

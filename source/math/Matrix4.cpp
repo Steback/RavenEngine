@@ -29,6 +29,13 @@ namespace re {
         rows[3] = m[3];
     }
 
+    Matrix4::Matrix4(const float *p) {
+        rows[0] = {p[0], p[1], p[2], p[3]};
+        rows[1] = {p[4], p[5], p[6], p[7]};
+        rows[2] = {p[8], p[9], p[10], p[11]};
+        rows[3] = {p[12], p[13], p[14], p[15]};
+    }
+
     Matrix4::Matrix4(const Matrix4 &m) = default;
 
     Matrix4 &Matrix4::operator=(const Matrix4 &m) = default;

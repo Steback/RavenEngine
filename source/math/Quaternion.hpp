@@ -49,6 +49,12 @@ namespace re {
          */
         explicit Quaternion(const Vector3& eulerAngles);
 
+        /**
+         * @brief Construct Quaternion from pointer
+         * @param p C-Style array of size 4
+         */
+        Quaternion(const float* p);
+
         bool operator==(const Quaternion& q) const;
 
         bool operator!=(const Quaternion& q) const;

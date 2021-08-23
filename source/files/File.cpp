@@ -29,10 +29,6 @@ namespace re {
         return buffer;
     }
 
-    std::string File::getName() const {
-        return path.filename().string();
-    }
-
     void File::read(json &data) {
         std::ifstream file(path);
 
@@ -49,6 +45,20 @@ namespace re {
 
         file << std::setw(4) << data;
         file.close();
+    }
+
+    std::string File::getName() const {
+        std::string fileName = path.filename().string();
+        size_t idx = fileName.rfind('.');
+        return fileName.substr(0, idx);
+    }
+
+    std::string File::getPath() const {
+        return path.string();
+    }
+
+    std::string File::getExtension() const {
+        return path.extension().string();
     }
 
 } // namespace re

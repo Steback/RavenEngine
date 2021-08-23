@@ -33,7 +33,7 @@ namespace re {
          * @brief Constructor from C-Style array
          * @param p C-Style array of size 4
          */
-        explicit Vector4(const float p[4]);
+        explicit Vector4(const float* p);
 
         /**
          * @brief Copy constructor

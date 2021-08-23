@@ -2,8 +2,6 @@
 
 #include "GLFW/glfw3.h"
 
-#include "render/Renderer.hpp"
-
 
 namespace re {
 
@@ -12,6 +10,7 @@ namespace re {
         config.load();
 
         renderer = std::make_unique<Renderer>(appName, config);
+        assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
     }
 
     Base::~Base() = default;

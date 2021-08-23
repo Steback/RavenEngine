@@ -8,11 +8,14 @@
 #include "logs/Logs.hpp"
 #include "files/FilesManager.hpp"
 #include "config/Config.hpp"
+#include "render/Renderer.hpp"
+#include "assets/AssetsManager.hpp"
 
 
 namespace re {
 
     class Renderer;
+    class AssetsManager;
 
     /**
      * @brief Base class. this have all the engine's core functionalities
@@ -57,6 +60,7 @@ namespace re {
     protected:
         Config config;
         std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<AssetsManager> assetsManager;
     };
 
 } // namespace re

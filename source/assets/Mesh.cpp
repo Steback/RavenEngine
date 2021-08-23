@@ -18,12 +18,11 @@ namespace re {
             { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) },
             { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color) },
             { 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) },
-            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) },
+            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv0) },
+            { 4, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv1) },
+            { 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, joint0) },
+            { 6, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weight0) }
         };
-    }
-
-    bool Mesh::Vertex::operator==(const Mesh::Vertex &other) const {
-        return position == other.position && color == other.color && normal == other.normal && uv == other.uv;
     }
 
     Mesh::Mesh(std::shared_ptr<Device> device, const Data& data) : device(std::move(device)) {
@@ -49,6 +48,18 @@ namespace re {
         } else {
             vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
         }
+    }
+
+    uint32_t Mesh::getVertexCount() const {
+        return vertexCount;
+    }
+
+    uint32_t Mesh::getIndexCount() const {
+        return indexCount;
+    }
+
+    bool Mesh::isHasIndexBuffer() const {
+        return hasIndexBuffer;
     }
 
     void Mesh::createVertexBuffer(const std::vector<Vertex> &vertices) {

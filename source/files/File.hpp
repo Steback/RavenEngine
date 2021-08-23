@@ -34,12 +34,6 @@ namespace re {
         std::vector<uint32_t> readBytes();
 
         /**
-         *
-         * @return String with file name
-         */
-        [[nodiscard]] std::string getName() const;
-
-        /**
          * Read the file for json serialization
          * @param data nlohmann::json object
          */
@@ -50,6 +44,20 @@ namespace re {
          * @param data nlohmann::json object
          */
         void write(json& data);
+
+        /**
+         *
+         * @return File name without extension
+         */
+        [[nodiscard]] std::string getName() const;
+
+        /**
+         *
+         * @return Absolute path of file
+         */
+        [[nodiscard]] std::string getPath() const;
+
+        [[nodiscard]] std::string getExtension() const;
 
     private:
         std::filesystem::path path;

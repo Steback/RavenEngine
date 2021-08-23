@@ -7,8 +7,9 @@
 
 #include "vk_mem_alloc.h"
 
-#include "math/Vector3.hpp"
 #include "math/Vector2.hpp"
+#include "math/Vector3.hpp"
+#include "math/Vector4.hpp"
 #include "utils/NonCopyable.hpp"
 
 
@@ -26,12 +27,13 @@ namespace re {
          * @brief Vertex class
          */
         struct Vertex {
-            vec3 position;
-            vec3 color;
-            vec3 normal;
-            vec2 uv;
-
-            bool operator==(const Vertex &other) const;
+            vec3 position{};
+            vec3 color{};
+            vec3 normal{};
+            vec2 uv0{};
+            vec2 uv1{};
+            vec4 joint0{};
+            vec4 weight0{};
 
             /**
              *
@@ -76,17 +78,15 @@ namespace re {
          */
         void draw(VkCommandBuffer commandBuffer) const;
 
+        [[nodiscard]] uint32_t getVertexCount() const;
+
+        [[nodiscard]] uint32_t getIndexCount() const;
+
+        [[nodiscard]] bool isHasIndexBuffer() const;
+
     private:
-        /**
-         * @brief Create vertex buffer in GPU only use
-         * @param vertices vector of Vertex
-         */
         void createVertexBuffer(const std::vector<Vertex>& vertices);
 
-        /**
-         * @brief Create index buffer in GPU only use
-         * @param indices vector of unsigned int
-         */
         void createIndexBuffer(const std::vector<uint32_t>& indices);
 
     private:
