@@ -7,7 +7,11 @@ cmake-build-debug/
 cmake-build-release/
 
 ### Binaries ###
-bin/
+bin/samples
+bin/tests
+
+### Shaders ###
+*.spv
 
 ### Logs ###
 *.log

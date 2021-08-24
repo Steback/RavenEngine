@@ -25,8 +25,7 @@ namespace re {
          * assets,
          * logs,
          * data,
-         * shaders,
-         * bin/shaders
+         * shaders
          */
         static void setupDefaultPaths();
 
