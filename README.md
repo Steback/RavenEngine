@@ -14,6 +14,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) | 2.3.0 | 
 | [Catch2](https://github.com/catchorg/Catch2) | 2.13.7 | 
 | [TinyGLTF](https://github.com/syoyo/tinygltf) | 2.5.0 | 
+| [Glslang](https://github.com/KhronosGroup/glslang) | 11.5.0 | 
 
 ## Build
 ### Requirements
