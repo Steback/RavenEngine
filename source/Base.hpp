@@ -11,6 +11,7 @@
 #include "render/Renderer.hpp"
 #include "assets/AssetsManager.hpp"
 #include "render/RenderSystem.hpp"
+#include "scene/Scene.hpp"
 
 
 namespace re {
@@ -60,6 +61,7 @@ namespace re {
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<AssetsManager> assetsManager;
         std::unique_ptr<RenderSystem> renderSystem;
+        std::unique_ptr<Scene> scene;
     };
 
 } // namespace re
