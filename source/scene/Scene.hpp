@@ -17,6 +17,9 @@ namespace re {
 
     class Entity;
 
+    /**
+     * @brief Scene class
+     */
     class Scene : NonCopyable {
         friend Entity;
 

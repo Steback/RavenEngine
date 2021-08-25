@@ -9,8 +9,17 @@
 
 namespace re {
 
+    /**
+     * @brief Entity class
+     */
     class Entity : NonCopyable {
     public:
+        /**
+         *
+         * @param name Entity name
+         * @param id Valid entity id
+         * @param scene Pointer to scene that owns the entity
+         */
         Entity(std::string  name, id_t id, Scene* scene);
 
         ~Entity() override;

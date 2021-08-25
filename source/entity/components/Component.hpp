@@ -6,6 +6,10 @@ namespace re {
 
     class Entity;
 
+    /**
+     * @brief Base Component class
+     * Any Component that be used in an Entity need to inherit this class
+     */
     class Component {
         friend Entity;
 

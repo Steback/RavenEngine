@@ -11,10 +11,26 @@
 
 namespace re {
 
+    /**
+     * @brief Transform class
+     */
     class Transform : public  Component {
     public:
+        /**
+         *
+         * @param position
+         * @param scale
+         * @param angles Euler angles in radians
+         */
         Transform(const vec3& position, const vec3& scale, const vec3& angles);
 
+        /**
+         *
+         * @param position
+         * @param scale
+         * @param angles Euler angles in radians
+         * @param owner Valid pointer to entity that owns this component
+         */
         Transform(const vec3& position, const vec3& scale, const vec3& angles, Entity* owner);
 
         [[nodiscard]] Matrix4 getWorldMatrix() const;
