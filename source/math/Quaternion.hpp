@@ -53,7 +53,7 @@ namespace re {
          * @brief Construct Quaternion from pointer
          * @param p C-Style array of size 4
          */
-        Quaternion(const float* p);
+        explicit Quaternion(const float* p);
 
         bool operator==(const Quaternion& q) const;
 

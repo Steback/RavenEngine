@@ -41,7 +41,6 @@ if __name__ == "__main__":
 
     print("COMPILE SHADERS")
     for file in shadersDir.iterdir():
-        if not file.name.find(".spv"):
-            binFile = shadersDir / (file.name + '.spv')
-            print(file.name + " >> " + binFile.name)
-            os.system(str(glslc.absolute()) + ' ' + str(file.absolute()) + " -o " + str(binFile.absolute()))
+        binFile = shadersDir / (file.name + '.spv')
+        print(file.name + " >> " + binFile.name)
+        os.system(str(glslc.absolute()) + ' ' + str(file.absolute()) + " -o " + str(binFile.absolute()))

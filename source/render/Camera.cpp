@@ -1,7 +1,8 @@
 #include "Camera.hpp"
 
-#include <limits>
 #include <cmath>
+
+#include "math/Matrix3.hpp"
 
 
 namespace re {
@@ -29,10 +30,11 @@ namespace re {
 
     }
 
-    void Camera::setViewDirection(const vec3 &position, const vec3 &direction, const vec3 &up) {
-        const vec3 w{direction.normal()};
-        const vec3 u{w.cross(up).normal()};
-        const vec3 v{w.cross(u)};
+    void Camera::setViewDirection(const vec3 &position, const quat &direction) {
+        mat3 rotation = direction.getRotationMatrix();
+        const vec3 w{rotation[2]};
+        const vec3 u{rotation[0]};
+        const vec3 v{rotation[1]};
 
         view = mat4{1.f};
         view[0][0] = u.x;
@@ -47,11 +49,11 @@ namespace re {
         view[3][0] = -(u * position);
         view[3][1] = -(v * position);
         view[3][2] = -(w * position);
-
     }
 
+    // TODO: Implement Camera to look at
     void Camera::setViewTarget(const vec3 &position, const vec3 &target, const vec3 &up) {
-        setViewDirection(position, target - position, up);
+//        setViewDirection(position, target - position, up);
     }
 
     const Matrix4 &Camera::getProjection() const {

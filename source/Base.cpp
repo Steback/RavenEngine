@@ -32,6 +32,7 @@ namespace re {
     }
 
     void Base::update() {
+        renderSystem->setProjection(renderer->getAspectRatio());
         onUpdate();
     }
 

@@ -4,6 +4,7 @@
 
 #include "math/Vector3.hpp"
 #include "math/Matrix4.hpp"
+#include "math/Quaternion.hpp"
 
 
 namespace re {
@@ -12,6 +13,15 @@ namespace re {
      * @brief Camera render class
      */
     class Camera {
+    public:
+        /**
+         * @brief Camera Type
+         */
+        enum Type {
+            DIRECTION = 1,
+            LOOK_AT = 2
+        };
+
     public:
         Camera();
 
@@ -26,6 +36,7 @@ namespace re {
          */
         void setOrthographicProjection(float left, float right, float top, float bottom, float near, float far);
 
+        // TODO: Change camera direction to use Quaternions
         /**
          * @brief Define projection matrix as Perspective
          * @param fovy
@@ -38,10 +49,9 @@ namespace re {
         /**
          * @brief Set View to a specific direction
          * @param position
-         * @param direction
-         * @param up By default is {0, -1, 0}
+         * @param direction Quaternion with orientation
          */
-        void setViewDirection(const vec3& position, const vec3& direction, const vec3& up = {0.0f, -1.0f, 0.0f});
+        void setViewDirection(const vec3 &position, const quat &direction);
 
         /**
          * @brief Set view to look at a target
