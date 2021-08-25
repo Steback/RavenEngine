@@ -44,6 +44,15 @@ namespace re {
         return nodeMatrix;
     }
 
+    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout) {
+        for (auto& node : nodes) {
+            if (node.mesh) {
+                node.mesh->bind(commandBuffer);
+                node.mesh->draw(commandBuffer);
+            }
+        }
+    }
+
     Model::Node &Model::getNode(uint32_t index) {
         return nodes[index];
     }

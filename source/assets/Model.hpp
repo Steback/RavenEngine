@@ -7,6 +7,7 @@
 #include <string>
 
 #include "tiny_gltf.h"
+#include "vulkan/vulkan.h"
 
 #include "math/Matrix4.hpp"
 #include "math/Vector3.hpp"
@@ -62,6 +63,13 @@ namespace re {
          * @return Node matrix in world space. Multiply with the patent matrix
          */
         [[nodiscard]] Matrix4 getNodeMatrix(size_t index) const;
+
+        /**
+         *
+         * @param commandBuffer Command buffer in recording state
+         * @param layout Valid pipeline layout
+         */
+        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout);
 
         Node& getNode(uint32_t index);
 

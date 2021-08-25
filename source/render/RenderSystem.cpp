@@ -35,6 +35,7 @@ namespace re {
             auto entity = scene.getEntity(id);
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
+            meshRender.model->render(commandBuffer, pipeline->getLayout());
         }
     }
 
