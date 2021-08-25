@@ -14,4 +14,12 @@ namespace re {
         return entities[id] = std::make_shared<Entity>(name, id, this);
     }
 
+    entt::registry &Scene::getRegistry() {
+        return registry;
+    }
+
+    std::shared_ptr<Entity> Scene::getEntity(id_t id) {
+        return entities[id];
+    }
+
 } // namespace re

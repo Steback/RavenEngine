@@ -4,6 +4,10 @@
 
 #include "Device.hpp"
 #include "pipelines/GraphicsPipeline.hpp"
+#include "scene/Scene.hpp"
+#include "entity/Entity.hpp"
+#include "entity/components/Transform.hpp"
+#include "entity/components/MeshRender.hpp"
 
 
 namespace re {
@@ -24,8 +28,14 @@ namespace re {
 
     RenderSystem::~RenderSystem() = default;
 
-    void RenderSystem::renderEntities(VkCommandBuffer commandBuffer) {
+    void RenderSystem::renderScene(VkCommandBuffer commandBuffer, Scene& scene) {
         pipeline->bind(commandBuffer);
+
+        for (auto& id : scene.getRegistry().view<Transform, MeshRender>()) {
+            auto entity = scene.getEntity(id);
+            auto& transform = entity->getComponent<Transform>();
+            auto& meshRender = entity->getComponent<MeshRender>();
+        }
     }
 
 } // namespace re

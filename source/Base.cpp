@@ -39,7 +39,7 @@ namespace re {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
-        renderSystem->renderEntities(commandBuffer);
+        renderSystem->renderScene(commandBuffer, *scene);
 
         renderer->endSwapChainRenderPass(commandBuffer);
         renderer->endFrame();

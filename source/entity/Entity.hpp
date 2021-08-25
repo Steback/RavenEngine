@@ -54,7 +54,7 @@ namespace re {
 
     template<typename T, typename ...Args>
     T &Entity::addComponent(Args&& ...args) {
-        return scene->registry.emplace<T>(id, std::forward<Args>(args)...);
+        return scene->registry.emplace<T>(id, std::forward<Args>(args)..., this);
     }
 
     template<typename T>

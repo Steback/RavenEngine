@@ -32,6 +32,10 @@ namespace re {
          */
         std::shared_ptr<Entity> addEntity(const std::string& name);
 
+        entt::registry& getRegistry();
+
+        std::shared_ptr<Entity> getEntity(id_t id);
+
     private:
         entt::registry registry;
         std::unordered_map<id_t, std::shared_ptr<Entity>> entities;

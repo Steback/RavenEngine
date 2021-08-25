@@ -14,6 +14,7 @@ namespace re {
 
     class Device;
     class GraphicsPipeline;
+    class Scene;
 
     class RenderSystem : NonCopyable {
     public:
@@ -22,7 +23,7 @@ namespace re {
 
         ~RenderSystem() override;
 
-        void renderEntities(VkCommandBuffer commandBuffer);
+        void renderScene(VkCommandBuffer commandBuffer, Scene& scene);
 
     private:
         std::shared_ptr<Device> device;
