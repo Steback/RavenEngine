@@ -7,6 +7,7 @@ vulkan-loader/1.2.182
 vulkan-memory-allocator/2.3.0
 catch2/2.13.7
 tinygltf/2.5.0
+entt/3.8.1
 
 [generators]
 cmake
