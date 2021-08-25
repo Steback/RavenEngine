@@ -8,6 +8,13 @@ vulkan-memory-allocator/2.3.0
 catch2/2.13.7
 tinygltf/2.5.0
 entt/3.8.1
+imgui/1.84.1
 
 [generators]
 cmake
+
+[imports]
+./res/bindings, imgui_impl_glfw.cpp -> ../bindings
+./res/bindings, imgui_impl_glfw.h -> ../bindings
+./res/bindings, imgui_impl_vulkan.cpp -> ../bindings
+./res/bindings, imgui_impl_vulkan.h -> ../bindings

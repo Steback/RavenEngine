@@ -19,3 +19,6 @@ bin/tests
 ### Doxygen ###
 html/
 latex/
+
+### Bindings ###
+bindings/

@@ -15,6 +15,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [Catch2](https://github.com/catchorg/Catch2) | 2.13.7 | 
 | [TinyGLTF](https://github.com/syoyo/tinygltf) | 2.5.0 | 
 | [Entt](https://github.com/skypjack/entt) | 3.8.1 | 
+| [ImGui](https://github.com/ocornut/imgui) | 1.84.1 | 
 
 ## Build
 ### Requirements
