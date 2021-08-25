@@ -7,13 +7,15 @@
 
 #include "vulkan/vulkan.h"
 
+#include "utils/NonCopyable.hpp"
+
 
 namespace re {
 
     /**
      * @brief Shader wrapper class
      */
-    class Shader {
+    class Shader : NonCopyable {
     public:
         Shader() = default;
 
@@ -25,7 +27,7 @@ namespace re {
          */
         Shader(const VkDevice& device, const std::string& fileName, const VkShaderStageFlagBits& stage);
 
-        ~Shader();
+        ~Shader() override;
 
         /**
          *
@@ -39,7 +41,7 @@ namespace re {
         VkShaderStageFlagBits getStage();
 
     private:
-        void createShaderModule(const std::vector<uint32_t>& code, VkShaderModule& module);
+        void createShaderModule(const std::vector<uint32_t>& code);
 
     private:
         VkDevice device{};

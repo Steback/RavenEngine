@@ -9,7 +9,7 @@ namespace re {
 
     Shader::Shader(const VkDevice& device, const std::string& fileName, const VkShaderStageFlagBits& stage)
             : device(device), stage(stage) {
-        createShaderModule(FilesManager::getFile(fileName.c_str()).readBytes(), module);
+        createShaderModule(FilesManager::getFile(fileName.c_str()).readBytes());
     }
 
     Shader::~Shader() {
@@ -36,10 +36,10 @@ namespace re {
         return stage;
     }
 
-    void Shader::createShaderModule(const std::vector<uint32_t> &code, VkShaderModule &module) {
+    void Shader::createShaderModule(const std::vector<uint32_t> &code) {
         VkShaderModuleCreateInfo createInfo{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
         createInfo.codeSize = code.size();
-        createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+        createInfo.pCode = code.data();
 
         RE_VK_CHECK_RESULT(vkCreateShaderModule(device, &createInfo, nullptr, &module),
                            "Failed to create shader module");

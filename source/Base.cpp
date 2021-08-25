@@ -11,6 +11,7 @@ namespace re {
 
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
+        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", std::vector<VkPushConstantRange>{});
     }
 
     Base::~Base() = default;
@@ -36,6 +37,8 @@ namespace re {
     void Base::render() {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
+
+        renderSystem->renderEntities(commandBuffer);
 
         renderer->endSwapChainRenderPass(commandBuffer);
         renderer->endFrame();

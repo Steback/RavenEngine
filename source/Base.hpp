@@ -59,6 +59,7 @@ namespace re {
         Config config;
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<AssetsManager> assetsManager;
+        std::unique_ptr<RenderSystem> renderSystem;
     };
 
 } // namespace re

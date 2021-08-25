@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <memory>
 
 #include "Pipeline.hpp"
 #include "Shader.hpp"
@@ -42,8 +43,8 @@ namespace re {
         static void defaultConfigInfo(ConfigInfo& configInfo, VkRenderPass renderPass);
 
     private:
-        Shader vertexShader;
-        Shader fragmentShader;
+        std::unique_ptr<Shader> vertexShader;
+        std::unique_ptr<Shader> fragmentShader;
         VkDevice device{};
         VkPipeline pipeline{};
         VkPipelineLayout layout{};

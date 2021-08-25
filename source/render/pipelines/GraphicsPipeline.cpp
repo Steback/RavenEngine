@@ -18,12 +18,12 @@ namespace re  {
     GraphicsPipeline::GraphicsPipeline(VkDevice device, const std::string &vertName,
                                        const std::string &fragName, const Pipeline::ConfigInfo &configInfo,
                                        const std::vector<VkPushConstantRange>& constantRanges) : device(device) {
-        vertexShader = Shader(device, vertName, VK_SHADER_STAGE_VERTEX_BIT);
-        fragmentShader = Shader(device, fragName, VK_SHADER_STAGE_FRAGMENT_BIT);
+        vertexShader = std::make_unique<Shader>(device, vertName, VK_SHADER_STAGE_VERTEX_BIT);
+        fragmentShader = std::make_unique<Shader>(device, fragName, VK_SHADER_STAGE_FRAGMENT_BIT);
 
         VkPipelineShaderStageCreateInfo shaderStages[2] = {
-                vertexShader.getPipelineStageCreateInfo(),
-                fragmentShader.getPipelineStageCreateInfo()
+                vertexShader->getPipelineStageCreateInfo(),
+                fragmentShader->getPipelineStageCreateInfo()
         };
 
         auto bindingDescriptions = Mesh::Vertex::getBindingDescriptions();
