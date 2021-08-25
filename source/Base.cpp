@@ -12,7 +12,7 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
         scene = std::make_unique<Scene>();
-        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", std::vector<VkPushConstantRange>{});
+        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", *scene);
     }
 
     Base::~Base() = default;
@@ -39,7 +39,7 @@ namespace re {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
-        renderSystem->renderScene(commandBuffer, *scene);
+        renderSystem->renderScene(commandBuffer);
 
         renderer->endSwapChainRenderPass(commandBuffer);
         renderer->endFrame();

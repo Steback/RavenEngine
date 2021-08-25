@@ -8,6 +8,7 @@
 #include "vulkan/vulkan.h"
 
 #include "utils/NonCopyable.hpp"
+#include "Camera.hpp"
 
 
 namespace re {
@@ -18,14 +19,15 @@ namespace re {
 
     class RenderSystem : NonCopyable {
     public:
-        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,
-                     const std::vector<VkPushConstantRange>& pushConstantsRanges);
+        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene);
 
         ~RenderSystem() override;
 
-        void renderScene(VkCommandBuffer commandBuffer, Scene& scene);
+        void renderScene(VkCommandBuffer commandBuffer);
 
     private:
+        Scene& scene;
+        Camera camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
     };

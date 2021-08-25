@@ -12,9 +12,11 @@
 
 namespace re {
 
-    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,
-                               const std::vector<VkPushConstantRange>& pushConstantsRanges)
-            : device(std::move(device)) {
+    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene)
+            : device(std::move(device)), scene(scene) {
+
+        auto cameraEntity = scene.addEntity("Camera");
+        cameraEntity->addComponent<Transform>(vec3{}, vec3{}, vec3{});
 
         Pipeline::ConfigInfo configInfo;
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);
@@ -22,13 +24,13 @@ namespace re {
                 this->device->getDevice(),
                 shadersName + ".vert.spv", shadersName + ".frag.spv",
                 configInfo,
-                pushConstantsRanges
+                std::vector<VkPushConstantRange>{}
         );
     }
 
     RenderSystem::~RenderSystem() = default;
 
-    void RenderSystem::renderScene(VkCommandBuffer commandBuffer, Scene& scene) {
+    void RenderSystem::renderScene(VkCommandBuffer commandBuffer) {
         pipeline->bind(commandBuffer);
 
         for (auto& id : scene.getRegistry().view<Transform, MeshRender>()) {
