@@ -81,4 +81,12 @@ namespace re {
         camera.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
     }
 
+    Camera &RenderSystem::getCamera() {
+        return camera;
+    }
+
+    std::shared_ptr<Entity> RenderSystem::getCameraEntity() {
+        return cameraEntity;
+    }
+
 } // namespace re

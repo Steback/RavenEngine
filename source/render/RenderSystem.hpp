@@ -38,6 +38,10 @@ namespace re {
          */
         void setProjection(float aspect);
 
+        Camera& getCamera();
+
+        std::shared_ptr<Entity> getCameraEntity();
+
     private:
         Scene& scene;
         Camera camera;
