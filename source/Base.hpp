@@ -38,6 +38,13 @@ namespace re {
         virtual void onUpdate() = 0;
 
         /**
+         * @brief Use for Application to draw ImGui stuff when the engine render it.
+         *
+         * Pure virtual method, will be implemented by the Application/Game class.
+         */
+        virtual void onDrawImGui()  = 0;
+
+        /**
          * @brief Main loop, execute all update and render functionalities
          */
         void loop();

@@ -44,7 +44,7 @@ namespace re {
 
         renderer->newImGuiFrame();
 
-        ImGui::ShowDemoWindow();
+        onDrawImGui();
 
         renderer->renderImGui(commandBuffer);
 

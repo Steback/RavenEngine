@@ -17,3 +17,7 @@ Cube::~Cube() = default;
 void Cube::onUpdate() {
     renderSystem->setView();
 }
+
+void Cube::onDrawImGui() {
+   ImGui::ShowDemoWindow();
+}

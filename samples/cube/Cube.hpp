@@ -13,6 +13,8 @@ public:
 
     void onUpdate() override;
 
+    void onDrawImGui() override;
+
 private:
 
 };
