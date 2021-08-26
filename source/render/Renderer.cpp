@@ -5,6 +5,7 @@
 #include "Device.hpp"
 #include "SwapChain.hpp"
 #include "config/Config.hpp"
+#include "ui/ImGuiRender.hpp"
 
 
 namespace re {
@@ -32,6 +33,8 @@ namespace re {
 
         swapChain = std::make_unique<SwapChain>(device, window->getExtent());
         createCommandBuffers();
+
+        imgui = std::make_unique<ui::ImGuiRender>(device, *swapChain, window);
     }
 
     Renderer::~Renderer() {
@@ -142,6 +145,14 @@ namespace re {
         return swapChain->getExtentAspectRatio();
     }
 
+    void Renderer::newImGuiFrame() {
+        imgui->newFrame();
+    }
+
+    void Renderer::renderImGui(VkCommandBuffer commandBuffer) {
+        imgui->render(commandBuffer);
+    }
+
     void Renderer::createCommandBuffers() {
         commandBuffers.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
 
@@ -178,6 +189,8 @@ namespace re {
         if (!oldSwapChain->compareFormats(*swapChain)) {
             RE_THROW_EX("Swap chain image(or depth) format has changed!");
         }
+
+        imgui->resize(*swapChain);
     }
 
 } // namespace re

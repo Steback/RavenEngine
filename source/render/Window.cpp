@@ -39,6 +39,10 @@ namespace re {
         return framebufferResized;
     }
 
+    GLFWwindow *Window::getHandle() const {
+        return window;
+    }
+
     void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) {
         auto win = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
         win->framebufferResized = true;

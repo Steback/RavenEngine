@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include "imgui.h"
+
 #include "utils/NonCopyable.hpp"
 #include "logs/Logs.hpp"
 #include "files/FilesManager.hpp"

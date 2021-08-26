@@ -52,39 +52,21 @@ namespace re {
         /**
          *
          * @param index Current image index
-         * @return The current framebuffer according the image index
          */
         [[nodiscard]] VkFramebuffer getFrameBuffer(uint32_t index) const;
 
-        /**
-         *
-         * @return Render Pass in usage by SwapChain
-         */
         [[nodiscard]] VkRenderPass getRenderPass() const;
 
         /**
          *
          * @param index Current image index
-         * @return the current Image View according the image index
          */
         [[nodiscard]] VkImageView getImageView(uint32_t index) const;
 
-        /**
-         *
-         * @return Current SwapChain images count
-         */
         [[nodiscard]] size_t getImageCount() const;
 
-        /**
-         *
-         * @return Current SwapChain format
-         */
         [[nodiscard]] VkFormat getFormat() const;
 
-        /**
-         *
-         * @return Current SwapChain extent
-         */
         [[nodiscard]] VkExtent2D getExtent() const;
 
         /**
@@ -114,6 +96,10 @@ namespace re {
          * @return bool value if old and new SwapChain have the same formats
          */
         [[nodiscard]] bool compareFormats(const SwapChain& other) const;
+
+        [[nodiscard]] VkQueue getGraphicsQueue() const;
+
+        [[nodiscard]] VkQueue getPresentQueue() const;
 
         /**
          * @brief Query the surface SupportDetails for the SwapChain

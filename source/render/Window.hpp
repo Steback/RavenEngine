@@ -55,6 +55,8 @@ namespace re {
          */
         void resetWindowResizedFlag();
 
+        [[nodiscard]] GLFWwindow* getHandle() const;
+
     private:
         /**
          * @brief Window resize callback to GLFW

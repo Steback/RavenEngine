@@ -13,6 +13,7 @@ set(COMPILE_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/tools/compileShaders.py ${CMAKE_C
 execute_process(COMMAND python ${COMPILE_SCRIPT})
 
 ### Bindings ###
+include_directories(bindings)
 file(GLOB_RECURSE IMGUI_BINDINGS bindings/*.cpp)
 
 ### Source ###

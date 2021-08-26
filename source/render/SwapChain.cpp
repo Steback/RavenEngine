@@ -139,6 +139,14 @@ namespace re {
         return other.depthFormat == depthFormat && other.format == format;
     }
 
+    VkQueue SwapChain::getPresentQueue() const {
+        return presentQueue;
+    }
+
+    VkQueue SwapChain::getGraphicsQueue() const {
+        return graphicsQueue;
+    }
+
     SwapChain::SupportDetails SwapChain::querySurfaceSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
         SupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);

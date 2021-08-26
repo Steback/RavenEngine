@@ -79,7 +79,7 @@ namespace re {
          * @param commandBuffer Command buffer with all recorded commands
          * @param queue Queue for submit the commands. By default is a Transfer queue.
          */
-        void endSimpleTimeCommand(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE);
+        void endSimpleTimeCommand(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE, VkCommandPool commandPool = VK_NULL_HANDLE);
 
         /**
          *

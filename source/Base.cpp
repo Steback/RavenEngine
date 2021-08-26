@@ -42,6 +42,12 @@ namespace re {
 
         renderSystem->renderScene(commandBuffer);
 
+        renderer->newImGuiFrame();
+
+        ImGui::ShowDemoWindow();
+
+        renderer->renderImGui(commandBuffer);
+
         renderer->endSwapChainRenderPass(commandBuffer);
         renderer->endFrame();
     }

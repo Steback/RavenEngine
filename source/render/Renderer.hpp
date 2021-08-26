@@ -13,6 +13,10 @@
 
 namespace re {
 
+    namespace ui {
+        class ImGuiRender;
+    }
+
     class Window;
     class Config;
     class Instance;
@@ -102,6 +106,17 @@ namespace re {
          */
         [[nodiscard]] float getAspectRatio() const;
 
+        /**
+         * @brief Begin new ImGui frame
+         */
+        void newImGuiFrame();
+
+        /**
+         *
+         * @param commandBuffer Valid command buffer in recording state
+         */
+        void renderImGui(VkCommandBuffer commandBuffer);
+
     private:
         /**
          * @brief Create command buffers
@@ -133,6 +148,8 @@ namespace re {
         uint32_t imageIndex{};
         int currentFrameIndex{0};
         bool isFrameStarted{false};
+
+        std::shared_ptr<ui::ImGuiRender> imgui;
     };
 
 } // namespace re

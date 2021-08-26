@@ -108,7 +108,7 @@ namespace re {
         return commandBuffer;
     }
 
-    void Device::endSimpleTimeCommand(VkCommandBuffer commandBuffer, VkQueue queue) {
+    void Device::endSimpleTimeCommand(VkCommandBuffer commandBuffer, VkQueue queue, VkCommandPool commandPool) {
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
@@ -116,9 +116,9 @@ namespace re {
         submitInfo.pCommandBuffers = &commandBuffer;
 
         vkQueueSubmit((queue ? queue : transferQueue), 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(transferQueue);
+        vkQueueWaitIdle((queue ? queue : transferQueue));
 
-        vkFreeCommandBuffers(device, transferCmdPool, 1, &commandBuffer);
+        vkFreeCommandBuffers(device, (commandPool ? commandPool : transferCmdPool), 1, &commandBuffer);
     }
 
     void Device::getGraphicsQueue(VkQueue &queue) {
