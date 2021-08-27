@@ -34,6 +34,12 @@ namespace re {
         std::vector<uint32_t> readBytes();
 
         /**
+         * @brief Read the file without binary mode
+         * @return Vector of char whit file content
+         */
+        std::vector<char> read();
+
+        /**
          * Read the file for json serialization
          * @param data nlohmann::json object
          */
@@ -46,10 +52,16 @@ namespace re {
         void write(json& data);
 
         /**
+         * Write data to binary file
+         * @param binary
+         */
+        void write(const std::vector<uint32_t>& binary);
+
+        /**
          *
          * @return File name without extension
          */
-        [[nodiscard]] std::string getName() const;
+        [[nodiscard]] std::string getName(bool extension = false) const;
 
         /**
          *
@@ -58,6 +70,8 @@ namespace re {
         [[nodiscard]] std::string getPath() const;
 
         [[nodiscard]] std::string getExtension() const;
+
+        void setPath(std::filesystem::path path_);
 
     private:
         std::filesystem::path path;

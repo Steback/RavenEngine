@@ -2,10 +2,14 @@
 
 #include "GLFW/glfw3.h"
 
+#include "render/pipelines/Shader.hpp"
+
 
 namespace re {
 
     Base::Base(const std::string& appName) {
+        Shader::compileShaders();
+
         config = Config("config.json");
         config.load();
 
