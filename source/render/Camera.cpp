@@ -30,12 +30,17 @@ namespace re {
 
     }
 
-    void Camera::setViewDirection(const vec3 &position, const quat &direction) {
-        mat3 rotation = direction.getRotationMatrix();
-        const vec3 w{rotation[2]};
-        const vec3 u{rotation[0]};
-        const vec3 v{rotation[1]};
-
+    // TODO: Check for use Quaternions in View Matrix
+    void Camera::setViewDirection(const vec3 &position, const vec3 &rotation) {
+        const float c3 = std::cos(rotation.z);
+        const float s3 = std::sin(rotation.z);
+        const float c2 = std::cos(rotation.x);
+        const float s2 = std::sin(rotation.x);
+        const float c1 = std::cos(rotation.y);
+        const float s1 = std::sin(rotation.y);
+        const vec3 u{(c1 * c3 + s1 * s2 * s3), (c2 * s3), (c1 * s2 * s3 - c3 * s1)};
+        const vec3 v{(c3 * s1 * s2 - c1 * s3), (c2 * c3), (c1 * c3 * s2 + s1 * s3)};
+        const vec3 w{(c2 * s1), (-s2), (c1 * c2)};
         view = mat4{1.f};
         view[0][0] = u.x;
         view[1][0] = u.y;

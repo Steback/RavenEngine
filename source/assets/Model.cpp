@@ -1,8 +1,29 @@
 #include "Model.hpp"
 
+#include <unordered_map>
+
 #include "AssetsManager.hpp"
 #include "math/Matrix3.hpp"
+#include "utils/Utils.hpp"
+#include "utils/Macros.hpp"
 
+
+namespace std {
+
+    template <>
+    struct hash<re::Mesh::Vertex> {
+        size_t operator()(re::Mesh::Vertex const &vertex) const {
+            size_t seed = 0;
+            hash<float> hasher;
+            re::hashCombine(seed, hasher(vertex.position.x), hasher(vertex.position.y), hasher(vertex.position.z));
+            re::hashCombine(seed, hasher(vertex.color.x), hasher(vertex.color.y), hasher(vertex.color.z));
+            re::hashCombine(seed, hasher(vertex.normal.x), hasher(vertex.normal.y), hasher(vertex.normal.z));
+            re::hashCombine(seed, hasher(vertex.uv0.x), hasher(vertex.uv0.y));
+            return seed;
+        }
+    };
+
+}  // namespace std
 
 namespace re {
 
@@ -45,12 +66,9 @@ namespace re {
     }
 
     void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout) {
-        for (auto& node : nodes) {
-            if (node.mesh) {
-                node.mesh->bind(commandBuffer);
-                node.mesh->draw(commandBuffer);
-            }
-        }
+        // TODO: Implement render for GLTF2 modle
+        mesh->bind(commandBuffer);
+        mesh->draw(commandBuffer);
     }
 
     Model::Node &Model::getNode(uint32_t index) {
@@ -95,6 +113,54 @@ namespace re {
         for (auto& childrenIndex : node.children) {
             loadNode(model, static_cast<int32_t>(newNode.index), model.nodes[childrenIndex], childrenIndex);
         }
+    }
+
+    Model::Model(AssetsManager* assetsManager, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes) {
+        Mesh::Data data;
+        std::unordered_map<Mesh::Vertex, uint32_t> uniqueVertices{};
+        for (const auto& shape : shapes) {
+            for (const auto& index : shape.mesh.indices) {
+                Mesh::Vertex vertex{};
+
+                if (index.vertex_index >= 0) {
+                    vertex.position = {
+                            attrib.vertices[3 * index.vertex_index + 0],
+                            attrib.vertices[3 * index.vertex_index + 1],
+                            attrib.vertices[3 * index.vertex_index + 2],
+                            };
+
+                    vertex.color = {
+                            attrib.colors[3 * index.vertex_index + 0],
+                            attrib.colors[3 * index.vertex_index + 1],
+                            attrib.colors[3 * index.vertex_index + 2],
+                            };
+                }
+
+                if (index.normal_index >= 0) {
+                    vertex.normal = {
+                            attrib.normals[3 * index.normal_index + 0],
+                            attrib.normals[3 * index.normal_index + 1],
+                            attrib.normals[3 * index.normal_index + 2],
+                            };
+                }
+
+                if (index.texcoord_index >= 0) {
+                    vertex.uv0 = {
+                            attrib.texcoords[2 * index.texcoord_index + 0],
+                            attrib.texcoords[2 * index.texcoord_index + 1],
+                            };
+                }
+
+                if (uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = CAST_U32(data.vertices.size());
+                    data.vertices.push_back(vertex);
+                }
+
+                data.indices.push_back(uniqueVertices[vertex]);
+            }
+        }
+
+        mesh = assetsManager->addMesh(shapes[0].name, data);
     }
 
 } // namespace re

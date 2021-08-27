@@ -77,29 +77,47 @@ namespace re {
     }
 
     Matrix4 Matrix4::operator*(const Matrix4 &m) const {
-        return {
-            {
-                rows[0][0] * m[0][0] + rows[0][1] * m[1][0] + rows[0][2] * m[2][0] + rows[0][3] * m[3][0],
-                rows[0][0] * m[0][1] + rows[0][1] * m[1][1] + rows[0][2] * m[2][1] + rows[0][3] * m[3][1],
-                rows[0][0] * m[0][2] + rows[0][1] * m[1][2] + rows[0][2] * m[2][2] + rows[0][3] * m[3][2],
-                rows[0][0] * m[0][3] + rows[0][1] * m[1][3] + rows[0][2] * m[2][3] + rows[0][3] * m[3][3]
-            }, {
-                rows[1][0] * m[0][0] + rows[1][1] * m[1][0] + rows[1][2] * m[2][0] + rows[1][3] * m[3][0],
-                rows[1][0] * m[0][1] + rows[1][1] * m[1][1] + rows[1][2] * m[2][1] + rows[1][3] * m[3][1],
-                rows[1][0] * m[0][2] + rows[1][1] * m[1][2] + rows[1][2] * m[2][2] + rows[1][3] * m[3][2],
-                rows[1][0] * m[0][3] + rows[1][1] * m[1][3] + rows[1][2] * m[2][3] + rows[1][3] * m[3][3]
-            }, {
-                rows[2][0] * m[0][0] + rows[2][1] * m[1][0] + rows[2][2] * m[2][0] + rows[2][3] * m[3][0],
-                rows[2][0] * m[0][1] + rows[2][1] * m[1][1] + rows[2][2] * m[2][1] + rows[2][3] * m[3][1],
-                rows[2][0] * m[0][2] + rows[2][1] * m[1][2] + rows[2][2] * m[2][2] + rows[2][3] * m[3][2],
-                rows[2][0] * m[0][3] + rows[2][1] * m[1][3] + rows[2][2] * m[2][3] + rows[2][3] * m[3][3]
-            }, {
-                rows[3][0] * m[0][0] + rows[3][1] * m[1][0] + rows[3][2] * m[2][0] + rows[3][3] * m[3][0],
-                rows[3][0] * m[0][1] + rows[3][1] * m[1][1] + rows[3][2] * m[2][1] + rows[3][3] * m[3][1],
-                rows[3][0] * m[0][2] + rows[3][1] * m[1][2] + rows[3][2] * m[2][2] + rows[3][3] * m[3][2],
-                rows[3][0] * m[0][3] + rows[3][1] * m[1][3] + rows[3][2] * m[2][3] + rows[3][3] * m[3][3]
-            }
-        };
+        // TODO: I don't understand why GML use this method and how it works...
+        const vec4 srcA0 = rows[0];
+        const vec4 srcA1 = rows[1];
+        const vec4 srcA2 = rows[2];
+        const vec4 srcA3 = rows[3];
+
+        const vec4 srcB0 = m[0];
+        const vec4 srcB1 = m[1];
+        const vec4 srcB2 = m[2];
+        const vec4 srcB3 = m[3];
+
+        mat4 Result;
+        Result[0] = srcA0 * srcB0[0] + srcA1 * srcB0[1] + srcA2 * srcB0[2] + srcA3 * srcB0[3];
+        Result[1] = srcA0 * srcB1[0] + srcA1 * srcB1[1] + srcA2 * srcB1[2] + srcA3 * srcB1[3];
+        Result[2] = srcA0 * srcB2[0] + srcA1 * srcB2[1] + srcA2 * srcB2[2] + srcA3 * srcB2[3];
+        Result[3] = srcA0 * srcB3[0] + srcA1 * srcB3[1] + srcA2 * srcB3[2] + srcA3 * srcB3[3];
+
+        return Result;
+//        return {
+//            {
+//                rows[0][0] * m[0][0] + rows[0][1] * m[1][0] + rows[0][2] * m[2][0] + rows[0][3] * m[3][0],
+//                rows[0][0] * m[0][1] + rows[0][1] * m[1][1] + rows[0][2] * m[2][1] + rows[0][3] * m[3][1],
+//                rows[0][0] * m[0][2] + rows[0][1] * m[1][2] + rows[0][2] * m[2][2] + rows[0][3] * m[3][2],
+//                rows[0][0] * m[0][3] + rows[0][1] * m[1][3] + rows[0][2] * m[2][3] + rows[0][3] * m[3][3]
+//            }, {
+//                rows[1][0] * m[0][0] + rows[1][1] * m[1][0] + rows[1][2] * m[2][0] + rows[1][3] * m[3][0],
+//                rows[1][0] * m[0][1] + rows[1][1] * m[1][1] + rows[1][2] * m[2][1] + rows[1][3] * m[3][1],
+//                rows[1][0] * m[0][2] + rows[1][1] * m[1][2] + rows[1][2] * m[2][2] + rows[1][3] * m[3][2],
+//                rows[1][0] * m[0][3] + rows[1][1] * m[1][3] + rows[1][2] * m[2][3] + rows[1][3] * m[3][3]
+//            }, {
+//                rows[2][0] * m[0][0] + rows[2][1] * m[1][0] + rows[2][2] * m[2][0] + rows[2][3] * m[3][0],
+//                rows[2][0] * m[0][1] + rows[2][1] * m[1][1] + rows[2][2] * m[2][1] + rows[2][3] * m[3][1],
+//                rows[2][0] * m[0][2] + rows[2][1] * m[1][2] + rows[2][2] * m[2][2] + rows[2][3] * m[3][2],
+//                rows[2][0] * m[0][3] + rows[2][1] * m[1][3] + rows[2][2] * m[2][3] + rows[2][3] * m[3][3]
+//            }, {
+//                rows[3][0] * m[0][0] + rows[3][1] * m[1][0] + rows[3][2] * m[2][0] + rows[3][3] * m[3][0],
+//                rows[3][0] * m[0][1] + rows[3][1] * m[1][1] + rows[3][2] * m[2][1] + rows[3][3] * m[3][1],
+//                rows[3][0] * m[0][2] + rows[3][1] * m[1][2] + rows[3][2] * m[2][2] + rows[3][3] * m[3][2],
+//                rows[3][0] * m[0][3] + rows[3][1] * m[1][3] + rows[3][2] * m[2][3] + rows[3][3] * m[3][3]
+//            }
+//        };
     }
 
     Matrix4 Matrix4::operator/(float n) const {

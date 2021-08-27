@@ -7,6 +7,7 @@
 #include <string>
 
 #include "tiny_gltf.h"
+#include "external/tiny_obj_loader.h"
 #include "vulkan/vulkan.h"
 
 #include "math/Matrix4.hpp"
@@ -50,10 +51,17 @@ namespace re {
     public:
         /**
          * @brief Default constructor. Create Model object from GLTF2 file
-         * @param Pointer to Assets Manager
+         * @param assetsManager Pointer to Assets Manager
          * @param model TinyGLTF model loaded
          */
         Model(AssetsManager* assetsManager, const tinygltf::Model &model);
+
+        /**
+         *
+         * @param assetsManager Pointer to Assets Manager
+         * @param shapes Vector of TinyObj shapes
+         */
+        Model(AssetsManager* assetsManager, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes);
 
         ~Model();
 
@@ -77,6 +85,7 @@ namespace re {
         void loadNode(const tinygltf::Model& model, int32_t parentIndex, const tinygltf::Node& node, uint32_t nodeIndex);
 
     private:
+        std::shared_ptr<Mesh> mesh;
         std::vector<Node> nodes;
         AssetsManager* assetsManager{};
     };

@@ -47,11 +47,11 @@ namespace re {
         void setPerspectiveProjection(float fovy, float aspect, float near, float far);
 
         /**
-         * @brief Set View to a specific direction
+         * @brief Set View to a specific rotation
          * @param position
-         * @param direction Quaternion with orientation
+         * @param rotation Quaternion with orientation
          */
-        void setViewDirection(const vec3 &position, const quat &direction);
+        void setViewDirection(const vec3 &position, const vec3 &rotation);
 
         /**
          * @brief Set view to look at a target

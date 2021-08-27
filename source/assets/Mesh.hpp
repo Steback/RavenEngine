@@ -28,6 +28,7 @@ namespace re {
          */
         struct Vertex {
             vec3 position{};
+            vec3 color{};
             vec3 normal{};
             vec2 uv0{};
             vec2 uv1{};
@@ -45,6 +46,8 @@ namespace re {
              * @return Vector with the Vulkan Input Attributes Description of Vertex
              */
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
+
+            bool operator==(const Vertex &other) const;
         };
 
         /**

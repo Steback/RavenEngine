@@ -69,7 +69,7 @@ namespace re {
         auto& transform = cameraEntity->getComponent<Transform>();
         switch (type) {
             case Camera::DIRECTION:
-                camera.setViewDirection(transform.position, transform.rotation);
+                camera.setViewDirection(transform.position, transform.eulerAngles);
                 break;
             case Camera::LOOK_AT:
                 // TODO: Implement look at Camera
