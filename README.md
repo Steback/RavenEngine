@@ -17,6 +17,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [Entt](https://github.com/skypjack/entt) | 3.8.1 | 
 | [ImGuiRender](https://github.com/ocornut/imgui) | 1.84.1 | 
 | [Shaderc](https://github.com/google/shaderc) | 2021.1 | 
+| [CLI11](https://github.com/CLIUtils/CLI11) | 2.0.0 | 
 
 ## Build
 ### Requirements

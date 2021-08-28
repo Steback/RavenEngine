@@ -10,6 +10,7 @@ tinygltf/2.5.0
 entt/3.8.1
 imgui/1.84.1
 shaderc/2021.1
+cli11/2.0.0
 
 [generators]
 cmake
