@@ -3,7 +3,11 @@
 #include "Cube.hpp"
 
 
-int main() {
+int main(int argc, char** arg) {
+    CLI::App app("Raven Engine CLI options");
+    re::Cli::setupOptions(app);
+    CLI11_PARSE(app, argc, arg);
+
     re::FilesManager::setupDefaultPaths();
     re::Logger::setup();
 

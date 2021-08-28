@@ -5,6 +5,9 @@
 #include <memory>
 
 #include "imgui.h"
+#include "CLI/App.hpp"
+#include "CLI/Formatter.hpp"
+#include "CLI/Config.hpp"
 
 #include "utils/NonCopyable.hpp"
 #include "logs/Logs.hpp"
@@ -14,6 +17,7 @@
 #include "assets/AssetsManager.hpp"
 #include "render/RenderSystem.hpp"
 #include "scene/Scene.hpp"
+#include "config/Cli.hpp"
 
 
 namespace re {
