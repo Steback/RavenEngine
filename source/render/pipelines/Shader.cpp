@@ -50,20 +50,24 @@ namespace re {
     void Shader::compileShaders() {
         for (auto& filePath : std::filesystem::directory_iterator(FilesManager::getPath("shaders"))) {
             if (filePath.path().extension() != ".spv") {
-                File file(filePath.path());
-
-                shaderc_shader_kind kind = getKind(file.getExtension());
-
-                // Preprocessing
-                auto preprocessed = preprocessShader(file.getName(), kind, file.read().data());
-
-                // Compiling
-                auto binary = compile(file.getName(), kind, preprocessed, true);
-
-                file.setPath(file.getPath() + ".spv");
-                file.write(binary);
+                compileShader(filePath.path());
             }
         }
+    }
+
+    void Shader::compileShader(const std::string &fileName) {
+        File file(fileName);
+
+        shaderc_shader_kind kind = getKind(file.getExtension());
+
+        // Preprocessing
+        auto preprocessed = preprocessShader(file.getName(), kind, file.read().data());
+
+        // Compiling
+        auto binary = compile(file.getName(), kind, preprocessed, true);
+
+        file.setPath(file.getPath() + ".spv");
+        file.write(binary);
     }
 
     std::string Shader::preprocessShader(const std::string& sourceName, shaderc_shader_kind kind, const std::string& source) {

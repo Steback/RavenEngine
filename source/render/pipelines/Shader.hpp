@@ -47,6 +47,12 @@ namespace re {
         static void compileShaders();
 
         /**
+         * @brief Compile shader and save it in SPIR-V format in "shaders" directory
+         * @param fileName
+         */
+        static void compileShader(const std::string& fileName);
+
+        /**
          *
          * @param sourceName
          * @param kind
