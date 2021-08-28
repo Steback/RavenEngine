@@ -20,8 +20,9 @@ namespace re {
     RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene)
             : device(std::move(device)), scene(scene) {
 
-        cameraEntity = scene.addEntity("Camera");
-        cameraEntity->addComponent<Transform>(vec3{}, vec3{}, vec3{});
+        camera = scene.addEntity("Camera");
+        camera->addComponent<Transform>(vec3{}, vec3{}, vec3{});
+        camera->addComponent<Camera>();
 
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -41,10 +42,10 @@ namespace re {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer) {
+        auto& cameraComponent = camera->getComponent<Camera>();
+        mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
+
         pipeline->bind(commandBuffer);
-
-        mat4 viewProj = camera.getProjection() * camera.getView();
-
         for (auto& id : scene.getRegistry().view<Transform, MeshRender>()) {
             auto entity = scene.getEntity(id);
             auto& transform = entity->getComponent<Transform>();
@@ -66,10 +67,11 @@ namespace re {
     }
 
     void RenderSystem::setView(Camera::Type type) {
-        auto& transform = cameraEntity->getComponent<Transform>();
+        auto& transform = camera->getComponent<Transform>();
+        auto& cameraComponent = camera->getComponent<Camera>();
         switch (type) {
             case Camera::DIRECTION:
-                camera.setViewDirection(transform.position, transform.eulerAngles);
+                cameraComponent.setViewDirection(transform.position, transform.eulerAngles);
                 break;
             case Camera::LOOK_AT:
                 // TODO: Implement look at Camera
@@ -78,15 +80,12 @@ namespace re {
     }
 
     void RenderSystem::setProjection(float aspect) {
-        camera.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
+        auto& cameraComponent = camera->getComponent<Camera>();
+        cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
     }
 
-    Camera &RenderSystem::getCamera() {
+    std::shared_ptr<Entity> RenderSystem::getCamera() {
         return camera;
-    }
-
-    std::shared_ptr<Entity> RenderSystem::getCameraEntity() {
-        return cameraEntity;
     }
 
 } // namespace re

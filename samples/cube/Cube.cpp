@@ -34,7 +34,7 @@ void Cube::onDrawImGui() {
 
         ImGui::Separator();
 
-        auto camera = renderSystem->getCameraEntity();
+        auto camera = renderSystem->getCamera();
         auto& transformCamera = camera->getComponent<re::Transform>();
         ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), transformCamera.position.ptr());
         ImGui::InputFloat2(fmt::format("{} Scale", camera->getName()).c_str(), transformCamera.scale.ptr());

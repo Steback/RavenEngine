@@ -7,7 +7,13 @@
 
 namespace re {
 
-    Camera::Camera() = default;
+    Camera::Camera() : Component(nullptr) {
+
+    }
+
+    Camera::Camera(Entity *owner) : Component(owner) {
+
+    }
 
     void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
         projection = mat4(1.0f);

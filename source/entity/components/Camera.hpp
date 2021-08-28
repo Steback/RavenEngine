@@ -2,6 +2,7 @@
 #define RAVENENGINE_CAMERA_HPP
 
 
+#include "Component.hpp"
 #include "math/Vector3.hpp"
 #include "math/Matrix4.hpp"
 #include "math/Quaternion.hpp"
@@ -12,7 +13,7 @@ namespace re {
     /**
      * @brief Camera render class
      */
-    class Camera {
+    class Camera : Component {
     public:
         /**
          * @brief Camera Type
@@ -24,6 +25,8 @@ namespace re {
 
     public:
         Camera();
+
+        explicit Camera(Entity* owner);
 
         /**
          * @brief Define projection matrix as Orthographic

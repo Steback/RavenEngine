@@ -8,7 +8,7 @@
 #include "vulkan/vulkan.h"
 
 #include "utils/NonCopyable.hpp"
-#include "Camera.hpp"
+#include "entity/components/Camera.hpp"
 
 
 namespace re {
@@ -38,16 +38,13 @@ namespace re {
          */
         void setProjection(float aspect);
 
-        Camera& getCamera();
-
-        std::shared_ptr<Entity> getCameraEntity();
+        std::shared_ptr<Entity> getCamera();
 
     private:
         Scene& scene;
-        Camera camera;
+        std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
-        std::shared_ptr<Entity> cameraEntity;
     };
 
 } // namespace re
