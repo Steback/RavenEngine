@@ -66,7 +66,7 @@ namespace re {
          * @param position
          * @param rotation Quaternion with orientation
          */
-        void setViewDirection(const vec3 &position, const vec3 &rotation);
+        void setViewDirection(const vec3 &position, const quat &rotation);
 
         /**
          * @brief Set view to look at a target

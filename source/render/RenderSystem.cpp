@@ -63,6 +63,7 @@ namespace re {
         }
     }
 
+    // TODO: Find a way to update projection matrix in Camera component instead of here
     void RenderSystem::setProjection(float aspect) {
         auto& cameraComponent = camera->getComponent<Camera>();
         cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);

@@ -39,7 +39,7 @@ void Cube::onDrawImGui() {
         auto& transformCamera = camera->getComponent<re::Transform>();
         ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), transformCamera.position.ptr());
         ImGui::InputFloat2(fmt::format("{} Scale", camera->getName()).c_str(), transformCamera.scale.ptr());
-        ImGui::DragFloat3(fmt::format("{} Rotation", camera->getName()).c_str(), transformCamera.eulerAngles.ptr(), 0.1f);
+        ImGui::DragFloat4(fmt::format("{} Rotation", camera->getName()).c_str(), transformCamera.rotation.ptr(), 0.1f);
     }
     ImGui::End();
 }

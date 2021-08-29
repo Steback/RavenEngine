@@ -42,17 +42,12 @@ namespace re {
 
     }
 
-    // TODO: Check for use Quaternions in View Matrix
-    void Camera::setViewDirection(const vec3 &position, const vec3 &rotation) {
-        const float c3 = std::cos(rotation.z);
-        const float s3 = std::sin(rotation.z);
-        const float c2 = std::cos(rotation.x);
-        const float s2 = std::sin(rotation.x);
-        const float c1 = std::cos(rotation.y);
-        const float s1 = std::sin(rotation.y);
-        const vec3 u{(c1 * c3 + s1 * s2 * s3), (c2 * s3), (c1 * s2 * s3 - c3 * s1)};
-        const vec3 v{(c3 * s1 * s2 - c1 * s3), (c2 * c3), (c1 * c3 * s2 + s1 * s3)};
-        const vec3 w{(c2 * s1), (-s2), (c1 * c2)};
+    void Camera::setViewDirection(const vec3 &position, const quat &rotation) {
+        mat3 rotMatrix = rotation.getRotationMatrix();
+        const vec3 u{rotMatrix[0]};
+        const vec3 v{rotMatrix[1]};
+        const vec3 w{rotMatrix[2]};
+
         view = mat4{1.f};
         view[0][0] = u.x;
         view[1][0] = u.y;
@@ -68,7 +63,7 @@ namespace re {
         view[3][2] = -(w * position);
     }
 
-    // TODO: Implement Camera to look at
+    // TODO: Implement look at Camera
     void Camera::setViewTarget(const vec3 &position, const vec3 &target, const vec3 &up) {
 //        setViewDirection(position, target - position, up);
     }
@@ -77,7 +72,7 @@ namespace re {
         auto& transform = owner->getComponent<Transform>();
         switch (type) {
             case Camera::DIRECTION:
-                setViewDirection(transform.position, transform.eulerAngles);
+                setViewDirection(transform.position, transform.rotation);
                 break;
             case Camera::LOOK_AT:
                 // TODO: Implement look at Camera
