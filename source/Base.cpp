@@ -18,7 +18,6 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
         scene = std::make_unique<Scene>();
-        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", *scene);
     }
 
     Base::~Base() = default;

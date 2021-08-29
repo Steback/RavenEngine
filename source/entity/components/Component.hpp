@@ -2,6 +2,9 @@
 #define RAVENENGINE_COMPONENT_HPP
 
 
+#include "external/Json.hpp"
+
+
 namespace re {
 
     class Entity;
@@ -12,6 +15,17 @@ namespace re {
      */
     class Component {
         friend Entity;
+
+    public:
+        /**
+         * @brief Serialize component to JSON
+         */
+        virtual json serialize() = 0;
+
+        /**
+         * @brief Serialize component from JSON
+         */
+        virtual void serialize(json& component) = 0;
 
     protected:
         /**

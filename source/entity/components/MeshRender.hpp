@@ -29,6 +29,18 @@ namespace re {
          */
         MeshRender(std::shared_ptr<Model> model, Entity* owner);
 
+        /**
+         * @brief Serialize MeshRender to JSON
+         */
+        json serialize() override;
+
+        /**
+         * @brief Serialize MeshRender from JSON
+         *
+         * This is not used so far
+         */
+        void serialize(json &component) override;
+
     public:
         std::shared_ptr<Model> model;
     };

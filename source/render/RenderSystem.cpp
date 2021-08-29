@@ -19,10 +19,7 @@ namespace re {
 
     RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene)
             : device(std::move(device)), scene(scene) {
-
-        camera = scene.addEntity("Camera");
-        camera->addComponent<Transform>(vec3{}, vec3{}, vec3{});
-        camera->addComponent<Camera>();
+        camera = scene.getEntity("Camera");
 
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;

@@ -10,10 +10,11 @@
 
 namespace re {
 
+    // TODO: Do changes in Camera component
     /**
      * @brief Camera render class
      */
-    class Camera : Component {
+    class Camera : public Component {
     public:
         /**
          * @brief Camera Type
@@ -26,7 +27,18 @@ namespace re {
     public:
         Camera();
 
+        /**
+         *
+         * @param owner valid pointer to entity that owns this component
+         */
         explicit Camera(Entity* owner);
+
+        /**
+         * @brief Construct Camera from JSON
+         * @param component json object
+         * @param owner valid pointer to entity that owns this component
+         */
+        Camera(json& component, Entity* owner);
 
         /**
          * @brief Define projection matrix as Orthographic
@@ -67,6 +79,20 @@ namespace re {
         [[nodiscard]] const Matrix4& getProjection() const;
 
         [[nodiscard]] const Matrix4& getView() const;
+
+        /**
+         * @brief Serialize Camera to JSON
+         *
+         * This is not used so far
+         */
+        json serialize() override;
+
+        /**
+         * @brief Serialize Camera from JSON
+         *
+         * This is not used so far
+         */
+        void serialize(json &component) override;
 
     private:
         Matrix4 projection{1.0f};

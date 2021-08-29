@@ -6,9 +6,10 @@
 
 
 Cube::Cube() : re::Base("Cube") {
-    cube = scene->addEntity("Cube");
-    cube->addComponent<re::Transform>(re::vec3{0.0f, 0.0f, 2.5f}, re::vec3{0.5f, 0.5f, 0.5f}, re::vec3{});
-    cube->addComponent<re::MeshRender>(assetsManager->loadModel("models/colored_cube.obj"));
+    scene->loadScene("cube.json", assetsManager.get());
+    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", *scene);
+
+    cube = scene->getEntity("Cube");
 }
 
 Cube::~Cube() = default;

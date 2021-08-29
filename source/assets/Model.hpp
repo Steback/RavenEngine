@@ -54,14 +54,14 @@ namespace re {
          * @param assetsManager Pointer to Assets Manager
          * @param model TinyGLTF model loaded
          */
-        Model(AssetsManager* assetsManager, const tinygltf::Model &model);
+        Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model);
 
         /**
          *
          * @param assetsManager Pointer to Assets Manager
          * @param shapes Vector of TinyObj shapes
          */
-        Model(AssetsManager* assetsManager, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes);
+        Model(AssetsManager* assetsManager, std::string name, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes);
 
         ~Model();
 
@@ -81,10 +81,13 @@ namespace re {
 
         Node& getNode(uint32_t index);
 
+        [[nodiscard]] std::string getName() const;
+
     private:
         void loadNode(const tinygltf::Model& model, int32_t parentIndex, const tinygltf::Node& node, uint32_t nodeIndex);
 
     private:
+        std::string name;
         std::shared_ptr<Mesh> mesh;
         std::vector<Node> nodes;
         AssetsManager* assetsManager{};

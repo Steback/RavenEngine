@@ -19,6 +19,10 @@ namespace re {
 
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string &fileName) {
         File file = FilesManager::getFile(fileName.c_str());
+        uint32_t nameHash = std::hash<std::string>()(file.getName(true));
+
+        if (models.find(nameHash) != models.end()) return models[nameHash];
+
         std::string error;
         std::string warning;
 
@@ -30,7 +34,7 @@ namespace re {
             if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, file.getPath().c_str()))
                 RE_THROW_EX(warning + error);
 
-            return models[std::hash<std::string>()(file.getName())] = std::make_shared<Model>(this, attrib, shapes);
+            return models[nameHash] = std::make_shared<Model>(this, fileName, attrib, shapes);
         } else {
             tinygltf::Model gltfModel;
             tinygltf::TinyGLTF gltfContext;
@@ -42,7 +46,7 @@ namespace re {
                 fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
 
             if (fileLoaded)
-                return models[std::hash<std::string>()(file.getName())] = std::make_shared<Model>(this, gltfModel);
+                return models[nameHash] = std::make_shared<Model>(this, fileName, gltfModel);
         }
 
         return nullptr;

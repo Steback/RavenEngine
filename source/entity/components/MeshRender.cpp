@@ -11,4 +11,14 @@ namespace re {
 
     }
 
+    json MeshRender::serialize() {
+        return {
+            {"name", model->getName()}
+        };
+    }
+
+    void MeshRender::serialize(json &component) {
+
+    }
+
 } // namespace re

@@ -33,6 +33,7 @@ namespace re {
         addPath("assets");
         addPath("shaders");
         addPath("data");
+        addPath("data/scenes");
     }
 
     void FilesManager::addPath(const char* name, bool create) {

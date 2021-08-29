@@ -15,6 +15,10 @@ namespace re {
 
     }
 
+    Camera::Camera(json &component, Entity *owner) : Component(owner) {
+        serialize(component);
+    }
+
     void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
         projection = mat4(1.0f);
         projection[0][0] = 2.0f / (right - left);
@@ -73,6 +77,14 @@ namespace re {
 
     const Matrix4 &Camera::getView() const {
         return view;
+    }
+
+    json Camera::serialize() {
+        return {true};
+    }
+
+    void Camera::serialize(json &component) {
+
     }
 
 } // namespace re

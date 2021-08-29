@@ -4,6 +4,8 @@
 
 #include "scene/Scene.hpp"
 
+#include "external/Json.hpp"
+
 #include "utils/NonCopyable.hpp"
 
 
@@ -21,6 +23,14 @@ namespace re {
          * @param scene Pointer to scene that owns the entity
          */
         Entity(std::string  name, id_t id, Scene* scene);
+
+        /**
+         * @brief Construct Entity from JSON
+         * @param entity json Object
+         * @param id Valid entity id
+         * @param scene
+         */
+        Entity(json& entity, id_t id, Scene* scene);
 
         ~Entity() override;
 
@@ -54,6 +64,18 @@ namespace re {
         [[nodiscard]] const std::string &getName() const;
 
         void setName(const std::string &name_);
+
+        /**
+         * @brief Serialize Entity to JSON
+         * @param data
+         */
+        json serialize();
+
+        /**
+         * @brief Serialize Entity from JSON
+         * @param entity json object
+         */
+        void serialize(json& entity);
 
     private:
         Scene* scene;

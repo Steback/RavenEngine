@@ -38,7 +38,8 @@ namespace re {
             ) * matrix;
     }
 
-    Model::Model(AssetsManager* assetsManager, const tinygltf::Model &model) : assetsManager(assetsManager) {
+    Model::Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model)
+            : assetsManager(assetsManager), name(std::move(name)) {
         const tinygltf::Scene& scene = model.scenes[0];
 
         nodes.resize(model.nodes.size());
@@ -47,6 +48,55 @@ namespace re {
             const tinygltf::Node node = model.nodes[index];
             loadNode(model, -1, node, index);
         }
+    }
+
+    Model::Model(AssetsManager* assetsManager, std::string name, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes)
+            : assetsManager(assetsManager), name(std::move(name)) {
+        Mesh::Data data;
+        std::unordered_map<Mesh::Vertex, uint32_t> uniqueVertices{};
+        for (const auto& shape : shapes) {
+            for (const auto& index : shape.mesh.indices) {
+                Mesh::Vertex vertex{};
+
+                if (index.vertex_index >= 0) {
+                    vertex.position = {
+                            attrib.vertices[3 * index.vertex_index + 0],
+                            attrib.vertices[3 * index.vertex_index + 1],
+                            attrib.vertices[3 * index.vertex_index + 2],
+                    };
+
+                    vertex.color = {
+                            attrib.colors[3 * index.vertex_index + 0],
+                            attrib.colors[3 * index.vertex_index + 1],
+                            attrib.colors[3 * index.vertex_index + 2],
+                    };
+                }
+
+                if (index.normal_index >= 0) {
+                    vertex.normal = {
+                            attrib.normals[3 * index.normal_index + 0],
+                            attrib.normals[3 * index.normal_index + 1],
+                            attrib.normals[3 * index.normal_index + 2],
+                    };
+                }
+
+                if (index.texcoord_index >= 0) {
+                    vertex.uv0 = {
+                            attrib.texcoords[2 * index.texcoord_index + 0],
+                            attrib.texcoords[2 * index.texcoord_index + 1],
+                    };
+                }
+
+                if (uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = CAST_U32(data.vertices.size());
+                    data.vertices.push_back(vertex);
+                }
+
+                data.indices.push_back(uniqueVertices[vertex]);
+            }
+        }
+
+        mesh = assetsManager->addMesh(shapes[0].name, data);
     }
 
     Model::~Model() = default;
@@ -115,52 +165,8 @@ namespace re {
         }
     }
 
-    Model::Model(AssetsManager* assetsManager, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes) {
-        Mesh::Data data;
-        std::unordered_map<Mesh::Vertex, uint32_t> uniqueVertices{};
-        for (const auto& shape : shapes) {
-            for (const auto& index : shape.mesh.indices) {
-                Mesh::Vertex vertex{};
-
-                if (index.vertex_index >= 0) {
-                    vertex.position = {
-                            attrib.vertices[3 * index.vertex_index + 0],
-                            attrib.vertices[3 * index.vertex_index + 1],
-                            attrib.vertices[3 * index.vertex_index + 2],
-                            };
-
-                    vertex.color = {
-                            attrib.colors[3 * index.vertex_index + 0],
-                            attrib.colors[3 * index.vertex_index + 1],
-                            attrib.colors[3 * index.vertex_index + 2],
-                            };
-                }
-
-                if (index.normal_index >= 0) {
-                    vertex.normal = {
-                            attrib.normals[3 * index.normal_index + 0],
-                            attrib.normals[3 * index.normal_index + 1],
-                            attrib.normals[3 * index.normal_index + 2],
-                            };
-                }
-
-                if (index.texcoord_index >= 0) {
-                    vertex.uv0 = {
-                            attrib.texcoords[2 * index.texcoord_index + 0],
-                            attrib.texcoords[2 * index.texcoord_index + 1],
-                            };
-                }
-
-                if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = CAST_U32(data.vertices.size());
-                    data.vertices.push_back(vertex);
-                }
-
-                data.indices.push_back(uniqueVertices[vertex]);
-            }
-        }
-
-        mesh = assetsManager->addMesh(shapes[0].name, data);
+    std::string Model::getName() const {
+        return name;
     }
 
 } // namespace re

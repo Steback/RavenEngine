@@ -33,7 +33,24 @@ namespace re {
          */
         Transform(const vec3& position, const vec3& scale, const vec3& angles, Entity* owner);
 
+        /**
+         * @brief Construct entity from JSON
+         * @param component json object
+         * @param owner Valid pointer to entity that owns this component
+         */
+        Transform(json& component, Entity* owner);
+
         [[nodiscard]] Matrix4 getWorldMatrix() const;
+
+        /**
+         * @brief Serialize Transform to JSON
+         */
+        json serialize() override;
+
+        /**
+         * @brief Serialize Transform from JSON
+         */
+        void serialize(json &component) override;
 
     public:
         Vector3 position;

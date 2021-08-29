@@ -7,6 +7,7 @@
 #include <string>
 
 #include "entt/entt.hpp"
+#include "external/Json.hpp"
 
 #include "utils/NonCopyable.hpp"
 
@@ -16,6 +17,7 @@ namespace re {
     using id_t = entt::entity;
 
     class Entity;
+    class AssetsManager;
 
     /**
      * @brief Scene class
@@ -35,9 +37,31 @@ namespace re {
          */
         std::shared_ptr<Entity> addEntity(const std::string& name);
 
+        /**
+         * Add entry from JSON
+         * @param entity json object
+         * @return
+         */
+        std::shared_ptr<Entity> addEntity(json& entity);
+
+        /**
+         * @brief Load scene from a JSON file
+         * @param fileName
+         * @param assetsManager Valid pointer to AssetsManager
+         */
+        void loadScene(const std::string &fileName, AssetsManager* assetsManager);
+
+        /**
+         * @brief Save scene to a JSON file
+         * @param fileName
+         */
+        void saveScene(const std::string& fileName);
+
         entt::registry& getRegistry();
 
         std::shared_ptr<Entity> getEntity(id_t id);
+
+        std::shared_ptr<Entity> getEntity(const std::string& name);
 
     private:
         entt::registry registry;
