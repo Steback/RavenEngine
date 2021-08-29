@@ -7,6 +7,7 @@
 #include "files/FilesManager.hpp"
 #include "assets/AssetsManager.hpp"
 #include "entity/components/MeshRender.hpp"
+#include "entity/components/Camera.hpp"
 
 
 namespace re {
@@ -66,6 +67,11 @@ namespace re {
         }
 
         return nullptr;
+    }
+
+    void Scene::update() {
+        for (auto& entity : registry.view<Camera>())
+            registry.get<Camera>(entity).update();
     }
 
 } // namespace re

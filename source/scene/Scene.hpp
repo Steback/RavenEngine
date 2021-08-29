@@ -57,6 +57,13 @@ namespace re {
          */
         void saveScene(const std::string& fileName);
 
+        /**
+         * @brief Update some entities components.
+         *
+         * Just Camera component so far
+         */
+        void update();
+
         entt::registry& getRegistry();
 
         std::shared_ptr<Entity> getEntity(id_t id);
