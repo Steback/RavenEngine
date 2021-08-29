@@ -28,10 +28,27 @@ namespace re {
          *
          * @param position
          * @param scale
+         * @param rotation
+         */
+        Transform(const vec3& position, const vec3& scale, const quat& rotation);
+
+        /**
+         *
+         * @param position
+         * @param scale
          * @param angles Euler angles in radians
          * @param owner Valid pointer to entity that owns this component
          */
         Transform(const vec3& position, const vec3& scale, const vec3& angles, Entity* owner);
+
+        /**
+         *
+         * @param position
+         * @param scale
+         * @param rotation
+         * @param owner Valid pointer to entity that owns this component
+         */
+        Transform(const vec3& position, const vec3& scale, const quat& rotation, Entity* owner);
 
         /**
          * @brief Construct entity from JSON
@@ -52,10 +69,21 @@ namespace re {
          */
         void serialize(json &component) override;
 
+        /**
+         *
+         * @return Euler angles of Quaternion
+         */
+        [[nodiscard]] Vector3 getEulerAngles() const;
+
+        /**
+         * Set Quaternion by Euler Angles
+         * @param angles Euler angles in radians
+         */
+        void setEulerAngles(const vec3& angles);
+
     public:
         Vector3 position;
         Vector3 scale;
-        Vector3 eulerAngles;
         Quaternion rotation;
     };
 

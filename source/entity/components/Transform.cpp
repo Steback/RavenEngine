@@ -6,13 +6,23 @@
 namespace re {
 
     Transform::Transform(const vec3 &position, const vec3 &scale, const vec3 &angles)
-            : Component(nullptr), position(position), scale(scale), eulerAngles(angles) {
-        rotation = Quaternion(eulerAngles);
+            : Component(nullptr), position(position), scale(scale) {
+        rotation = Quaternion(angles);
+    }
+
+    Transform::Transform(const vec3 &position, const vec3 &scale, const quat &rotation)
+            : Component(nullptr), position(position), scale(scale), rotation(rotation) {
+
     }
 
     Transform::Transform(const vec3 &position, const vec3 &scale, const vec3 &angles, Entity *owner)
-            : Component(owner), position(position), scale(scale), eulerAngles(angles) {
-        rotation = Quaternion(eulerAngles);
+            : Component(owner), position(position), scale(scale) {
+        rotation = Quaternion(angles);
+    }
+
+    Transform::Transform(const vec3 &position, const vec3 &scale, const quat &rotation, Entity *owner)
+            : Component(owner), position(position), scale(scale), rotation(rotation) {
+
     }
 
     Transform::Transform(json &component, Entity *owner) : Component(owner) {
@@ -57,10 +67,17 @@ namespace re {
 
         auto rot = component["rotation"];
         rotation = quat(rot["w"].get<float>(), rot["x"].get<float>(), rot["y"].get<float>(), rot["z"].get<float>());
-        eulerAngles = rotation.getEulerAngles();
 
         auto sle = component["scale"];
         scale = vec3(sle["x"].get<float>(), sle["y"].get<float>(), sle["z"].get<float>());
+    }
+
+    Vector3 Transform::getEulerAngles() const {
+        return rotation.getEulerAngles();
+    }
+
+    void Transform::setEulerAngles(const vec3 &angles) {
+        rotation = Quaternion(angles);
     }
 
 } // namespace re
