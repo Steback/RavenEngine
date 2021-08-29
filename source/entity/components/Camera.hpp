@@ -25,13 +25,13 @@ namespace re {
         };
 
     public:
-        Camera();
+        explicit Camera(Type type);
 
         /**
          *
          * @param owner valid pointer to entity that owns this component
          */
-        explicit Camera(Entity* owner);
+        explicit Camera(Type type, Entity* owner);
 
         /**
          * @brief Construct Camera from JSON
@@ -76,6 +76,11 @@ namespace re {
          */
         void setViewTarget(const vec3& position, const vec3& target, const vec3& up = {0.f, -1.f, 0.f});
 
+        /**
+         * @brief Update View and Proj matrices;
+         */
+        void update();
+
         [[nodiscard]] const Matrix4& getProjection() const;
 
         [[nodiscard]] const Matrix4& getView() const;
@@ -93,6 +98,9 @@ namespace re {
          * This is not used so far
          */
         void serialize(json &component) override;
+
+    public:
+        Type type{};
 
     private:
         Matrix4 projection{1.0f};

@@ -15,7 +15,7 @@ Cube::Cube() : re::Base("Cube") {
 Cube::~Cube() = default;
 
 void Cube::onUpdate() {
-    renderSystem->setView();
+
 }
 
 void Cube::onDrawImGui() {

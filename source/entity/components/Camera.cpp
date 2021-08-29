@@ -2,16 +2,18 @@
 
 #include <cmath>
 
+#include "Transform.hpp"
 #include "math/Matrix3.hpp"
+#include "entity/Entity.hpp"
 
 
 namespace re {
 
-    Camera::Camera() : Component(nullptr) {
+    Camera::Camera(Type type) : Component(nullptr), type(type) {
 
     }
 
-    Camera::Camera(Entity *owner) : Component(owner) {
+    Camera::Camera(Type type, Entity* owner) : Component(owner), type(type) {
 
     }
 
@@ -71,6 +73,18 @@ namespace re {
 //        setViewDirection(position, target - position, up);
     }
 
+    void Camera::update() {
+        auto& transform = owner->getComponent<Transform>();
+        switch (type) {
+            case Camera::DIRECTION:
+                setViewDirection(transform.position, transform.eulerAngles);
+                break;
+            case Camera::LOOK_AT:
+                // TODO: Implement look at Camera
+                break;
+        }
+    }
+
     const Matrix4 &Camera::getProjection() const {
         return projection;
     }
@@ -80,11 +94,13 @@ namespace re {
     }
 
     json Camera::serialize() {
-        return {true};
+        return {
+            {"type", type}
+        };
     }
 
     void Camera::serialize(json &component) {
-
+        type = component["type"].get<Type>();
     }
 
 } // namespace re

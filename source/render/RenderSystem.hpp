@@ -28,12 +28,6 @@ namespace re {
 
         /**
          *
-         * @param type Camera::Type view. By default is DIRECTION
-         */
-        void setView(Camera::Type type = Camera::Type::DIRECTION);
-
-        /**
-         *
          * @param aspect SwapChain extent aspect ratio
          */
         void setProjection(float aspect);

@@ -63,19 +63,6 @@ namespace re {
         }
     }
 
-    void RenderSystem::setView(Camera::Type type) {
-        auto& transform = camera->getComponent<Transform>();
-        auto& cameraComponent = camera->getComponent<Camera>();
-        switch (type) {
-            case Camera::DIRECTION:
-                cameraComponent.setViewDirection(transform.position, transform.eulerAngles);
-                break;
-            case Camera::LOOK_AT:
-                // TODO: Implement look at Camera
-                break;
-        }
-    }
-
     void RenderSystem::setProjection(float aspect) {
         auto& cameraComponent = camera->getComponent<Camera>();
         cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);

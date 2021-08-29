@@ -1,6 +1,30 @@
 {
     "entities": [
         {
+            "camera": {
+                "type": 1
+            },
+            "name": "Camera",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
             "meshRender": {
                 "name": "models/colored_cube.obj"
             },
@@ -21,30 +45,6 @@
                     "x": 0.5,
                     "y": 0.5,
                     "z": 0.5
-                }
-            }
-        },
-        {
-            "camera": [
-                true
-            ],
-            "name": "Camera",
-            "transform": {
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             }
         }
