@@ -116,21 +116,29 @@ namespace re {
     }
 
     Matrix3 Quaternion::getRotationMatrix() const {
-        float x2 = x * x;
-        float y2 = y * y;
-        float z2 = z * z;
-        float xy = x * y;
-        float xz = x * z;
-        float yz = y * z;
-        float wx = w * x;
-        float wy = w * y;
-        float wz = w * z;
+        mat3 result(1.0f);
+        float qxx = x * x;
+        float qyy = y * y;
+        float qzz = z * z;
+        float qxz = x * z;
+        float qxy = x * y;
+        float qyz = y * z;
+        float qwx = w * x;
+        float qwy = w * y;
+        float qwz = w * z;
 
-        return {
-                { 1.0f - 2.0f * (y2 + z2), 2.0f * (xy - wz), 2.0f * (xz + wy) },
-                { 2.0f * (xy + wz), 1.0f - 2.0f * (x2 + z2), 2.0f * (yz - wx) },
-                { 2.0f * (xz - wy), 2.0f * (yz + wx), 1.0f - 2.0f * (x2  + y2) }
-        };
+        result[0][0] = 1.0f - 2.0f * (qyy +  qzz);
+        result[0][1] = 2.0f * (qxy + qwz);
+        result[0][2] = 2.0f * (qxz - qwy);
+
+        result[1][0] = 2.0f * (qxy - qwz);
+        result[1][1] = 1.0f - 2.0f * (qxx +  qzz);
+        result[1][2] = 2.0f * (qyz + qwx);
+
+        result[2][0] = 2.0f * (qxz + qwy);
+        result[2][1] = 2.0f * (qyz - qwx);
+        result[2][2] = 1.0f - 2.0f * (qxx +  qyy);
+        return result;
     }
 
     void Quaternion::setRotationMatrix(const Matrix3 &m) {
