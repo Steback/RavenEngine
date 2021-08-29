@@ -50,4 +50,4 @@ cmake --build . --config Release
 All the examples are includes in the [samples](samples) folder.
 
 ## Documentation
-The documentation are generated using [Doxygen](https://www.doxygen.nl/index.html) with the [Doxyfile](Doxyfile);
+The documentation are generated using [Doxygen](https://www.doxygen.nl/index.html) with the [Doxyfile](docs/Doxyfile);
