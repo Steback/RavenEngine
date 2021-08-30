@@ -3,7 +3,7 @@
 
 Gltf::Gltf() : re::Base("Gltf") {
     scene->loadScene("gltf.json", assetsManager.get());
-    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", *scene);
+    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "samples/cube/model", *scene);
 }
 
 Gltf::~Gltf() = default;

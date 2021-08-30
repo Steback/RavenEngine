@@ -1,5 +1,7 @@
 #include "FilesManager.hpp"
 
+#include "spdlog/spdlog.h"
+
 #include "File.hpp"
 #include "utils/Macros.hpp"
 
@@ -46,6 +48,7 @@ namespace re {
         return paths[name];
     }
 
+    // TODO: Improve feedback when file is not found
     File FilesManager::getFile(const char* name) {
         for (auto& [id, path] : paths) {
             std::filesystem::path filePath(path / name);
@@ -53,7 +56,18 @@ namespace re {
                 return File(filePath);
         }
 
-        return {};
+        return File(name);
+    }
+
+    // TODO: Check for a good way to walk into directories recursively
+    void FilesManager::recursiveIterator(const std::filesystem::path& name, const std::function<void(const std::filesystem::path &)>& func) {
+        for (auto& path : std::filesystem::directory_iterator(name)) {
+            if (std::filesystem::is_directory(path)) {
+                recursiveIterator(path, func);
+            } else {
+                func(path.path().string());
+            }
+        }
     }
 
 } // namespace re

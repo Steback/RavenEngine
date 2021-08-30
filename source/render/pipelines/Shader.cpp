@@ -48,11 +48,11 @@ namespace re {
     }
 
     void Shader::compileShaders() {
-        for (auto& filePath : std::filesystem::directory_iterator(FilesManager::getPath("shaders"))) {
-            if (filePath.path().extension() != ".spv") {
-                compileShader(filePath.path());
+        FilesManager::recursiveIterator(FilesManager::getPath("shaders"), [](const std::filesystem::path& fileName){
+            if (fileName.extension() != ".spv") {
+                compileShader(fileName.string());
             }
-        }
+        });
     }
 
     void Shader::compileShader(const std::string &fileName) {

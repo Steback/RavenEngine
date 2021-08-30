@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <string>
+#include <functional>
 
 
 namespace re {
@@ -49,6 +50,13 @@ namespace re {
          * @return File object with the specific file if exists
          */
         static File getFile(const char* name);
+
+        /**
+         * @brief Temporary solution for walk into directories recursively
+         * @param name Directory name
+         * @param func Function to exec when files is found
+         */
+        static void recursiveIterator(const std::filesystem::path& name, const std::function<void(const std::filesystem::path &)>& func);
 
     private:
         FilesManager();
