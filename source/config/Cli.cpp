@@ -11,7 +11,7 @@ namespace re {
 
     void Cli::addOption(const std::string &name, CLI::App &app) {
         options[name] = false;
-        app.add_flag("--" + name, options[name], "A help string");
+        app.add_flag("--" + name, options[name], "Compile shaders and save then in \"shaders\" director before load all core functionalities");
     }
 
     bool Cli::getOption(const std::string &name) {
