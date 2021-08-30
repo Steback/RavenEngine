@@ -6,6 +6,7 @@
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
 #include "utils/Macros.hpp"
+#include "render/RenderSystem.hpp"
 
 
 namespace std {
@@ -96,7 +97,12 @@ namespace re {
             }
         }
 
-        mesh = assetsManager->addMesh(shapes[0].name, data);
+        Node node{};
+        node.index = 0;
+        node.matrix = mat4(1.0f);
+        node.mesh = assetsManager->addMesh(shapes[0].name, data);
+
+        nodes.push_back(node);
     }
 
     Model::~Model() = default;
@@ -104,7 +110,7 @@ namespace re {
     Matrix4 Model::getNodeMatrix(size_t index) const {
         const Node& node = nodes[index];
         Matrix4 nodeMatrix = node.getLocalMatrix();
-        uint32_t parentIndex = node.parent;
+        int32_t parentIndex = node.parent;
 
         while (parentIndex > -1) {
             const Node& currentParent = nodes[parentIndex];
@@ -115,10 +121,25 @@ namespace re {
         return nodeMatrix;
     }
 
-    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout) {
-        // TODO: Implement render for GLTF2 modle
-        mesh->bind(commandBuffer);
-        mesh->draw(commandBuffer);
+    // TODO: Find another way to calculate MVP * Node Matrix and send it to Shaders
+    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, MvpPushConstant& push) {
+        for (auto& node : nodes) {
+            if (node.mesh) {
+                push.mvp *= getNodeMatrix(node.index);
+
+                vkCmdPushConstants(
+                        commandBuffer,
+                        layout,
+                        VK_SHADER_STAGE_VERTEX_BIT,
+                        0,
+                        sizeof(MvpPushConstant),
+                        &push
+                );
+
+                node.mesh->bind(commandBuffer);
+                node.mesh->draw(commandBuffer);
+            }
+        }
     }
 
     Model::Node &Model::getNode(uint32_t index) {

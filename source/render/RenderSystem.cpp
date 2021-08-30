@@ -13,10 +13,6 @@
 
 namespace re {
 
-    struct MvpPushConstant {
-        mat4 mvp{1.f};
-    };
-
     RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene)
             : device(std::move(device)), scene(scene) {
         camera = scene.getEntity("Camera");
@@ -51,15 +47,7 @@ namespace re {
             MvpPushConstant pushMvp;
             pushMvp.mvp = viewProj * transform.getWorldMatrix();
 
-            vkCmdPushConstants(
-                    commandBuffer,
-                    pipeline->getLayout(),
-                    VK_SHADER_STAGE_VERTEX_BIT,
-                    0,
-                    sizeof(MvpPushConstant),
-                    &pushMvp);
-
-            meshRender.model->render(commandBuffer, pipeline->getLayout());
+            meshRender.model->render(commandBuffer, pipeline->getLayout(), pushMvp);
         }
     }
 

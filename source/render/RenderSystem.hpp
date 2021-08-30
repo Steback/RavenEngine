@@ -18,6 +18,10 @@ namespace re {
     class Scene;
     class Entity;
 
+    struct MvpPushConstant {
+        mat4 mvp{1.f};
+    };
+
     class RenderSystem : NonCopyable {
     public:
         RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene);
