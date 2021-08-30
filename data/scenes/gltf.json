@@ -26,13 +26,13 @@
         },
         {
             "meshRender": {
-                "name": "models/suzanne.glb"
+                "name": "models/smooth_vase.glb"
             },
-            "name": "Cube",
+            "name": "Suzanne",
             "transform": {
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 1.0,
                     "z": 2.5
                 },
                 "rotation": {
@@ -42,9 +42,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.5
+                    "x": 5.0,
+                    "y": 5.0,
+                    "z": 5.0
                 }
             }
         }

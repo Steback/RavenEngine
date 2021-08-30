@@ -16,7 +16,7 @@ public:
     void onDrawImGui() override;
 
 private:
-
+    std::shared_ptr<re::Entity> suzanne;
 };
 
 
