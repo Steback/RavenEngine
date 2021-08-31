@@ -67,7 +67,7 @@ namespace re {
          */
         [[nodiscard]] uint32_t getMipLevels() const;
 
-    private:
+    protected:
         /**
          * @brief Create Image and its Allocation
          * @param imageInfo Vulkan Image create info
@@ -81,7 +81,7 @@ namespace re {
          */
         void createView(VkImageAspectFlags aspectFlags);
 
-    private:
+    protected:
         VkDevice device{};
         VmaAllocator allocator{};
         VkImage image{};
