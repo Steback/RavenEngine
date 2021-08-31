@@ -18,6 +18,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [ImGui](https://github.com/ocornut/imgui) | 1.84.1 | 
 | [Shaderc](https://github.com/google/shaderc) | 2021.1 | 
 | [CLI11](https://github.com/CLIUtils/CLI11) | 2.0.0 | 
+| [stb](https://github.com/nothings/stb) | x.x.x | 
 
 ## Build
 ### Requirements
