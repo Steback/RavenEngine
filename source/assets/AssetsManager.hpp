@@ -7,6 +7,7 @@
 #include <string>
 
 #include "tiny_gltf.h"
+#include "stb_image.h"
 
 #include "Mesh.hpp"
 
@@ -15,6 +16,7 @@ namespace re {
 
     class Device;
     class Model;
+    class Texture;
 
     /**
      * Assets Manager class
@@ -46,20 +48,33 @@ namespace re {
 
         /**
          * @brief Load Mesh from GLTF Mesh
-         * @param model GLTF Model
-         * @param node  GLTF node
+         * @param model TinyGLTF Model
+         * @param node  TinyGLTF node
          * @return shared_ptr of created Mesh
          */
         std::shared_ptr<Mesh> addMesh(const tinygltf::Model& model, const tinygltf::Node& node);
+
+        /**
+         * @brief Add Texture to AssetsManager
+         * @param gltfModel TinyGLTF Model
+         * @param gltfTexture TinyGLTF Texture
+         * @return Pointer to Texture
+         */
+        std::shared_ptr<Texture> addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture);
 
         std::shared_ptr<Model> getModel(uint32_t name);
 
         std::shared_ptr<Mesh> getMesh(uint32_t name);
 
+        std::shared_ptr<Texture> getTexture(uint32_t id);
+
+        static void loadImageFile(const std::string& fileName, const stbi_uc* image, int* width, int* height, VkDeviceSize* size);
+
     private:
         std::shared_ptr<Device> device;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
         std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;
+        std::unordered_map<uint32_t, std::shared_ptr<Texture>> textures;
     };
 
 } // namespace re

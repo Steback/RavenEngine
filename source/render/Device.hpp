@@ -15,6 +15,7 @@ namespace re {
 
     class Instance;
     class Buffer;
+    class Image;
 
     /**
      * @brief Vulkan Physical Device and Device
@@ -154,27 +155,27 @@ namespace re {
         void endSingleTimeCommands(const VkCommandBuffer& commandBuffer);
 
         /**
-         * Copy Buffer from other Buffer
+         * @brief Copy Buffer from other Buffer
          * @param src Source buffer
          * @param dst Destination buffer
          * @param size Buffer size. Must be equal to both buffers
          */
         void copyBuffer(Buffer& src, Buffer& dst, VkDeviceSize size);
 
-    private:
         /**
-         * @brief Create the vulkan logical device
-         * @param extensions Vector of C-Style string with all the extensions names required for the device
-         * @param features Physical device features struct with the requires features
-         * @param queueFlags The requires Queue flags, by default are Graphics, Compute and Transfer
+         * @brief Copy buffer to Image
+         * @param src Source Buffer
+         * @param dst Destination Image
+         * @param size Must be equal to both Buffer and Image
          */
+        void copyBufferToImage(Buffer& src, Image& dst, VkDeviceSize size);
+
+        void transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1);
+
+    private:
         void createLogicalDevice(const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
                                  VkQueueFlags queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT);
 
-        /**
-         * @brief Create the allocator from Vulkan Memory Allocator
-         * @param instance shared_ptr of Instance class
-         */
         void createAllocator(const std::shared_ptr<Instance>& instance);
 
     public:

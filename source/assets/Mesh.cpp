@@ -29,7 +29,8 @@ namespace re {
         return position == other.position && color == other.color && normal == other.normal && uv0 == other.uv0;
     }
 
-    Mesh::Mesh(std::shared_ptr<Device> device, const Data& data) : device(std::move(device)) {
+    Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Texture> texture)
+            : device(std::move(device)), texture(std::move(texture)) {
         createVertexBuffer(data.vertices);
         createIndexBuffer(data.indices);
     }
@@ -96,6 +97,10 @@ namespace re {
         indexBuffer = std::make_unique<Buffer>(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
 
         device->copyBuffer(stagingBuffer, *indexBuffer, size);
+    }
+
+    std::shared_ptr<Texture> Mesh::getTexture() const {
+        return texture;
     }
 
 } // namespace lv

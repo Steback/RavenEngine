@@ -17,6 +17,7 @@ namespace re {
 
     class Device;
     class Buffer;
+    class Texture;
 
     /**
      * @brief Mesh Class
@@ -63,8 +64,9 @@ namespace re {
          * Default constructor
          * @param device shared_ptr of Device
          * @param data Data object
+         * @param texture Valid pointer to texture. By default is null
          */
-        Mesh(std::shared_ptr<Device> device, const Data& data);
+        Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Texture> texture = nullptr);
 
         ~Mesh() override;
 
@@ -86,6 +88,8 @@ namespace re {
 
         [[nodiscard]] bool isHasIndexBuffer() const;
 
+        [[nodiscard]] std::shared_ptr<Texture> getTexture() const;
+
     private:
         void createVertexBuffer(const std::vector<Vertex>& vertices);
 
@@ -98,6 +102,7 @@ namespace re {
         uint32_t vertexCount{};
         uint32_t indexCount{};
         bool hasIndexBuffer{false};
+        std::shared_ptr<Texture> texture;
     };
 
 } // namespace re

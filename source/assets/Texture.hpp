@@ -2,10 +2,14 @@
 #define RAVENENGINE_TEXTURE_HPP
 
 
+#include <memory>
+
 #include "render/Image.hpp"
 
 
 namespace re {
+
+    class Device;
 
     /**
      * @brief Texture wrapper class.\n
@@ -19,6 +23,8 @@ namespace re {
         ~Texture() override;
 
         void createDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout layout);
+
+        void generateMipmaps(const std::shared_ptr<Device>& device_);
 
         [[nodiscard]] VkDescriptorSet getDescriptorSet() const;
 
