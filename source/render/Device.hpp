@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 #include "vulkan/vulkan.h"
 #include "vk_mem_alloc.h"
@@ -62,100 +63,28 @@ namespace re {
         /**
          *
          * @param commandPool Reference of the commandPool to create
-         * @param queueFamilyIndex Specific Queue Family Index for the Command Pool
+         * @param index Specific Queue Family Index for the Command Pool
          * @param flags Create info flags. By default are VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT and VK_COMMAND_POOL_CREATE_TRANSIENT_BIT
          */
-        void createCommandPool(VkCommandPool& commandPool, uint32_t queueFamilyIndex,
-                               uint32_t flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT | VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
+        void createCommandPool(VkCommandPool& commandPool, uint32_t index, uint32_t flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT | VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
 
         /**
          * @brief Create a Command Buffer with single time record command
-         * @param commandPool Command Pool for crate the Command Buffer. By default the Command Pool used are created with Transfer queue family index
+         * @param commandPool Command Pool for crate the Command Buffer. By default the Command Pool used are created with Graphics queue family index.
          * @return The Command Buffer for record all the commands one time
          */
-        VkCommandBuffer beginSingleTimeCommand(VkCommandPool commandPool = VK_NULL_HANDLE);
+        VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool = VK_NULL_HANDLE);
 
         /**
          * Submit commands to the queue and end command buffer
          * @param commandBuffer Command buffer with all recorded commands
-         * @param queue Queue for submit the commands. By default is a Transfer queue.
+         * @param queue Queue for submit the commands. By default is a Graphics queue.
+         * @param commandPool Command Pool for destroy Command Buffer. By default the Command Pool used are created with Graphics queue family index.
          */
-        void endSimpleTimeCommand(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE, VkCommandPool commandPool = VK_NULL_HANDLE);
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE, VkCommandPool commandPool = VK_NULL_HANDLE);
 
         /**
-         *
-         * @param queue Set the default Graphics queue to the referenced queue
-         */
-        void getGraphicsQueue(VkQueue& queue);
-
-        /**
-         *
-         * @param queue Set the default Present queue if present index is different to graphics index, in that case the present queue will be the graphics queue
-         */
-        void getPresentQueue(VkQueue& queue);
-
-        /**
-         *
-         * @param queue Set the default Compute queue to the referenced queue
-         */
-        void getComputeQueue(VkQueue& queue);
-
-        /**
-         *
-         * @param queue Set the default Transfer queue to the referenced queue
-         */
-        void getTransferQueue(VkQueue& queue);
-
-        /**
-         *
-         * @return Get the default vulkan device
-         */
-        [[nodiscard]] VkDevice getDevice() const;
-
-        /**
-         *
-         * @return Get the default vulkan physical device
-         */
-        [[nodiscard]] VkPhysicalDevice getPhysicalDevice() const;
-
-        /**
-         *
-         * @return Get all the Queue family indices
-         */
-        [[nodiscard]] QueueFamilyIndices getQueueFamilyIndices() const;
-
-        /**
-         *
-         * @return Get Vulkan Memory Allocator
-         */
-        [[nodiscard]] VmaAllocator getAllocator() const;
-
-        /**
-         *
-         * @return shared_ptr of Instance class
-         */
-        [[nodiscard]] std::shared_ptr<Instance> getInstance() const;
-
-        /**
-         *
-         * @return Current window surface
-         */
-        [[nodiscard]] VkSurfaceKHR getSurface() const;
-
-        /**
-         * Create a begin a single time command buffer
-         * @return Vulkan command buffer
-         */
-        VkCommandBuffer beginSingleTimeCommands();
-
-        /**
-         * End and destroy single time command buffer
-         * @param commandBuffer Vulkan command buffer with commands to submit
-         */
-        void endSingleTimeCommands(const VkCommandBuffer& commandBuffer);
-
-        /**
-         * @brief Copy Buffer from other Buffer
+         * @brief Copy Buffer from other Buffer\n
          * @param src Source buffer
          * @param dst Destination buffer
          * @param size Buffer size. Must be equal to both buffers
@@ -166,17 +95,40 @@ namespace re {
          * @brief Copy buffer to Image
          * @param src Source Buffer
          * @param dst Destination Image
-         * @param size Must be equal to both Buffer and Image
          */
-        void copyBufferToImage(Buffer& src, Image& dst, VkDeviceSize size);
+        void copyBufferToImage(Buffer& src, Image& dst);
 
         void transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1);
+
+        [[nodiscard]] VkDevice getDevice() const;
+
+        [[nodiscard]] VkPhysicalDevice getPhysicalDevice() const;
+
+        [[nodiscard]] QueueFamilyIndices getQueueFamilyIndices() const;
+
+        [[nodiscard]] VmaAllocator getAllocator() const;
+
+        [[nodiscard]] std::shared_ptr<Instance> getInstance() const;
+
+        [[nodiscard]] VkSurfaceKHR getSurface() const;
+
+        /**
+         *
+         * @param index Queue Family Index. By default is Graphics.
+         */
+        VkQueue getQueue(int32_t index = -1);
+
+        /**
+         *
+         * @param index Queue Family Index. By default is Graphics.
+         */
+        VkCommandPool getCommandPool(int32_t index = -1);
 
     private:
         void createLogicalDevice(const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
                                  VkQueueFlags queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT);
 
-        void createAllocator(const std::shared_ptr<Instance>& instance);
+        void createAllocator(const std::shared_ptr<Instance>& instance_);
 
     public:
         const float DEFAULT_QUEUE_PRIORITY = 1.0f;
@@ -187,8 +139,8 @@ namespace re {
         QueueFamilyIndices queueFamilyIndices{};
         VkDevice device{};
         VkPhysicalDevice physicalDevice{};
-        VkQueue transferQueue{};
-        VkCommandPool transferCmdPool{};
+        std::unordered_map<uint32_t, VkQueue> queues;
+        std::unordered_map<uint32_t, VkCommandPool> commandPools;
         VmaAllocator allocator{};
     };
 

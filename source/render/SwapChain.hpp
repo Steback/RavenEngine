@@ -36,7 +36,7 @@ namespace re {
          * @param device shared_ptr of Device class
          * @param windowExtent Current window extent
          */
-        SwapChain(std::shared_ptr<Device> device, VkExtent2D windowExtent);
+        SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent);
 
         /**
          * @brief SwapChain Constructor recreating the SwapChain
@@ -45,7 +45,7 @@ namespace re {
          * @param surface Window surface
          * @param oldSwapChain shared_ptr of SwapChain class for recreating it
          */
-        SwapChain(std::shared_ptr<Device>  device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain);
+        SwapChain(const std::shared_ptr<Device>&  device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain);
 
         ~SwapChain() override;
 
@@ -96,10 +96,6 @@ namespace re {
          * @return bool value if old and new SwapChain have the same formats
          */
         [[nodiscard]] bool compareFormats(const SwapChain& other) const;
-
-        [[nodiscard]] VkQueue getGraphicsQueue() const;
-
-        [[nodiscard]] VkQueue getPresentQueue() const;
 
         /**
          * @brief Query the surface SupportDetails for the SwapChain

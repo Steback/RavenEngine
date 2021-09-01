@@ -10,20 +10,20 @@
 
 namespace re {
 
-    SwapChain::SwapChain(std::shared_ptr<Device> device, VkExtent2D windowExtent)
-            : device(std::move(device)), windowExtent(windowExtent) {
-        logicalDevice = this->device->getDevice();
-        this->device->getGraphicsQueue(graphicsQueue);
-        this->device->getPresentQueue(presentQueue);
+    SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent)
+            : device(device), windowExtent(windowExtent) {
+        logicalDevice = device->getDevice();
+        graphicsQueue = device->getQueue();
+        presentQueue = device->getQueue(static_cast<int32_t>(device->getQueueFamilyIndices().present));
 
         init();
     }
 
-    SwapChain::SwapChain(std::shared_ptr<Device> device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain)
-            : device(std::move(device)), windowExtent(windowExtent), oldSwapChain(std::move(oldSwapChain)) {
-        logicalDevice = this->oldSwapChain->logicalDevice;
-        graphicsQueue = this->oldSwapChain->graphicsQueue;
-        presentQueue = this->oldSwapChain->presentQueue;
+    SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain)
+            : device(device), windowExtent(windowExtent), oldSwapChain(std::move(oldSwapChain)) {
+        logicalDevice = device->getDevice();
+        graphicsQueue = device->getQueue();
+        presentQueue = device->getQueue(static_cast<int32_t>(device->getQueueFamilyIndices().present));
 
         init();
 
@@ -137,14 +137,6 @@ namespace re {
 
     bool SwapChain::compareFormats(const SwapChain &other) const {
         return other.depthFormat == depthFormat && other.format == format;
-    }
-
-    VkQueue SwapChain::getPresentQueue() const {
-        return presentQueue;
-    }
-
-    VkQueue SwapChain::getGraphicsQueue() const {
-        return graphicsQueue;
     }
 
     SwapChain::SupportDetails SwapChain::querySurfaceSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {

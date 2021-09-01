@@ -257,7 +257,7 @@ namespace re {
         auto texture = textures[textureID];
 
         device->transitionImageLayout(texture->getImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
-        device->copyBufferToImage(stagingBuffer, *texture, imageSize);
+        device->copyBufferToImage(stagingBuffer, *texture);
 
         texture->generateMipmaps(device);
         // TODO: Create descriptor pool and layout then create texture set

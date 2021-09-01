@@ -28,7 +28,7 @@ namespace re::ui {
         init_info.PhysicalDevice = device->getPhysicalDevice();
         init_info.Device = logicalDevice;
         init_info.QueueFamily = device->getQueueFamilyIndices().graphics;
-        init_info.Queue = swapChain.getGraphicsQueue();
+        init_info.Queue = device->getQueue();
         init_info.DescriptorPool = descriptorPool;
         init_info.MinImageCount = swapChain.getImageCount();
         init_info.ImageCount = swapChain.getImageCount();
@@ -39,9 +39,9 @@ namespace re::ui {
         VkCommandPool commandPool;
         device->createCommandPool(commandPool, device->getQueueFamilyIndices().graphics);
 
-        VkCommandBuffer commandBuffer = device->beginSingleTimeCommand(commandPool);
+        VkCommandBuffer commandBuffer = device->beginSingleTimeCommands(commandPool);
         ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
-        device->endSimpleTimeCommand(commandBuffer, swapChain.getGraphicsQueue(), commandPool);
+        device->endSingleTimeCommands(commandBuffer, device->getQueue(), commandPool);
         ImGui_ImplVulkan_DestroyFontUploadObjects();
 
         vkDestroyCommandPool(logicalDevice, commandPool, nullptr);
