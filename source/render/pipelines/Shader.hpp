@@ -8,6 +8,7 @@
 #include "vulkan/vulkan.h"
 #include "shaderc/shaderc.hpp"
 
+#include "files/File.hpp"
 #include "utils/NonCopyable.hpp"
 
 
@@ -42,15 +43,11 @@ namespace re {
         VkShaderStageFlagBits getStage();
 
         /**
-         * @brief Read all the shaders in "shaders" directory and compile it to SPIR-V
-         */
-        static void compileShaders();
-
-        /**
          * @brief Compile shader and save it in SPIR-V format in "shaders" directory
-         * @param fileName
+         * @param code
+         * @param stage
          */
-        static void compileShader(const std::string& fileName);
+        static void compileShader(File& file, const VkShaderStageFlagBits& stage);
 
         /**
          *
@@ -60,16 +57,6 @@ namespace re {
          * @return GLSL shader source text after preprocessing.
          */
         static std::string preprocessShader(const std::string& sourceName, shaderc_shader_kind kind, const std::string& source);
-
-        /**
-         * @brief Compiles a shader to SPIR-V assembly
-         * @param sourceName
-         * @param kind
-         * @param source
-         * @param optimize
-         * @return Assembly text as a string.
-         */
-        static std::string compileToAssembly(const std::string& sourceName, shaderc_shader_kind kind, const std::string& source, bool optimize = false);
 
         /**
          * @brief Compiles a shader to a SPIR-V binary
@@ -86,7 +73,7 @@ namespace re {
          * @param extension
          * @return Shaderc shader kind for compile
          */
-        static shaderc_shader_kind getKind(const std::string& extension);
+        static shaderc_shader_kind getKind(const VkShaderStageFlagBits& stage);
 
     private:
         void createShaderModule(const std::vector<uint32_t>& code);

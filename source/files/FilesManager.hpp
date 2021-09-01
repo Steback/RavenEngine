@@ -51,13 +51,6 @@ namespace re {
          */
         static File getFile(const char* name);
 
-        /**
-         * @brief Temporary solution for walk into directories recursively
-         * @param name Directory name
-         * @param func Function to exec when files is found
-         */
-        static void recursiveIterator(const std::filesystem::path& name, const std::function<void(const std::filesystem::path &)>& func);
-
     private:
         FilesManager();
 

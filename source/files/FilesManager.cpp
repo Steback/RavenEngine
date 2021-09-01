@@ -59,15 +59,4 @@ namespace re {
         return File(name);
     }
 
-    // TODO: Check for a good way to walk into directories recursively
-    void FilesManager::recursiveIterator(const std::filesystem::path& name, const std::function<void(const std::filesystem::path &)>& func) {
-        for (auto& path : std::filesystem::directory_iterator(name)) {
-            if (std::filesystem::is_directory(path)) {
-                recursiveIterator(path, func);
-            } else {
-                func(path.path().string());
-            }
-        }
-    }
-
 } // namespace re

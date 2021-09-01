@@ -8,10 +8,6 @@
 namespace re {
 
     Base::Base(const std::string& appName) {
-        if (Cli::getOption("compile-shaders")) {
-            Shader::compileShaders();
-        }
-
         config = Config("config.json");
         config.load();
 

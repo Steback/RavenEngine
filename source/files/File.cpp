@@ -31,7 +31,7 @@ namespace re {
         return buffer;
     }
 
-    std::vector<char> File::read() {
+    std::vector<char> File::read() const {
         std::ifstream file{path, std::ios::ate};
 
         if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());

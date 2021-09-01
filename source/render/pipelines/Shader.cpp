@@ -3,15 +3,24 @@
 #include "spdlog/spdlog.h"
 
 #include "utils/Macros.hpp"
-#include "files/File.hpp"
 #include "files/FilesManager.hpp"
+#include "config/Cli.hpp"
 
 
 namespace re {
 
     Shader::Shader(const VkDevice& device, const std::string& fileName, const VkShaderStageFlagBits& stage)
             : device(device), stage(stage) {
-        createShaderModule(FilesManager::getFile(fileName.c_str()).readBytes());
+        File shader = FilesManager::getFile(fileName.c_str());
+
+        // TODO: Improve when how to work with shader and compile it
+        if (Cli::getOption("compile-shaders")) {
+            Shader::compileShader(shader, stage);
+        } else {
+            shader.setPath(shader.getPath() + ".spv");
+        }
+
+        createShaderModule(shader.readBytes());
     }
 
     Shader::~Shader() {
@@ -47,21 +56,12 @@ namespace re {
                            "Failed to create shader module");
     }
 
-    void Shader::compileShaders() {
-        FilesManager::recursiveIterator(FilesManager::getPath("shaders"), [](const std::filesystem::path& fileName){
-            if (fileName.extension() != ".spv") {
-                compileShader(fileName.string());
-            }
-        });
-    }
-
-    void Shader::compileShader(const std::string &fileName) {
-        File file(fileName);
-
-        shaderc_shader_kind kind = getKind(file.getExtension());
+    void Shader::compileShader(File& file, const VkShaderStageFlagBits& stage) {
+        shaderc_shader_kind kind = getKind(stage);
 
         // Preprocessing
-        auto preprocessed = preprocessShader(file.getName(), kind, file.read().data());
+        std::vector<char> code = file.read();
+        auto preprocessed = preprocessShader(file.getName(), kind, {code.begin(), code.begin() + code.size()});
 
         // Compiling
         auto binary = compile(file.getName(), kind, preprocessed, true);
@@ -74,27 +74,10 @@ namespace re {
         shaderc::Compiler compiler;
         shaderc::CompileOptions options;
 
-        shaderc::PreprocessedSourceCompilationResult result = compiler.PreprocessGlsl(source, kind, sourceName.c_str(), options);
+        shaderc::PreprocessedSourceCompilationResult result = compiler.PreprocessGlsl(source.data(), source.size(), kind, sourceName.c_str(), options);
 
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
             spdlog::error(result.GetErrorMessage());
-            return "";
-        }
-
-        return {result.cbegin(), result.cend()};
-    }
-
-    std::string Shader::compileToAssembly(const std::string &sourceName, shaderc_shader_kind kind, const std::string &source,
-                                          bool optimize) {
-        shaderc::Compiler compiler;
-        shaderc::CompileOptions options;
-
-        if (optimize) options.SetOptimizationLevel(shaderc_optimization_level_size);
-
-        shaderc::AssemblyCompilationResult result = compiler.CompileGlslToSpvAssembly(source, kind, sourceName.c_str(), options);
-
-        if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-            spdlog::error("Failed to compile to Assembly\n{}", result.GetErrorMessage());
             return "";
         }
 
@@ -108,7 +91,7 @@ namespace re {
 
         if (optimize) options.SetOptimizationLevel(shaderc_optimization_level_size);
 
-        shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, kind, sourceName.c_str(), options);
+        shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source.c_str(), source.size(), kind,sourceName.c_str(), options);
 
         if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
             spdlog::error("Failed to compile\n{}", module.GetErrorMessage());
@@ -118,10 +101,10 @@ namespace re {
         return {module.cbegin(), module.cend()};
     }
 
-    shaderc_shader_kind Shader::getKind(const std::string& extension) {
-        if (extension == ".vert") {
+    shaderc_shader_kind Shader::getKind(const VkShaderStageFlagBits& stage) {
+        if (stage == VK_SHADER_STAGE_VERTEX_BIT) {
             return shaderc_glsl_vertex_shader;
-        } else if (extension == ".frag") {
+        } else if (stage == VK_SHADER_STAGE_FRAGMENT_BIT) {
             return shaderc_glsl_fragment_shader;
         }
 

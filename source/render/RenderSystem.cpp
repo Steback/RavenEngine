@@ -26,7 +26,7 @@ namespace re {
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);
         pipeline = std::make_unique<GraphicsPipeline>(
                 this->device->getDevice(),
-                shadersName + ".vert.spv", shadersName + ".frag.spv",
+                shadersName + ".vert", shadersName + ".frag",
                 configInfo,
                 std::vector<VkPushConstantRange>{pushConstantRange}
         );

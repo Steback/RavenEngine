@@ -37,7 +37,7 @@ namespace re {
          * @brief Read the file without binary mode
          * @return Vector of char whit file content
          */
-        std::vector<char> read();
+        [[nodiscard]] std::vector<char> read() const;
 
         /**
          * Read the file for json serialization
