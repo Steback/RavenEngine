@@ -229,8 +229,7 @@ namespace re {
 
         int width, height;
         VkDeviceSize imageSize;
-        stbi_uc* pixels{};
-        loadImageFile(FilesManager::getFile(image.name.c_str()).getPath(), pixels, &width, &height, &imageSize);
+        stbi_uc* pixels = loadImageFile(FilesManager::getFile(("textures/" + image.uri).c_str()).getPath(), &width, &height, &imageSize);
 
         Buffer stagingBuffer(device->getAllocator(), imageSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
@@ -279,14 +278,16 @@ namespace re {
         return textures[id];
     }
 
-    void AssetsManager::loadImageFile(const std::string& fileName, const stbi_uc* image, int* width, int* height, VkDeviceSize* size) {
+    stbi_uc * AssetsManager::loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size) {
         int channels;
 
-        image = stbi_load(fileName.c_str(), width, height, &channels, STBI_rgb_alpha);
+        stbi_uc* image = stbi_load(fileName.c_str(), width, height, &channels, STBI_rgb_alpha);
 
         if (!image) RE_THROW_EX("Failed to image file: " + fileName);
 
         *size = *width * *height * static_cast<int>(STBI_rgb_alpha);
+
+        return image;
     }
 
 } // namespace re

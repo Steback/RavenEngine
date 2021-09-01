@@ -68,7 +68,7 @@ namespace re {
 
         std::shared_ptr<Texture> getTexture(uint32_t id);
 
-        static void loadImageFile(const std::string& fileName, const stbi_uc* image, int* width, int* height, VkDeviceSize* size);
+        static stbi_uc *loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size);
 
     private:
         std::shared_ptr<Device> device;
