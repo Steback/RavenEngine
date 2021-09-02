@@ -6,11 +6,12 @@ layout(location = 2) in vec2 uv;
 
 layout(location = 0) out vec2 fragUV;
 
-layout(push_constant) uniform MvpPushConstant {
+layout(push_constant) uniform PushConstant {
     mat4 mvp; // projection * view * model
-} pushMvp;
+    mat4 node; // Node local transform
+} push;
 
 void main() {
-    gl_Position = pushMvp.mvp * vec4(position, 1.0);
+    gl_Position = pusb.mvp * push.node * vec4(position, 1.0);
     fragUV = uv;
 }

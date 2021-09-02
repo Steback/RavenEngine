@@ -19,8 +19,9 @@ namespace re {
     class Entity;
     class AssetsManager;
 
-    struct MvpPushConstant {
+    struct PushConstant {
         mat4 mvp{1.f};
+        mat4 node{1.f};
     };
 
     class RenderSystem : NonCopyable {

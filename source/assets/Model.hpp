@@ -17,7 +17,7 @@
 
 namespace re {
 
-    struct MvpPushConstant;
+    struct PushConstant;
 
     class Device;
     class Mesh;
@@ -79,7 +79,7 @@ namespace re {
          * @param commandBuffer Command buffer in recording state
          * @param layout Valid pipeline layout
          */
-        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, MvpPushConstant& push);
+        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, PushConstant& push);
 
         Node& getNode(uint32_t index);
 

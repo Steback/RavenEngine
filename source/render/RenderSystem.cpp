@@ -21,7 +21,7 @@ namespace re {
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
         pushConstantRange.offset = 0;
-        pushConstantRange.size = sizeof(MvpPushConstant);
+        pushConstantRange.size = sizeof(PushConstant);
 
         Pipeline::ConfigInfo configInfo;
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);
@@ -46,7 +46,7 @@ namespace re {
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            MvpPushConstant pushMvp;
+            PushConstant pushMvp;
             pushMvp.mvp = viewProj * transform.getWorldMatrix();
 
             meshRender.model->render(commandBuffer, pipeline->getLayout(), pushMvp);

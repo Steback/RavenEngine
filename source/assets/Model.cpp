@@ -116,17 +116,17 @@ namespace re {
     }
 
     // TODO: Find another way to calculate MVP * Node Matrix and send it to Shaders
-    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, MvpPushConstant& push) {
+    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, PushConstant& push) {
         for (auto& node : nodes) {
             if (node.mesh) {
-                push.mvp *= getNodeMatrix(node.index);
+                push.node = getNodeMatrix(node.index);
 
                 vkCmdPushConstants(
                         commandBuffer,
                         layout,
                         VK_SHADER_STAGE_VERTEX_BIT,
                         0,
-                        sizeof(MvpPushConstant),
+                        sizeof(PushConstant),
                         &push
                 );
 
