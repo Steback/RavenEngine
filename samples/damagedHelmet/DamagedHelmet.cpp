@@ -1,4 +1,4 @@
-#include "Gltf.hpp"
+#include "DamagedHelmet.hpp"
 
 #include "entity/Entity.hpp"
 #include "entity/components/Transform.hpp"
@@ -6,20 +6,20 @@
 
 
 
-Gltf::Gltf() : re::Base("Gltf") {
-    scene->loadScene("scenes/gltf.json", assetsManager.get());
+DamagedHelmet::DamagedHelmet() : re::Base("DamagedHelmet") {
+    scene->loadScene("scenes/damagedHelmet.json", assetsManager.get());
     renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", scene.get(), assetsManager.get());
 
     entity = scene->getEntity("Damaged Helmet");
 }
 
-Gltf::~Gltf() = default;
+DamagedHelmet::~DamagedHelmet() = default;
 
-void Gltf::onUpdate() {
+void DamagedHelmet::onUpdate() {
 
 }
 
-void Gltf::onDrawImGui() {
+void DamagedHelmet::onDrawImGui() {
     ImGui::SetNextWindowSize({-1, -1});
     ImGui::Begin("Debug Window");
     {

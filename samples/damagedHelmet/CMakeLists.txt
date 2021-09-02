@@ -1,4 +1,4 @@
-set(SAMPLE_NAME gltf)
+set(SAMPLE_NAME DamagedHelmet)
 
 file(GLOB_RECURSE SOURCE_FILES *.cpp)
 

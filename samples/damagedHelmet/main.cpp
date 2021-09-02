@@ -1,6 +1,6 @@
 #include "spdlog/spdlog.h"
 
-#include "Gltf.hpp"
+#include "DamagedHelmet.hpp"
 
 
 int main(int argc, char** arg) {
@@ -12,7 +12,7 @@ int main(int argc, char** arg) {
     re::Logger::setup();
 
     try {
-        Gltf gltf;
+        DamagedHelmet gltf;
         gltf.run();
     } catch (const std::exception& e) {
         RE_ERROR_LOG(e.what());
