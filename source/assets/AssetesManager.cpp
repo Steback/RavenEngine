@@ -136,7 +136,6 @@ namespace re {
                 for (size_t v = 0; v < vertexCount; ++v) {
                     Mesh::Vertex vert{};
                     vert.position = vec3(&bufferPos[v * posByteStride]);
-                    vert.color = {1.0f, 1.0f, 1.0f};
                     vert.normal = (vec3(bufferNormals ? vec3(&bufferNormals[v * normByteStride]) : vec3(0.0f))).normal();
                     vert.uv0 = bufferTexCoordSet0 ? vec2(&bufferTexCoordSet0[v * uv0ByteStride]) : vec2(0.0f);
                     vert.uv1 = bufferTexCoordSet1 ? vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : vec2(0.0f);

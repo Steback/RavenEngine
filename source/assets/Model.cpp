@@ -17,7 +17,6 @@ namespace std {
             size_t seed = 0;
             hash<float> hasher;
             re::hashCombine(seed, hasher(vertex.position.x), hasher(vertex.position.y), hasher(vertex.position.z));
-            re::hashCombine(seed, hasher(vertex.color.x), hasher(vertex.color.y), hasher(vertex.color.z));
             re::hashCombine(seed, hasher(vertex.normal.x), hasher(vertex.normal.y), hasher(vertex.normal.z));
             re::hashCombine(seed, hasher(vertex.uv0.x), hasher(vertex.uv0.y));
             return seed;
@@ -64,12 +63,6 @@ namespace re {
                             attrib.vertices[3 * index.vertex_index + 0],
                             attrib.vertices[3 * index.vertex_index + 1],
                             attrib.vertices[3 * index.vertex_index + 2],
-                    };
-
-                    vertex.color = {
-                            attrib.colors[3 * index.vertex_index + 0],
-                            attrib.colors[3 * index.vertex_index + 1],
-                            attrib.colors[3 * index.vertex_index + 2],
                     };
                 }
 

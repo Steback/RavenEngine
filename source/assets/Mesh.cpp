@@ -16,17 +16,16 @@ namespace re {
     std::vector<VkVertexInputAttributeDescription> Mesh::Vertex::getAttributeDescriptions() {
         return {
             { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) },
-            { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color) },
-            { 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) },
-            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv0) },
-            { 4, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv1) },
-            { 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, joint0) },
-            { 6, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weight0) }
+            { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) },
+            { 2, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv0) },
+            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv1) },
+            { 4, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, joint0) },
+            { 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weight0) }
         };
     }
 
     bool Mesh::Vertex::operator==(const Mesh::Vertex &other) const {
-        return position == other.position && color == other.color && normal == other.normal && uv0 == other.uv0;
+        return position == other.position && normal == other.normal && uv0 == other.uv0;
     }
 
     Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Texture> texture)
