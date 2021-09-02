@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "AssetsManager.hpp"
+#include "Texture.hpp"
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
 #include "utils/Macros.hpp"
@@ -18,7 +19,7 @@ namespace std {
             hash<float> hasher;
             re::hashCombine(seed, hasher(vertex.position.x), hasher(vertex.position.y), hasher(vertex.position.z));
             re::hashCombine(seed, hasher(vertex.normal.x), hasher(vertex.normal.y), hasher(vertex.normal.z));
-            re::hashCombine(seed, hasher(vertex.uv0.x), hasher(vertex.uv0.y));
+            re::hashCombine(seed, hasher(vertex.uv.x), hasher(vertex.uv.y));
             return seed;
         }
     };
@@ -75,7 +76,7 @@ namespace re {
                 }
 
                 if (index.texcoord_index >= 0) {
-                    vertex.uv0 = {
+                    vertex.uv = {
                             attrib.texcoords[2 * index.texcoord_index + 0],
                             attrib.texcoords[2 * index.texcoord_index + 1],
                     };
@@ -130,6 +131,13 @@ namespace re {
                 );
 
                 node.mesh->bind(commandBuffer);
+
+                std::vector<VkDescriptorSet> sets = {node.mesh->getTexture()->getDescriptorSet()};
+                vkCmdBindDescriptorSets(commandBuffer,
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                        layout, 0, static_cast<uint32_t>(sets.size()), sets.data(),
+                                        0, nullptr);
+
                 node.mesh->draw(commandBuffer);
             }
         }

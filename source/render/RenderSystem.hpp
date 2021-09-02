@@ -17,6 +17,7 @@ namespace re {
     class GraphicsPipeline;
     class Scene;
     class Entity;
+    class AssetsManager;
 
     struct MvpPushConstant {
         mat4 mvp{1.f};
@@ -24,7 +25,8 @@ namespace re {
 
     class RenderSystem : NonCopyable {
     public:
-        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene);
+        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,
+                     Scene* scene, AssetsManager* assetsManager);
 
         ~RenderSystem() override;
 
@@ -39,7 +41,8 @@ namespace re {
         std::shared_ptr<Entity> getCamera();
 
     private:
-        Scene& scene;
+        Scene* scene;
+        AssetsManager* assetsManager;
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;

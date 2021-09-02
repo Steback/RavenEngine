@@ -6,6 +6,7 @@
 #include "pipelines/GraphicsPipeline.hpp"
 #include "scene/Scene.hpp"
 #include "math/Common.hpp"
+#include "assets/AssetsManager.hpp"
 #include "entity/Entity.hpp"
 #include "entity/components/Transform.hpp"
 #include "entity/components/MeshRender.hpp"
@@ -13,9 +14,9 @@
 
 namespace re {
 
-    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene& scene)
-            : device(std::move(device)), scene(scene) {
-        camera = scene.getEntity("Camera");
+    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, Scene* scene, AssetsManager* assetsManager)
+            : device(std::move(device)), scene(scene), assetsManager(assetsManager) {
+        camera = scene->getEntity("Camera");
 
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -28,6 +29,7 @@ namespace re {
                 this->device->getDevice(),
                 shadersName + ".vert", shadersName + ".frag",
                 configInfo,
+                std::vector<VkDescriptorSetLayout>{assetsManager->getDescriptorSetLayout()},
                 std::vector<VkPushConstantRange>{pushConstantRange}
         );
     }
@@ -39,8 +41,8 @@ namespace re {
         mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
 
         pipeline->bind(commandBuffer);
-        for (auto& id : scene.getRegistry().view<Transform, MeshRender>()) {
-            auto entity = scene.getEntity(id);
+        for (auto& id : scene->getRegistry().view<Transform, MeshRender>()) {
+            auto entity = scene->getEntity(id);
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 

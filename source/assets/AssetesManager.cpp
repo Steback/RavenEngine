@@ -14,10 +14,14 @@
 namespace re {
 
     AssetsManager::AssetsManager(std::shared_ptr<Device> device) : device(std::move(device)) {
-
+        createDescriptorPool();
+        createDescriptorSetLayout();
     }
 
-    AssetsManager::~AssetsManager() = default;
+    AssetsManager::~AssetsManager() {
+        vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
+        vkDestroyDescriptorSetLayout(device->getDevice(), descriptorSetLayout, nullptr);
+    }
 
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string &fileName) {
         File file = FilesManager::getFile(fileName.c_str());
@@ -114,8 +118,7 @@ namespace re {
         device->copyBufferToImage(stagingBuffer, *texture);
 
         texture->generateMipmaps(device);
-        // TODO: Create descriptor pool and layout then create texture set
-//        texture->createDescriptorSet();
+        texture->createDescriptorSet(descriptorPool, descriptorSetLayout);
 
         return texture;
     }
@@ -132,6 +135,10 @@ namespace re {
         return textures[id];
     }
 
+    VkDescriptorSetLayout AssetsManager::getDescriptorSetLayout() {
+        return descriptorSetLayout;
+    }
+
     stbi_uc * AssetsManager::loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size) {
         int channels;
 
@@ -142,6 +149,34 @@ namespace re {
         *size = *width * *height * static_cast<int>(STBI_rgb_alpha);
 
         return image;
+    }
+
+    void AssetsManager::createDescriptorPool() {
+        VkDescriptorPoolSize poolSize{};
+        poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        poolSize.descriptorCount = MAX_OBJECTS;
+
+        VkDescriptorPoolCreateInfo poolInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
+        poolInfo.maxSets = MAX_OBJECTS;
+        poolInfo.poolSizeCount = 1;
+        poolInfo.pPoolSizes = &poolSize;
+
+        vkCreateDescriptorPool(device->getDevice(), &poolInfo, nullptr, &descriptorPool);
+    }
+
+    void AssetsManager::createDescriptorSetLayout() {
+        VkDescriptorSetLayoutBinding layoutBinding{};
+        layoutBinding.binding = 0;
+        layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        layoutBinding.descriptorCount = 1;
+        layoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+        layoutBinding.pImmutableSamplers = VK_NULL_HANDLE;
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
+        layoutInfo.bindingCount = 1;
+        layoutInfo.pBindings = &layoutBinding;
+
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
     }
 
 } // namespace re

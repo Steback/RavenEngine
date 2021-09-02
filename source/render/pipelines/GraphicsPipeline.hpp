@@ -21,7 +21,8 @@ namespace re {
         GraphicsPipeline();
 
         GraphicsPipeline(VkDevice device, const std::string& vertName, const std::string& fragName,
-                         const ConfigInfo& configInfo, const std::vector<VkPushConstantRange>& constantRanges);
+                         const ConfigInfo& configInfo, const std::vector<VkDescriptorSetLayout>& layouts,
+                         const std::vector<VkPushConstantRange>& constantRanges);
 
         ~GraphicsPipeline() override;
 

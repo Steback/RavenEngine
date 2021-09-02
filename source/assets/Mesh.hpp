@@ -31,10 +31,7 @@ namespace re {
         struct Vertex {
             vec3 position{};
             vec3 normal{};
-            vec2 uv0{};
-            vec2 uv1{};
-            vec4 joint0{};
-            vec4 weight0{};
+            vec2 uv{};
 
             /**
              *

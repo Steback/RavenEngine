@@ -1,7 +1,6 @@
 #include "GraphicsPipeline.hpp"
 
 #include "files/FilesManager.hpp"
-#include "files/File.hpp"
 #include "assets/Mesh.hpp"
 #include "utils/Macros.hpp"
 
@@ -15,8 +14,8 @@ namespace re  {
         vkDestroyPipeline(device, pipeline, nullptr);
     }
 
-    GraphicsPipeline::GraphicsPipeline(VkDevice device, const std::string &vertName,
-                                       const std::string &fragName, const Pipeline::ConfigInfo &configInfo,
+    GraphicsPipeline::GraphicsPipeline(VkDevice device, const std::string& vertName, const std::string& fragName,
+                                       const ConfigInfo& configInfo, const std::vector<VkDescriptorSetLayout>& layouts,
                                        const std::vector<VkPushConstantRange>& constantRanges) : device(device) {
         vertexShader = std::make_unique<Shader>(device, vertName, VK_SHADER_STAGE_VERTEX_BIT);
         fragmentShader = std::make_unique<Shader>(device, fragName, VK_SHADER_STAGE_FRAGMENT_BIT);
@@ -35,8 +34,8 @@ namespace re  {
         vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pSetLayouts = nullptr;
+        pipelineLayoutInfo.setLayoutCount = CAST_U32(layouts.size());
+        pipelineLayoutInfo.pSetLayouts = layouts.data();
         pipelineLayoutInfo.pushConstantRangeCount = CAST_U32(constantRanges.size());
         pipelineLayoutInfo.pPushConstantRanges = constantRanges.data();
 

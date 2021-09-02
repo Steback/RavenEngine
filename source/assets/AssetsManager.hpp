@@ -68,9 +68,29 @@ namespace re {
 
         std::shared_ptr<Texture> getTexture(uint32_t id);
 
+        VkDescriptorSetLayout getDescriptorSetLayout();
+
+        /**
+         * @brief Load image from file using stb_image
+         * @param fileName
+         * @param width
+         * @param height
+         * @param size
+         * @return Pixels of image
+         */
         static stbi_uc *loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size);
 
     private:
+        void createDescriptorPool();
+
+        void createDescriptorSetLayout();
+
+    public:
+        static const int MAX_OBJECTS = 100;
+
+    private:
+        VkDescriptorPool descriptorPool{};
+        VkDescriptorSetLayout descriptorSetLayout{};
         std::shared_ptr<Device> device;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
         std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;
