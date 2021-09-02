@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "vk_mem_alloc.h"
+#include "tiny_gltf.h"
 
 #include "math/Vector2.hpp"
 #include "math/Vector3.hpp"
@@ -88,6 +89,14 @@ namespace re {
         [[nodiscard]] bool isHasIndexBuffer() const;
 
         [[nodiscard]] std::shared_ptr<Texture> getTexture() const;
+
+        /**
+         * @brief Load Mesh from GLTF2 file
+         * @param model TinyGLTF Model
+         * @param mesh  TinyGLTF mesh
+         * @return Mesh vertices and Indices
+         */
+        static Data loadMesh(const tinygltf::Model& model, const tinygltf::Mesh& mesh);
 
     private:
         void createVertexBuffer(const std::vector<Vertex>& vertices);
