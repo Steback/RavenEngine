@@ -8,7 +8,7 @@
 
 Gltf::Gltf() : re::Base("Gltf") {
     scene->loadScene("scenes/gltf.json", assetsManager.get());
-    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "samples/gltf/model", *scene);
+    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", *scene);
 
     entity = scene->getEntity("Damaged Helmet");
 }
