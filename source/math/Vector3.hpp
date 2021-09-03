@@ -35,6 +35,12 @@ namespace re {
         explicit Vector3(const float* p);
 
         /**
+         * @brief Constructor from C-Style array
+         * @param p C-Style array of size 3
+         */
+        explicit Vector3(const double * p);
+
+        /**
          * @brief Copy constructor
          * @param v const reference of Vector3
          */
@@ -47,18 +53,8 @@ namespace re {
          */
         Vector3& operator=(const Vector3& v);
 
-        /**
-         * @brief Random access operator
-         * @param index Access index
-         * @return Reference of value
-         */
         float& operator[](unsigned int index);
 
-        /**
-         * @brief Random access operator
-         * @param index Access index
-         * @return Const reference of value
-         */
         const float& operator[](unsigned int index) const;
 
         bool operator==(const Vector3& v) const;

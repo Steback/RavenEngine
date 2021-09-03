@@ -35,6 +35,18 @@ namespace re {
         explicit Matrix3(const Vector3 m[3]);
 
         /**
+         * @brief Constructor form pointer
+         * @param p C_style array of size 9
+         */
+        explicit Matrix3(const float* p);
+
+        /**
+         * @brief Constructor form pointer
+         * @param p C_style array of size 9
+         */
+        explicit Matrix3(const double * p);
+
+        /**
          * @brief Copy constructor
          * @param m Matrix3 object
          */
@@ -62,11 +74,6 @@ namespace re {
 
         Matrix3 operator*(const Matrix3& m) const;
 
-        /**
-         * @brief Matrix division operation
-         * @param n Scalar
-         * @return Copy of matrix scaled by 1 / n
-         */
         Matrix3 operator/(float n) const;
 
         Matrix3& operator+=(const Matrix3& m);
@@ -111,7 +118,7 @@ namespace re {
         [[nodiscard]] std::string str(bool newLine = true) const;
 
     private:
-        Vector3 rows[3];
+        Vector3 values[3];
     };
 
     inline Matrix3 operator*(float n, const Matrix3& m) {

@@ -55,6 +55,20 @@ namespace re {
          */
         explicit Quaternion(const float* p);
 
+        /**
+         * @brief Construct Quaternion from pointer
+         * @param p C-Style array of size 4
+         */
+        explicit Quaternion(const double * p);
+
+        Quaternion(const Quaternion& q);
+
+        Quaternion& operator=(const Quaternion& q);
+
+        float& operator[](size_t i);
+
+        const float& operator[](size_t i) const;
+
         bool operator==(const Quaternion& q) const;
 
         bool operator!=(const Quaternion& q) const;

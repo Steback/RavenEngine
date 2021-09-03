@@ -37,6 +37,25 @@ namespace re {
 
     }
 
+    Quaternion::Quaternion(const double *p) {
+        w = static_cast<float>(p[0]);
+        x = static_cast<float>(p[1]);
+        y = static_cast<float>(p[2]);
+        z = static_cast<float>(p[3]);
+    }
+
+    Quaternion::Quaternion(const Quaternion &q) = default;
+
+    Quaternion &Quaternion::operator=(const Quaternion &q) = default;
+
+    float &Quaternion::operator[](size_t i) {
+        return (&w)[i];
+    }
+
+    const float &Quaternion::operator[](size_t i) const {
+        return (&w)[i];
+    }
+
     bool Quaternion::operator==(const Quaternion &q) const {
         return w == q.w && x == q.x && y == q.y && z == q.z;
     }
@@ -79,8 +98,7 @@ namespace re {
     }
 
     Quaternion Quaternion::operator/(float n) const {
-        float f = 1.0f / n;
-        return *this * f;
+        return {w / n, x / n, y / n, z / n};
     }
 
     Quaternion &Quaternion::operator+=(float n) {

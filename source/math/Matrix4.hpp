@@ -39,9 +39,15 @@ namespace re {
 
         /**
          * @brief Constructor form pointer
-         * @param p C_style array of floats
+         * @param p C_style array of size 16
          */
         explicit Matrix4(const float* p);
+
+        /**
+         * @brief Constructor form pointer
+         * @param p C_style array of size 16
+         */
+        explicit Matrix4(const double * p);
 
         /**
          * @brief Copy constructor
@@ -56,18 +62,8 @@ namespace re {
          */
         Matrix4& operator=(const Matrix4& m);
 
-        /**
-         * @brief Random access operator
-         * @param row Row access index
-         * @return Reference of row
-         */
         Vector4& operator[](size_t row);
 
-        /**
-         * @brief Random access operator
-         * @param row Row access index
-         * @return Const reference of row
-         */
         const Vector4& operator[](size_t row) const;
 
         bool operator==(const Matrix4& m) const;
@@ -86,11 +82,6 @@ namespace re {
 
         Matrix4 operator*(const Matrix4& m) const;
 
-        /**
-         * @brief Matrix division operations
-         * @param n Scalar
-         * @return Copy of matrix scaled by 1 / n
-         */
         Matrix4 operator/(float n) const;
 
         Matrix4& operator+=(const Matrix4& m);
@@ -135,7 +126,7 @@ namespace re {
         [[nodiscard]] std::string str(bool newLine = true) const;
 
     private:
-        Vector4 rows[4];
+        Vector4 values[4];
     };
 
     inline Matrix4 operator*(float n, const Matrix4& m) {

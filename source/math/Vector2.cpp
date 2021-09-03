@@ -68,8 +68,7 @@ namespace re {
     }
 
     Vector2 Vector2::operator/(float n) const {
-        float f = 1.0f / n;
-        return *this * f;
+        return {x / n,  y / n};
     }
 
     Vector2 &Vector2::operator+=(float n) {

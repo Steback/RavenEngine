@@ -19,6 +19,12 @@ namespace re {
 
     }
 
+    Vector3::Vector3(const double *p) {
+        x = static_cast<float>(p[0]);
+        y = static_cast<float>(p[1]);
+        z = static_cast<float>(p[2]);
+    }
+
     Vector3::Vector3(const Vector3 &v) = default;
 
     Vector3 &Vector3::operator=(const Vector3 &v) = default;
@@ -68,8 +74,7 @@ namespace re {
     }
 
     Vector3 Vector3::operator/(float n) const {
-        float f = 1.0f / n;
-        return *this * f;
+        return {x / n, y / n, z / n};
     }
 
     Vector3 &Vector3::operator+=(float n) {

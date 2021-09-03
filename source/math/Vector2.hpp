@@ -49,18 +49,8 @@ namespace re {
          */
         Vector2& operator=(const Vector2& v);
 
-        /**
-         * @brief Random access operator
-         * @param index Access index
-         * @return Reference of value
-         */
         float& operator[](unsigned int index);
 
-        /**
-         * @brief Random access operator
-         * @param index Access index
-         * @return Const reference of value
-         */
         const float& operator[](unsigned int index) const;
 
         bool operator==(const Vector2& v) const;

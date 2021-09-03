@@ -19,6 +19,13 @@ namespace re {
 
     }
 
+    Vector4::Vector4(const double *p) {
+        x = static_cast<float>(p[0]);
+        y = static_cast<float>(p[1]);
+        z = static_cast<float>(p[2]);
+        w = static_cast<float>(p[3]);
+    }
+
     Vector4::Vector4(const Vector4 &v) = default;
 
     Vector4 &Vector4::operator=(const Vector4 &v) = default;
@@ -68,8 +75,7 @@ namespace re {
     }
 
     Vector4 Vector4::operator/(float n) const {
-        float f = 1.0f / n;
-        return *this * f;
+        return {x / n, y / n, z / n, w / n};
     }
 
     Vector4 &Vector4::operator+=(float n) {

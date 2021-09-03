@@ -155,19 +155,19 @@ namespace re {
         newNode.matrix = Matrix4(1.0f);
 
         if (node.translation.size() == 3) {
-            newNode.translation = vec3((const float*)node.translation.data());
+            newNode.translation = vec3(node.translation.data());
         }
 
         if (node.rotation.size() == 4) {
-            newNode.rotation = quat((const float*)node.rotation.data());
+            newNode.rotation = quat(node.rotation.data());
         }
 
         if (node.scale.size() == 3) {
-            newNode.scale = vec3((const float*)node.scale.data());
+            newNode.scale = vec3(node.scale.data());
         }
 
         if (node.matrix.size() == 16) {
-            newNode.matrix = mat4((const float*)node.matrix.data());
+            newNode.matrix = mat4(node.matrix.data());
         }
 
         if (node.mesh > -1) {
