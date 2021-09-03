@@ -17,10 +17,10 @@
             "mesh" : 0,
             "name" : "node_damagedHelmet_-6514",
             "rotation" : [
-                0.7071068286895752,
                 0,
+                1,
                 0,
-                0.7071068286895752
+                -4.371138828673793e-08
             ]
         }
     ],
@@ -34,7 +34,7 @@
             "emissiveTexture" : {
                 "index" : 0
             },
-            "name" : "Material_MR.001",
+            "name" : "Material_MR",
             "normalTexture" : {
                 "index" : 1
             },
@@ -53,7 +53,7 @@
     ],
     "meshes" : [
         {
-            "name" : "mesh_helmet_LP_13930damagedHelmet.001",
+            "name" : "mesh_helmet_LP_13930damagedHelmet",
             "primitives" : [
                 {
                     "attributes" : {
