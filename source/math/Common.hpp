@@ -4,6 +4,8 @@
 
 #include <cmath>
 
+#include "Vector3.hpp"
+
 
 namespace re {
 
@@ -40,6 +42,10 @@ namespace re {
      */
     inline float radians(float angle) {
         return angle * 0.01745329251994329576923690768489f;
+    }
+
+    inline Vector3 radians(const Vector3& angles) {
+        return {radians(angles.x), radians(angles.y), radians(angles.z)};
     }
 
 }

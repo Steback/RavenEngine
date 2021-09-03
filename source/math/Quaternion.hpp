@@ -163,7 +163,7 @@ namespace re {
         [[nodiscard]] std::string str() const;
 
     public:
-        float w{}, x{}, y{}, z{};
+        float w{1.0f}, x{}, y{}, z{};
     };
 
     inline Quaternion operator+(float n, const Quaternion& q) {

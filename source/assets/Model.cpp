@@ -29,7 +29,7 @@ namespace std {
 namespace re {
 
     Matrix4 Model::Node::getLocalMatrix() const {
-        Matrix3 rotationMatrix = rotation.getRotationMatrix();
+        Matrix3 rotationMatrix = rotation.unit().getRotationMatrix();
 
         return Matrix4(
                 { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },

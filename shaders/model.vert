@@ -12,6 +12,6 @@ layout(push_constant) uniform PushConstant {
 } push;
 
 void main() {
-    gl_Position = pusb.mvp * push.node * vec4(position, 1.0);
+    gl_Position = push.mvp * push.node * vec4(position, 1.0);
     fragUV = uv;
 }

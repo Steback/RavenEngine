@@ -46,10 +46,10 @@ namespace re {
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            PushConstant pushMvp;
-            pushMvp.mvp = viewProj * transform.getWorldMatrix();
+            PushConstant push;
+            push.mvp = viewProj * transform.getWorldMatrix();
 
-            meshRender.model->render(commandBuffer, pipeline->getLayout(), pushMvp);
+            meshRender.model->render(commandBuffer, pipeline->getLayout(), push);
         }
     }
 

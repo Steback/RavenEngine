@@ -20,17 +20,17 @@ namespace re {
     }
 
     Quaternion::Quaternion(const Vector3 &eulerAngles) {
-        float cy = std::cos(eulerAngles.z * 0.5f);
-        float sy = std::sin(eulerAngles.z * 0.5f);
-        float cp = std::cos(eulerAngles.y * 0.5f);
-        float sp = std::sin(eulerAngles.y * 0.5f);
-        float cr = std::cos(eulerAngles.x * 0.5f);
-        float sr = std::sin(eulerAngles.x * 0.5f);
+        float cz = std::cos(eulerAngles.z * 0.5f);
+        float sz = std::sin(eulerAngles.z * 0.5f);
+        float cy = std::cos(eulerAngles.y * 0.5f);
+        float sy = std::sin(eulerAngles.y * 0.5f);
+        float cx = std::cos(eulerAngles.x * 0.5f);
+        float sx = std::sin(eulerAngles.x * 0.5f);
 
-        w = cr * cp * cy + sr * sp * sy;
-        x = sr * cp * cy - cr * sp * sy;
-        y = cr * sp * cy + sr * cp * sy;
-        z = cr * cp * sy - sr * sp * cy;
+        w = cx * cy * cz + sx * sy * sz;
+        x = sx * cy * cz - cx * sy * sz;
+        y = cx * sy * cz + sx * cy * sz;
+        z = cx * cy * sz - sx * sy * cz;
     }
 
     Quaternion::Quaternion(const float *p) : w(p[0]), x(p[1]), y(p[2]), z(p[3]) {
@@ -138,6 +138,7 @@ namespace re {
         result[2][0] = 2.0f * (qxz + qwy);
         result[2][1] = 2.0f * (qyz - qwx);
         result[2][2] = 1.0f - 2.0f * (qxx +  qyy);
+
         return result;
     }
 
