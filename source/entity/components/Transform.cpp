@@ -51,7 +51,7 @@ namespace re {
                 {"w", rotation.w},
                 {"x", rotation.x},
                 {"y", rotation.y},
-                {"z", rotation.x}
+                {"z", rotation.z}
             }},
             {"scale", {
                 {"x", scale.x},

@@ -66,6 +66,14 @@ namespace re {
     inline Vector3 degrees(const Vector3& angles) {
         return angles * 57.295779513082320876798154814105f;
     }
+
+    inline Vector3 sin(const Vector3& angles) {
+        return {std::sin(angles.x), std::sin(angles.y), std::sin(angles.z)};
+    }
+
+    inline Vector3 cos(const Vector3& angles) {
+        return {std::cos(angles.x), std::cos(angles.y), std::cos(angles.z)};
+    }
 }
 
 

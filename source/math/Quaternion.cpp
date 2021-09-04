@@ -1,8 +1,10 @@
 #include "Quaternion.hpp"
 
 #include <cmath>
+#include <functional>
 
 #include "Common.hpp"
+#include "Vector2.hpp"
 #include "Vector3.hpp"
 #include "Matrix3.hpp"
 
@@ -20,17 +22,13 @@ namespace re {
     }
 
     Quaternion::Quaternion(const Vector3 &eulerAngles) {
-        float cz = std::cos(eulerAngles.z * 0.5f);
-        float sz = std::sin(eulerAngles.z * 0.5f);
-        float cy = std::cos(eulerAngles.y * 0.5f);
-        float sy = std::sin(eulerAngles.y * 0.5f);
-        float cx = std::cos(eulerAngles.x * 0.5f);
-        float sx = std::sin(eulerAngles.x * 0.5f);
+        vec3 c = cos(eulerAngles * 0.5f);
+        vec3 s = sin(eulerAngles * 0.5f);
 
-        w = cx * cy * cz + sx * sy * sz;
-        x = sx * cy * cz - cx * sy * sz;
-        y = cx * sy * cz + sx * cy * sz;
-        z = cx * cy * sz - sx * sy * cz;
+        w = c.x * c.y * c.z + s.x * s.y * s.z;
+        x = s.x * c.y * c.z - c.x * s.y * s.z;
+        y = c.x * s.y * c.z + s.x * c.y * s.z;
+        z = c.x * c.y * s.z - s.x * s.y * c.z;
     }
 
     Quaternion::Quaternion(const float *p) : w(p[0]), x(p[1]), y(p[2]), z(p[3]) {
@@ -202,26 +200,7 @@ namespace re {
     }
 
     Vector3 Quaternion::getEulerAngles() const {
-        Vector3 angles;
-
-        // roll (x-axis rotation)
-        float sinr_cosp = 2 * (w * x + y * z);
-        float cosr_cosp = 1 - 2 * (x * x + y * y);
-        angles.x = std::atan2(sinr_cosp, cosr_cosp);
-
-        // pitch (y-axis rotation)
-        float sinp = 2 * (w * y - z * x);
-        if (std::abs(sinp) >= 1)
-            angles.y = std::copysign(pi() / 2, sinp); // use 90 degrees if out of range
-        else
-            angles.y = std::asin(sinp);
-
-        // yaw (z-axis rotation)
-        float siny_cosp = 2 * (w * z + x * y);
-        float cosy_cosp = 1 - 2 * (y * y + z * z);
-        angles.x = std::atan2(siny_cosp, cosy_cosp);
-
-        return angles;
+        return {pitch(), yaw(), roll()};
     }
 
     Quaternion Quaternion::conjugate() const {
@@ -254,6 +233,24 @@ namespace re {
 
     std::string Quaternion::str() const {
         return "| " + std::to_string(w) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " |";
+    }
+
+    float Quaternion::roll() const {
+        return std::atan2(2.0f * (x * y + w * z), w * w + x * x - y * y - z * z);
+    }
+
+    float Quaternion::pitch() const {
+        const float y_ = 2.0f * (y * z + w * x);
+        const float x_ = w * w - x * x - y * y + z * z;
+
+        if (vec2(x_, y_) == vec2())
+            return 2.0f * std::atan2(x, w);
+
+        return std::atan2(y_, x_);
+    }
+
+    float Quaternion::yaw() const {
+        return std::asin(std::clamp(-2.0f * (x * z - w * y), -1.0f, 1.0f));
     }
 
 } // namespace re

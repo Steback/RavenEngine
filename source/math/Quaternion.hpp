@@ -176,6 +176,12 @@ namespace re {
          */
         [[nodiscard]] std::string str() const;
 
+        [[nodiscard]] float roll() const;
+
+        [[nodiscard]] float pitch() const;
+
+        [[nodiscard]] float yaw() const;
+
     public:
         float w{1.0f}, x{}, y{}, z{};
     };
