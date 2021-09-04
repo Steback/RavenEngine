@@ -1,6 +1,30 @@
 {
     "entities": [
         {
+            "meshRender": {
+                "name": "models/DamagedHelmet.gltf"
+            },
+            "name": "Damaged Helmet",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 3.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        },
+        {
             "camera": {
                 "type": 1
             },
@@ -21,30 +45,6 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            }
-        },
-        {
-            "meshRender": {
-                "name": "models/DamagedHelmet.gltf"
-            },
-            "name": "Damaged Helmet",
-            "transform": {
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 3.0
-                },
-                "rotation": {
-                    "w": 0.4999999701976776,
-                    "x": -0.4999999701976776,
-                    "y": -0.4999999701976776,
-                    "z": 0.4999999701976776
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
                 }
             }
         }
