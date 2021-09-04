@@ -12,8 +12,8 @@ namespace re {
         config.load();
 
         renderer = std::make_unique<Renderer>(appName, config);
-        assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
-        scene = std::make_unique<Scene>();
+        assetsManager = std::make_shared<AssetsManager>(renderer->getDevice());
+        renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
         JobSystem::setUp();
     }
 
@@ -36,7 +36,7 @@ namespace re {
     }
 
     void Base::update() {
-        renderSystem->setProjection(renderer->getAspectRatio());
+        renderSystem->update(renderer->getAspectRatio());
         scene->update();
         onUpdate();
     }

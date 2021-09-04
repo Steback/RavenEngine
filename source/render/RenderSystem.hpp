@@ -27,23 +27,25 @@ namespace re {
     class RenderSystem : NonCopyable {
     public:
         RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,
-                     Scene* scene, AssetsManager* assetsManager);
+                     std::shared_ptr<AssetsManager> assetsManager);
 
         ~RenderSystem() override;
 
         void renderScene(VkCommandBuffer commandBuffer);
 
+        std::shared_ptr<Entity> getCamera();
+
         /**
          *
          * @param aspect SwapChain extent aspect ratio
          */
-        void setProjection(float aspect);
+        void update(float aspect);
 
-        std::shared_ptr<Entity> getCamera();
+        void setScene(std::shared_ptr<Scene> scene);
 
     private:
-        Scene* scene;
-        AssetsManager* assetsManager;
+        std::shared_ptr<Scene> scene;
+        std::shared_ptr<AssetsManager> assetsManager;
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;

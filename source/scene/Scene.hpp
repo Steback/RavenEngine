@@ -26,7 +26,12 @@ namespace re {
         friend Entity;
 
     public:
-        Scene();
+        /**
+         *
+         * @param fileName Scene file name
+         * @param assetsManager Valid pointer to AssetsManager
+         */
+        Scene(std::string fileName, std::shared_ptr<AssetsManager> assetsManager);
 
         ~Scene() override;
 
@@ -49,13 +54,13 @@ namespace re {
          * @param fileName
          * @param assetsManager Valid pointer to AssetsManager
          */
-        void load(const std::string &fileName, AssetsManager* assetsManager);
+        void load();
 
         /**
          * @brief Save scene to a JSON file
          * @param fileName
          */
-        void save(const std::string& fileName);
+        void save();
 
         /**
          * @brief Update some entities components.
@@ -70,9 +75,14 @@ namespace re {
 
         std::shared_ptr<Entity> getEntity(const std::string& name);
 
+        bool loaded() const;
+
     private:
+        std::string fileName;
         entt::registry registry;
         std::unordered_map<id_t, std::shared_ptr<Entity>> entities;
+        std::shared_ptr<AssetsManager> assetsManager;
+        bool wasLoaded{};
     };
 
 } // namespace re

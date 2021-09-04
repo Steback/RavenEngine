@@ -54,7 +54,7 @@ namespace re {
         /**
          * @brief Default constructor. Create Model object from GLTF2 file
          * @param assetsManager Pointer to Assets Manager
-         * @param model TinyGLTF model loaded
+         * @param model TinyGLTF model wasLoaded
          */
         Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model);
 

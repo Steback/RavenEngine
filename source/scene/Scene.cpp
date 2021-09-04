@@ -12,7 +12,10 @@
 
 namespace re {
 
-    Scene::Scene() = default;
+    Scene::Scene(std::string fileName, std::shared_ptr<AssetsManager> assetsManager)
+            : fileName(std::move(fileName)), assetsManager(std::move(assetsManager)) {
+
+    }
 
     Scene::~Scene() = default;
 
@@ -26,7 +29,7 @@ namespace re {
         return entities[id] = std::make_shared<Entity>(entity, id, this);
     }
 
-    void Scene::load(const std::string &fileName, AssetsManager* assetsManager) {
+    void Scene::load() {
         File file = FilesManager::getFile(fileName.c_str());
 
         json scene;
@@ -39,9 +42,11 @@ namespace re {
                 entity->addComponent<MeshRender>(assetsManager->loadModel(entityJson["meshRender"]["name"].get<std::string>()));
             }
         }
+
+        wasLoaded = true;
     }
 
-    void Scene::save(const std::string &fileName) {
+    void Scene::save() {
         json scene;
 
         scene["entities"] = {};
@@ -72,6 +77,10 @@ namespace re {
     void Scene::update() {
         for (auto& entity : registry.view<Camera>())
             registry.get<Camera>(entity).update();
+    }
+
+    bool Scene::loaded() const {
+        return wasLoaded;
     }
 
 } // namespace re

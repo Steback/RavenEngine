@@ -555,7 +555,7 @@ class ObjReader {
                        const ObjReaderConfig &config = ObjReaderConfig());
 
   ///
-  /// .obj was loaded or parsed correctly.
+  /// .obj was wasLoaded or parsed correctly.
   ///
   bool Valid() const { return valid_; }
 
@@ -607,7 +607,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
              bool default_vcols_fallback = true);
 
 /// Loads .obj from a file with custom user callback.
-/// .mtl is loaded as usual and parsed material_t data will be passed to
+/// .mtl is wasLoaded as usual and parsed material_t data will be passed to
 /// `callback.mtllib_cb`.
 /// Returns true when loading .obj/.mtl become success.
 /// Returns warning message into `warn`, and error message into `err`

@@ -73,9 +73,9 @@ namespace re {
     protected:
         Config config;
         std::unique_ptr<Renderer> renderer;
-        std::unique_ptr<AssetsManager> assetsManager;
+        std::shared_ptr<AssetsManager> assetsManager;
         std::unique_ptr<RenderSystem> renderSystem;
-        std::unique_ptr<Scene> scene;
+        std::shared_ptr<Scene> scene;
     };
 
 } // namespace re
