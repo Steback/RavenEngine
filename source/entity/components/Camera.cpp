@@ -53,7 +53,7 @@ namespace re {
         view[1][0] = u.y;
         view[2][0] = u.z;
         view[0][1] = v.x;
-        view[1][1] = v.y;
+        view[1][1] = -v.y;
         view[2][1] = v.z;
         view[0][2] = w.x;
         view[1][2] = w.y;
