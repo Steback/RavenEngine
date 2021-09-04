@@ -6,7 +6,7 @@
 
 
 Cube::Cube() : re::Base("Cube") {
-    scene->loadScene("cube.json", assetsManager.get());
+    scene->load("cube.json", assetsManager.get());
     renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "samples/cube/model", *scene);
 
     cube = scene->getEntity("Cube");

@@ -49,13 +49,13 @@ namespace re {
          * @param fileName
          * @param assetsManager Valid pointer to AssetsManager
          */
-        void loadScene(const std::string &fileName, AssetsManager* assetsManager);
+        void load(const std::string &fileName, AssetsManager* assetsManager);
 
         /**
          * @brief Save scene to a JSON file
          * @param fileName
          */
-        void saveScene(const std::string& fileName);
+        void save(const std::string& fileName);
 
         /**
          * @brief Update some entities components.

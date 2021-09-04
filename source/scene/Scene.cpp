@@ -26,7 +26,7 @@ namespace re {
         return entities[id] = std::make_shared<Entity>(entity, id, this);
     }
 
-    void Scene::loadScene(const std::string &fileName, AssetsManager* assetsManager) {
+    void Scene::load(const std::string &fileName, AssetsManager* assetsManager) {
         File file = FilesManager::getFile(fileName.c_str());
 
         json scene;
@@ -41,7 +41,7 @@ namespace re {
         }
     }
 
-    void Scene::saveScene(const std::string &fileName) {
+    void Scene::save(const std::string &fileName) {
         json scene;
 
         scene["entities"] = {};
