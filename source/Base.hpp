@@ -18,6 +18,7 @@
 #include "render/RenderSystem.hpp"
 #include "scene/Scene.hpp"
 #include "config/Cli.hpp"
+#include "jobSystem/JobSystem.hpp"
 
 
 namespace re {

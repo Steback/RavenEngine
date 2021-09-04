@@ -14,9 +14,12 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_unique<AssetsManager>(renderer->getDevice());
         scene = std::make_unique<Scene>();
+        JobSystem::setUp();
     }
 
-    Base::~Base() = default;
+    Base::~Base() {
+        JobSystem::stop();
+    }
 
     void Base::loop() {
         while (renderer->isWindowOpen()) {

@@ -1607,7 +1607,7 @@ static std::istream &safeGetline(std::istream &is, std::string &t) {
   // That is faster than reading them one-by-one using the std::istream.
   // Code that uses streambuf this way must be guarded by a sentry object.
   // The sentry object performs various tasks,
-  // such as thread synchronization and updating the stream state.
+  // such as jobSystem synchronization and updating the stream state.
 
   std::istream::sentry se(is, true);
   std::streambuf *sb = is.rdbuf();
