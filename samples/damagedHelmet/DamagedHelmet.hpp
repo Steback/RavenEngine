@@ -16,6 +16,7 @@ public:
     void onDrawImGui() override;
 
 private:
+    re::vec3 angles;
     std::shared_ptr<re::Entity> entity;
 };
 
