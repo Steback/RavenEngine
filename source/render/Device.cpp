@@ -143,8 +143,8 @@ namespace re {
     }
 
     void Device::copyBuffer(Buffer &src, Buffer &dst, VkDeviceSize size) {
-        VkQueue queue = queues[queueFamilyIndices.transfer];
-        VkCommandPool commandPool = commandPools[queueFamilyIndices.transfer];
+        VkQueue queue = getQueue(static_cast<int32_t>(queueFamilyIndices.transfer));
+        VkCommandPool commandPool = getCommandPool(static_cast<int32_t>(queueFamilyIndices.transfer));
         VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool);
 
         VkBufferCopy copyRegion{};
@@ -252,74 +252,60 @@ namespace re {
         return commandPools[index > -1 ? index : queueFamilyIndices.graphics];
     }
 
-    void Device::createLogicalDevice(const std::vector<const char *>& extensions, VkPhysicalDeviceFeatures features,
-                                     VkQueueFlags queueFlags) {
+    void Device::createLogicalDevice(const std::vector<const char *>& extensions, VkPhysicalDeviceFeatures features) {
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 
-        if (queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            queueFamilyIndices.graphics = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT);
-            queueFamilyIndices.present = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT, surface);
+        queueFamilyIndices.graphics = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT);
+        queueFamilyIndices.present = getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT, surface);
 
+        {
             if (queueFamilyIndices.graphics == queueFamilyIndices.present) {
                 VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfo.queueFamilyIndex = queueFamilyIndices.graphics;
                 createInfo.queueCount = 1;
                 createInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
-
                 queueCreateInfos.push_back(createInfo);
             } else {
                 VkDeviceQueueCreateInfo createInfoGraphics{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfoGraphics.queueFamilyIndex = queueFamilyIndices.graphics;
                 createInfoGraphics.queueCount = 1;
                 createInfoGraphics.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
-
                 queueCreateInfos.push_back(createInfoGraphics);
 
                 VkDeviceQueueCreateInfo createInfoPresent{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfoPresent.queueFamilyIndex = queueFamilyIndices.present;
                 createInfoPresent.queueCount = 1;
                 createInfoPresent.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
-
                 queueCreateInfos.push_back(createInfoPresent);
             }
-        } else {
-            queueFamilyIndices.graphics = 0;
         }
 
-        if (queueFlags & VK_QUEUE_COMPUTE_BIT) {
+        {
             queueFamilyIndices.compute = getQueueFamilyIndex(VK_QUEUE_COMPUTE_BIT);
-
-            VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
-            createInfo.queueFamilyIndex = queueFamilyIndices.compute;
-            createInfo.queueCount = 1;
-            createInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
-
-            queueCreateInfos.push_back(createInfo);
-        } else {
-            queueFamilyIndices.compute = queueFamilyIndices.graphics;
+            VkDeviceQueueCreateInfo computeCreateInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
+            computeCreateInfo.queueFamilyIndex = queueFamilyIndices.compute;
+            computeCreateInfo.queueCount = 1;
+            computeCreateInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
+            queueCreateInfos.push_back(computeCreateInfo);
         }
 
-        if (queueFlags & VK_QUEUE_TRANSFER_BIT) {
+        {
             queueFamilyIndices.transfer = getQueueFamilyIndex(VK_QUEUE_TRANSFER_BIT);
-
-            VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
-            createInfo.queueFamilyIndex = queueFamilyIndices.transfer;
-            createInfo.queueCount = 1;
-            createInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
-
-            queueCreateInfos.push_back(createInfo);
-        } else {
-            queueFamilyIndices.transfer = queueFamilyIndices.graphics;
+            VkDeviceQueueCreateInfo transferCreateInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
+            transferCreateInfo.queueFamilyIndex = queueFamilyIndices.transfer;
+            transferCreateInfo.queueCount = 1;
+            transferCreateInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
+            queueCreateInfos.push_back(transferCreateInfo);
         }
 
-        VkDeviceCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
-        createInfo.enabledExtensionCount = CAST_U32(extensions.size());
-        createInfo.ppEnabledExtensionNames = extensions.data();
-        createInfo.queueCreateInfoCount = CAST_U32(queueCreateInfos.size());
-        createInfo.pQueueCreateInfos = queueCreateInfos.data();
-        createInfo.pEnabledFeatures = &features;
+        VkDeviceCreateInfo deviceInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
+        deviceInfo.enabledExtensionCount = CAST_U32(extensions.size());
+        deviceInfo.ppEnabledExtensionNames = extensions.data();
+        deviceInfo.queueCreateInfoCount = CAST_U32(queueCreateInfos.size());
+        deviceInfo.pQueueCreateInfos = queueCreateInfos.data();
+        deviceInfo.pEnabledFeatures = &features;
 
-        RE_VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device),
+        RE_VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device),
                            "Failed to create logical device!");
     }
 

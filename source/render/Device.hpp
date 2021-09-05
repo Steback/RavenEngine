@@ -125,8 +125,7 @@ namespace re {
         VkCommandPool getCommandPool(int32_t index = -1);
 
     private:
-        void createLogicalDevice(const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
-                                 VkQueueFlags queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT);
+        void createLogicalDevice(const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features);
 
         void createAllocator(const std::shared_ptr<Instance>& instance_);
 
