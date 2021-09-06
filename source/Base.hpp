@@ -59,6 +59,11 @@ namespace re {
          */
         void run();
 
+        /**
+         * @brief Load scene from json file
+         */
+        void loadScene(const std::string& fileName);
+
     protected:
         /**
          * @brief Main update function. Can be overwritten

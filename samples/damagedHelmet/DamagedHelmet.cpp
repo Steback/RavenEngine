@@ -8,12 +8,7 @@
 
 
 DamagedHelmet::DamagedHelmet() : re::Base("DamagedHelmet") {
-    scene = std::make_shared<re::Scene>("damagedHelmet.json", assetsManager);
-    renderSystem->setScene(scene);
-
-    re::JobSystem::submit([scene = scene](){
-        scene->load();
-    });
+    loadScene("damagedHelmet.json");
 }
 
 DamagedHelmet::~DamagedHelmet() = default;

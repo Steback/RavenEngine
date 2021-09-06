@@ -57,4 +57,13 @@ namespace re {
         renderer->endFrame();
     }
 
+    void Base::loadScene(const std::string &fileName) {
+        scene = std::make_shared<re::Scene>(fileName, assetsManager);
+        renderSystem->setScene(scene);
+
+        re::JobSystem::submit([scene = scene](){
+            scene->load();
+        });
+    }
+
 } // namespace re
