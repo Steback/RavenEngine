@@ -39,7 +39,9 @@ void DamagedHelmet::onDrawImGui() {
             transform.rotation = re::Quaternion(re::radians(angles));
 
             if (ImGui::Button("Save")) {
-                scene->save();
+                re::JobSystem::submit([scene = scene]() {
+                    scene->save();
+                });
             }
         }
     }
