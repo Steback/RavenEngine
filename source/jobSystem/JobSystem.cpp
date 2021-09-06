@@ -5,24 +5,15 @@
 
 namespace re {
 
-    bool JobSystem::done;
-    std::queue<JobSystem::Job> JobSystem::jobs;
-    std::mutex JobSystem::queueMutex;
-    std::vector<std::thread> JobSystem::pool;
-    std::mutex JobSystem::poolMutex;
-    std::condition_variable JobSystem::poolSignal;
-
-    JobSystem::JobSystem() = default;
-
-    void JobSystem::setUp() {
+    JobSystem::JobSystem() {
         done = false;
 
         const unsigned threadCount = std::thread::hardware_concurrency() - 1;
         for (int i = 0; i < threadCount; ++i)
-            pool.emplace_back(JobSystem::waitJob);
+            pool.emplace_back(&JobSystem::waitJob, this);
     }
 
-    void JobSystem::stop() {
+    JobSystem::~JobSystem() {
         {
             std::unique_lock<std::mutex> lock(poolMutex);
             done = true;
@@ -52,7 +43,7 @@ namespace re {
             Job job;
             {
                 std::unique_lock<std::mutex> lock(queueMutex);
-                poolSignal.wait(lock, [=]{return done || !jobs.empty();});
+                poolSignal.wait(lock, [=, this]{return done || !jobs.empty();});
 
                 if (done && jobs.empty()) break;
 

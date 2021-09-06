@@ -21,39 +21,31 @@ namespace re {
         using Job = std::function<void()>;
 
     public:
-        /**
-         * @brief Setup Thread with the num of core available - 1(main thread)
-         */
-        static void setUp();
+        JobSystem();
 
-        /**
-         * @brief Joint threads
-         */
-        static void stop();
+        ~JobSystem() override;
 
         /**
          * @brief Submit job to queue
          * @param job void function without parameters
          */
-        static void submit(Job job);
+         void submit(Job job);
 
         /**
          * @brief Check if jobs queue is empty
          */
-        static bool empty();
+         bool empty();
 
     private:
-        JobSystem();
-
-        static void waitJob();
+         void waitJob();
 
     private:
-        static bool done;
-        static std::queue<Job> jobs;
-        static std::mutex queueMutex;
-        static std::vector<std::thread> pool;
-        static std::mutex poolMutex;
-        static std::condition_variable poolSignal;
+         bool done;
+         std::queue<Job> jobs;
+         std::mutex queueMutex;
+         std::vector<std::thread> pool;
+         std::mutex poolMutex;
+         std::condition_variable poolSignal;
     };
 
 } // namespace

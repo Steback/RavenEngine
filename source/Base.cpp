@@ -14,12 +14,10 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_shared<AssetsManager>(renderer->getDevice());
         renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
-        JobSystem::setUp();
+        jobSystem = std::make_shared<JobSystem>();
     }
 
-    Base::~Base() {
-        JobSystem::stop();
-    }
+    Base::~Base() = default;
 
     void Base::loop() {
         while (renderer->isWindowOpen()) {
@@ -61,7 +59,7 @@ namespace re {
         scene = std::make_shared<re::Scene>(fileName, assetsManager);
         renderSystem->setScene(scene);
 
-        re::JobSystem::submit([scene = scene](){
+        jobSystem->submit([scene = scene](){
             scene->load();
         });
     }
