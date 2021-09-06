@@ -35,11 +35,12 @@ namespace re {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer) {
+        pipeline->bind(commandBuffer);
+
         if (camera) {
             auto& cameraComponent = camera->getComponent<Camera>();
             mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
 
-            pipeline->bind(commandBuffer);
             for (auto& id : scene->getRegistry().view<Transform, MeshRender>()) {
                 auto entity = scene->getEntity(id);
                 auto& transform = entity->getComponent<Transform>();
@@ -61,12 +62,14 @@ namespace re {
         if (camera) {
             auto& cameraComponent = camera->getComponent<Camera>();
             cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
+        } else {
+            if (scene->loaded())
+                camera = scene->getEntity("Camera");
         }
     }
 
     void RenderSystem::setScene(std::shared_ptr<Scene> scene_) {
         scene = std::move(scene_);
-        camera = scene->getEntity("Camera");
     }
 
 } // namespace re

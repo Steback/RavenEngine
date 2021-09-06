@@ -21,8 +21,13 @@ namespace re {
         };
 
         for (auto& index : indices) {
-            if (queues.find(index) == queues.end())
-                vkGetDeviceQueue(device, index, 0, &queues[index]);
+            if (queues.find(index) == queues.end()) {
+                if (index == queueFamilyIndices.graphics) {
+                    vkGetDeviceQueue(device, index, 1, &queues[index]);
+                } else {
+                    vkGetDeviceQueue(device, index, 0, &queues[index]);
+                }
+            }
 
             if (commandPools.find(index) == commandPools.end())
                 createCommandPool(commandPools[index], index);
@@ -260,10 +265,13 @@ namespace re {
 
         {
             if (queueFamilyIndices.graphics == queueFamilyIndices.present) {
+                // The first queue will use only by the SwapChain. the second will be used for other thing such generated
+                // texture mipmaps
+                float priorityQueues[] = {DEFAULT_QUEUE_PRIORITY, DEFAULT_QUEUE_PRIORITY};
                 VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfo.queueFamilyIndex = queueFamilyIndices.graphics;
-                createInfo.queueCount = 1;
-                createInfo.pQueuePriorities = &DEFAULT_QUEUE_PRIORITY;
+                createInfo.queueCount = 2;
+                createInfo.pQueuePriorities = priorityQueues;
                 queueCreateInfos.push_back(createInfo);
             } else {
                 VkDeviceQueueCreateInfo createInfoGraphics{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};

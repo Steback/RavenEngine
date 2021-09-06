@@ -13,8 +13,15 @@ namespace re {
     SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent)
             : device(device), windowExtent(windowExtent) {
         logicalDevice = device->getDevice();
-        graphicsQueue = device->getQueue();
-        presentQueue = device->getQueue(static_cast<int32_t>(device->getQueueFamilyIndices().present));
+
+        Device::QueueFamilyIndices indices = device->getQueueFamilyIndices();
+        vkGetDeviceQueue(device->getDevice(), indices.graphics, 0, &graphicsQueue);
+
+        if (indices.graphics != indices.present) {
+            presentQueue = device->getQueue(static_cast<int32_t>(indices.present));
+        } else {
+            presentQueue = graphicsQueue;
+        }
 
         init();
     }
@@ -22,8 +29,8 @@ namespace re {
     SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain)
             : device(device), windowExtent(windowExtent), oldSwapChain(std::move(oldSwapChain)) {
         logicalDevice = device->getDevice();
-        graphicsQueue = device->getQueue();
-        presentQueue = device->getQueue(static_cast<int32_t>(device->getQueueFamilyIndices().present));
+        graphicsQueue = this->oldSwapChain->graphicsQueue;
+        presentQueue = this->oldSwapChain->presentQueue;
 
         init();
 
