@@ -22,11 +22,10 @@ void DamagedHelmet::onUpdate() {
 }
 
 void DamagedHelmet::onDrawImGui() {
-    ImGui::SetNextWindowSize({-1, -1});
-    ImGui::Begin("Debug Window");
-    {
-        if (scene->loaded()) {
-            auto& transform = entity->getComponent<re::Transform>();
+    if (entity) {
+        ImGui::SetNextWindowSize({-1, -1});
+        ImGui::Begin("Debug Window");
+        {auto& transform = entity->getComponent<re::Transform>();
             ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
             ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
             ImGui::DragFloat3(fmt::format("{} Angles", entity->getName()).c_str(), angles.ptr(), 0.1f);
@@ -39,6 +38,6 @@ void DamagedHelmet::onDrawImGui() {
                 });
             }
         }
+        ImGui::End();
     }
-    ImGui::End();
 }

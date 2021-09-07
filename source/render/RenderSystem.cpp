@@ -34,23 +34,23 @@ namespace re {
 
     RenderSystem::~RenderSystem() = default;
 
-    void RenderSystem::renderScene(VkCommandBuffer commandBuffer) {
+    void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
         pipeline->bind(commandBuffer);
 
-        if (camera) {
-            auto& cameraComponent = camera->getComponent<Camera>();
-            mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
+        if (!camera) camera = scene->getEntity("Camera");
 
-            for (auto& id : scene->getRegistry().view<Transform, MeshRender>()) {
-                auto entity = scene->getEntity(id);
-                auto& transform = entity->getComponent<Transform>();
-                auto& meshRender = entity->getComponent<MeshRender>();
+        auto& cameraComponent = camera->getComponent<Camera>();
+        mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
 
-                PushConstant push;
-                push.mvp = viewProj * transform.getWorldMatrix();
+        for (auto& id : scene->getRegistry().view<Transform, MeshRender>()) {
+            auto entity = scene->getEntity(id);
+            auto& transform = entity->getComponent<Transform>();
+            auto& meshRender = entity->getComponent<MeshRender>();
 
-                meshRender.model->render(commandBuffer, pipeline->getLayout(), push);
-            }
+            PushConstant push;
+            push.mvp = viewProj * transform.getWorldMatrix();
+
+            meshRender.model->render(commandBuffer, pipeline->getLayout(), push);
         }
     }
 
@@ -62,14 +62,7 @@ namespace re {
         if (camera) {
             auto& cameraComponent = camera->getComponent<Camera>();
             cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
-        } else {
-            if (scene->loaded())
-                camera = scene->getEntity("Camera");
         }
-    }
-
-    void RenderSystem::setScene(std::shared_ptr<Scene> scene_) {
-        scene = std::move(scene_);
     }
 
 } // namespace re

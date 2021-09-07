@@ -35,13 +35,8 @@ namespace re {
         json scene;
         file.read(scene);
 
-        for (auto& entityJson : scene["entities"]) {
+        for (auto& entityJson : scene["entities"])
             auto entity = addEntity(entityJson);
-
-            if (!entityJson["meshRender"].empty()) {
-                entity->addComponent<MeshRender>(assetsManager->loadModel(entityJson["meshRender"]["name"].get<std::string>()));
-            }
-        }
 
         wasLoaded = true;
     }
@@ -50,9 +45,8 @@ namespace re {
         json scene;
 
         scene["entities"] = {};
-        for (auto& [id, entity] : entities) {
+        for (auto& [id, entity] : entities)
             scene["entities"].push_back(entity->serialize());
-        }
 
         File file(FilesManager::getPath("data/scenes") / fileName);
         file.write(scene);

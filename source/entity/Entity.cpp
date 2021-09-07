@@ -1,5 +1,6 @@
 #include "Entity.hpp"
 
+#include "assets/AssetsManager.hpp"
 #include "components/Transform.hpp"
 #include "components/MeshRender.hpp"
 #include "components/Camera.hpp"
@@ -56,6 +57,10 @@ namespace re {
 
         if (!entity["camera"].empty())
             addComponent<Camera>(entity["camera"]);
+
+        if (!entity["meshRender"].empty())
+            addComponent<MeshRender>(scene->assetsManager->loadModel(entity["meshRender"]["name"]));
+
     }
 
 } // namespace re

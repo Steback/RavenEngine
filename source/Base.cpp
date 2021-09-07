@@ -43,7 +43,9 @@ namespace re {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
-        renderSystem->renderScene(commandBuffer);
+        if (scene->loaded()) {
+            renderSystem->renderScene(commandBuffer, scene);
+        }
 
         renderer->newImGuiFrame();
 
@@ -57,7 +59,6 @@ namespace re {
 
     void Base::loadScene(const std::string &fileName) {
         scene = std::make_shared<re::Scene>(fileName, assetsManager);
-        renderSystem->setScene(scene);
 
         jobSystem->submit([scene = scene](){
             scene->load();

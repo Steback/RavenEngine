@@ -31,7 +31,7 @@ namespace re {
 
         ~RenderSystem() override;
 
-        void renderScene(VkCommandBuffer commandBuffer);
+        void renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene);
 
         std::shared_ptr<Entity> getCamera();
 
@@ -41,10 +41,7 @@ namespace re {
          */
         void update(float aspect);
 
-        void setScene(std::shared_ptr<Scene> scene);
-
     private:
-        std::shared_ptr<Scene> scene;
         std::shared_ptr<AssetsManager> assetsManager;
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;

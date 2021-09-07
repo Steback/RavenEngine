@@ -51,8 +51,6 @@ namespace re {
 
         /**
          * @brief Load scene from a JSON file
-         * @param fileName
-         * @param assetsManager Valid pointer to AssetsManager
          */
         void load();
 
