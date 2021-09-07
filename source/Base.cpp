@@ -60,8 +60,9 @@ namespace re {
     void Base::loadScene(const std::string &fileName) {
         scene = std::make_shared<re::Scene>(fileName, assetsManager);
 
-        jobSystem->submit([scene = scene](){
+        jobSystem->submit([=, this](){
             scene->load();
+            onLoadScene();
         });
     }
 

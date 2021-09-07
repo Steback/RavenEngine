@@ -14,11 +14,7 @@ DamagedHelmet::DamagedHelmet() : re::Base("DamagedHelmet") {
 DamagedHelmet::~DamagedHelmet() = default;
 
 void DamagedHelmet::onUpdate() {
-    if (!entity && scene->loaded()) {
-        entity = scene->getEntity("Damaged Helmet");
-        auto& transform = entity->getComponent<re::Transform>();
-        angles = re::degrees(transform.rotation.getEulerAngles());
-    }
+
 }
 
 void DamagedHelmet::onDrawImGui() {
@@ -40,4 +36,10 @@ void DamagedHelmet::onDrawImGui() {
         }
         ImGui::End();
     }
+}
+
+void DamagedHelmet::onLoadScene() {
+    entity = scene->getEntity("Damaged Helmet");
+    auto& transform = entity->getComponent<re::Transform>();
+    angles = re::degrees(transform.rotation.getEulerAngles());
 }

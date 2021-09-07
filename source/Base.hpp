@@ -47,7 +47,14 @@ namespace re {
          *
          * Pure virtual method, will be implemented by the Application/Game class.
          */
-        virtual void onDrawImGui()  = 0;
+        virtual void onDrawImGui() = 0;
+
+        /**
+         * @brief Used for application when scene are loaded.
+         *
+         * Pure virtual method. Need to be implemented
+         */
+        virtual void onLoadScene() = 0;
 
         /**
          * @brief Main loop, execute all update and render functionalities
