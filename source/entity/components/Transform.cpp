@@ -30,7 +30,7 @@ namespace re {
     }
 
     Matrix4 Transform::getWorldMatrix() const {
-        Matrix3 rotationMatrix = rotation.unit().getRotationMatrix();
+        Matrix3 rotationMatrix = rotation.getRotationMatrix();
 
         return {
                 { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },

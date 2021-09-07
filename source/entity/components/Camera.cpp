@@ -43,7 +43,7 @@ namespace re {
     }
 
     void Camera::setViewDirection(const vec3 &position, const quat &rotation) {
-        mat3 rotMatrix = rotation.unit().getRotationMatrix();
+        mat3 rotMatrix = rotation.getRotationMatrix();
         const vec3 u{rotMatrix[0]};
         const vec3 v{rotMatrix[1]};
         const vec3 w{rotMatrix[2]};
