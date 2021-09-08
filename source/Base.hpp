@@ -37,24 +37,18 @@ namespace re {
 
         /**
          * @brief Update function for App/Game class. Will executed during the loop, before render.
-         *
-         * Pure virtual method, will be implemented by the Application/Game class.
          */
-        virtual void onUpdate() = 0;
+        virtual void onUpdate() {}
 
         /**
          * @brief Use for Application to draw ImGui stuff when the engine render it.
-         *
-         * Pure virtual method, will be implemented by the Application/Game class.
          */
-        virtual void onDrawImGui() = 0;
+        virtual void onDrawImGui() {}
 
         /**
          * @brief Used for application when scene are loaded.
-         *
-         * Pure virtual method. Need to be implemented
          */
-        virtual void onLoadScene() = 0;
+        virtual void onLoadScene() {};
 
         /**
          * @brief Main loop, execute all update and render functionalities
