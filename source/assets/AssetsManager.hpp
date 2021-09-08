@@ -39,14 +39,6 @@ namespace re {
         std::shared_ptr<Model> loadModel(const std::string& fileName);
 
         /**
-         * @brief Load Mesh from raw data
-         * @param name Name of mesh
-         * @param data Mesh vertices and Indices
-         * @return share_ptr of Mesh
-         */
-        std::shared_ptr<Mesh> addMesh(const std::string& name, const Mesh::Data& data);
-
-        /**
          * @brief Load Mesh from GLTF Mesh
          * @param model TinyGLTF Model
          * @param node  TinyGLTF node

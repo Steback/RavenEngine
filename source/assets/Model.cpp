@@ -6,7 +6,6 @@
 #include "Texture.hpp"
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
-#include "utils/Macros.hpp"
 #include "render/RenderSystem.hpp"
 
 
@@ -49,54 +48,6 @@ namespace re {
             const tinygltf::Node node = model.nodes[index];
             loadNode(model, -1, node, index);
         }
-    }
-
-    Model::Model(AssetsManager* assetsManager, std::string name, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes)
-            : assetsManager(assetsManager), name(std::move(name)) {
-        Mesh::Data data;
-        std::unordered_map<Mesh::Vertex, uint32_t> uniqueVertices{};
-        for (const auto& shape : shapes) {
-            for (const auto& index : shape.mesh.indices) {
-                Mesh::Vertex vertex{};
-
-                if (index.vertex_index >= 0) {
-                    vertex.position = {
-                            attrib.vertices[3 * index.vertex_index + 0],
-                            attrib.vertices[3 * index.vertex_index + 1],
-                            attrib.vertices[3 * index.vertex_index + 2],
-                    };
-                }
-
-                if (index.normal_index >= 0) {
-                    vertex.normal = {
-                            attrib.normals[3 * index.normal_index + 0],
-                            attrib.normals[3 * index.normal_index + 1],
-                            attrib.normals[3 * index.normal_index + 2],
-                    };
-                }
-
-                if (index.texcoord_index >= 0) {
-                    vertex.uv = {
-                            attrib.texcoords[2 * index.texcoord_index + 0],
-                            attrib.texcoords[2 * index.texcoord_index + 1],
-                    };
-                }
-
-                if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = CAST_U32(data.vertices.size());
-                    data.vertices.push_back(vertex);
-                }
-
-                data.indices.push_back(uniqueVertices[vertex]);
-            }
-        }
-
-        Node node{};
-        node.index = 0;
-        node.matrix = mat4(1.0f);
-        node.mesh = assetsManager->addMesh(shapes[0].name, data);
-
-        nodes.push_back(node);
     }
 
     Model::~Model() = default;

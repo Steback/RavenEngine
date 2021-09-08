@@ -32,34 +32,19 @@ namespace re {
         std::string error;
         std::string warning;
 
-        if (file.getExtension() == ".obj") {
-            tinyobj::attrib_t attrib;
-            std::vector<tinyobj::shape_t> shapes;
-            std::vector<tinyobj::material_t> materials;
+        tinygltf::Model gltfModel;
+        tinygltf::TinyGLTF gltfContext;
 
-            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, file.getPath().c_str()))
-                RE_THROW_EX(warning + error);
+        bool fileLoaded;
+        if (file.getExtension() == ".glb")
+            fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, &error, &warning, file.getPath());
+        else
+            fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
 
-            return models[nameHash] = std::make_shared<Model>(this, fileName, attrib, shapes);
-        } else {
-            tinygltf::Model gltfModel;
-            tinygltf::TinyGLTF gltfContext;
-
-            bool fileLoaded;
-            if (file.getExtension() == ".glb")
-                fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, &error, &warning, file.getPath());
-            else
-                fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
-
-            if (fileLoaded)
-                return models[nameHash] = std::make_shared<Model>(this, fileName, gltfModel);
-        }
+        if (fileLoaded)
+            return models[nameHash] = std::make_shared<Model>(this, fileName, gltfModel);
 
         return nullptr;
-    }
-
-    std::shared_ptr<Mesh> AssetsManager::addMesh(const std::string &name, const Mesh::Data& data) {
-        return meshes[std::hash<std::string>()(name)] = std::make_shared<Mesh>(device, data);
     }
 
     std::shared_ptr<Mesh> AssetsManager::addMesh(const tinygltf::Model &model, const tinygltf::Node &node) {

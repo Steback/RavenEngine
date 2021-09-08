@@ -7,7 +7,6 @@
 #include <string>
 
 #include "tiny_gltf.h"
-#include "external/tiny_obj_loader.h"
 #include "vulkan/vulkan.h"
 
 #include "math/Matrix4.hpp"
@@ -57,13 +56,6 @@ namespace re {
          * @param model TinyGLTF model wasLoaded
          */
         Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model);
-
-        /**
-         *
-         * @param assetsManager Pointer to Assets Manager
-         * @param shapes Vector of TinyObj shapes
-         */
-        Model(AssetsManager* assetsManager, std::string name, const tinyobj::attrib_t& attrib, const std::vector<tinyobj::shape_t>& shapes);
 
         ~Model();
 
