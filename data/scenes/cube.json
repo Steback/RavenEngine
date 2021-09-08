@@ -26,7 +26,7 @@
         },
         {
             "meshRender": {
-                "name": "models/colored_cube.obj"
+                "name": "models/Box.gltf"
             },
             "name": "Cube",
             "transform": {

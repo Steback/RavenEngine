@@ -59,20 +59,26 @@ namespace re {
             const tinygltf::Texture texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
 
             return meshes[meshID] = std::make_shared<Mesh>(device, data, addTexture(model, texture));
+        } else {
+            // TODO: Temporally white texture
+            return meshes[meshID] = std::make_shared<Mesh>(device, data, loadTexture("plain", "plain.png"));
         }
-
-        return meshes[meshID] = std::make_shared<Mesh>(device, data);
     }
 
     std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture) {
         const tinygltf::Image image = gltfModel.images[gltfTexture.source];
-        uint32_t textureID = std::hash<std::string>()(image.name);
+
+        return loadTexture(image.name, image.uri);
+    }
+
+    std::shared_ptr<Texture> AssetsManager::loadTexture(const std::string& fileName, const std::string& uri) {
+        uint32_t textureID = std::hash<std::string>()(fileName);
 
         if (textures.find(textureID) != textures.end()) return textures[textureID];
 
         int width, height;
         VkDeviceSize imageSize;
-        stbi_uc* pixels = loadImageFile(FilesManager::getFile(("textures/" + image.uri).c_str()).getPath(), &width, &height, &imageSize);
+        stbi_uc* pixels = loadImageFile(FilesManager::getFile(("textures/" + uri).c_str()).getPath(), &width, &height, &imageSize);
 
         Buffer stagingBuffer(device->getAllocator(), imageSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
@@ -91,7 +97,7 @@ namespace re {
         imageInfo.extent = {textureSize.width, textureSize.height, 1};
         imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1,
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+                imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
         imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;

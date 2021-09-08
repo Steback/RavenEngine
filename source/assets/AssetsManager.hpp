@@ -54,6 +54,8 @@ namespace re {
          */
         std::shared_ptr<Texture> addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture);
 
+        std::shared_ptr<Texture> loadTexture(const std::string& fileName, const std::string& uri);
+
         std::shared_ptr<Model> getModel(uint32_t name);
 
         std::shared_ptr<Mesh> getMesh(uint32_t name);
