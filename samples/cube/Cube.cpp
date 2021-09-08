@@ -6,10 +6,7 @@
 
 
 Cube::Cube() : re::Base("Cube") {
-    scene->load("cube.json", assetsManager.get());
-    renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "samples/cube/model", *scene);
-
-    cube = scene->getEntity("Cube");
+    loadScene("cube.json");
 }
 
 Cube::~Cube() = default;
@@ -42,4 +39,8 @@ void Cube::onDrawImGui() {
         ImGui::DragFloat4(fmt::format("{} Rotation", camera->getName()).c_str(), transformCamera.rotation.ptr(), 0.1f);
     }
     ImGui::End();
+}
+
+void Cube::onLoadScene() {
+    cube = scene->getEntity("Cube");
 }

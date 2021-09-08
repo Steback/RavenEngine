@@ -15,6 +15,8 @@ public:
 
     void onDrawImGui() override;
 
+    void onLoadScene() override;
+
 private:
     std::shared_ptr<re::Entity> cube;
 };
