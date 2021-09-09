@@ -59,26 +59,18 @@ namespace re {
             const tinygltf::Texture texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
 
             return meshes[meshID] = std::make_shared<Mesh>(device, data, addTexture(model, texture));
-        } else {
-            // TODO: Temporally white texture
-            return meshes[meshID] = std::make_shared<Mesh>(device, data, loadTexture("plain", "plain.png"));
         }
     }
 
     std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture) {
         const tinygltf::Image image = gltfModel.images[gltfTexture.source];
-
-        return loadTexture(image.name, image.uri);
-    }
-
-    std::shared_ptr<Texture> AssetsManager::loadTexture(const std::string& fileName, const std::string& uri) {
-        uint32_t textureID = std::hash<std::string>()(fileName);
+        uint32_t textureID = std::hash<std::string>()(image.name);
 
         if (textures.find(textureID) != textures.end()) return textures[textureID];
 
         int width, height;
         VkDeviceSize imageSize;
-        stbi_uc* pixels = loadImageFile(FilesManager::getFile(("textures/" + uri).c_str()).getPath(), &width, &height, &imageSize);
+        stbi_uc* pixels = loadImageFile(FilesManager::getFile(("textures/" + image.uri).c_str()).getPath(), &width, &height, &imageSize);
 
         Buffer stagingBuffer(device->getAllocator(), imageSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
@@ -97,12 +89,30 @@ namespace re {
         imageInfo.extent = {textureSize.width, textureSize.height, 1};
         imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1,
-                imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
         imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        textures[textureID] = std::make_shared<Texture>(device->getDevice(), device->getAllocator(), imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT);
+
+        Texture::Sampler sampler{};
+        if (gltfTexture.sampler > -1) {
+            tinygltf::Sampler smpl = gltfModel.samplers[gltfTexture.sampler];
+            sampler.minFilter = Texture::Sampler::getVkFilterMode(smpl.minFilter);
+            sampler.magFilter = Texture::Sampler::getVkFilterMode(smpl.magFilter);
+            sampler.addressModeU = Texture::Sampler::getVkWrapMode(smpl.wrapS);
+            sampler.addressModeV = Texture::Sampler::getVkWrapMode(smpl.wrapT);
+            sampler.addressModeW = sampler.addressModeV;
+        } else {
+            sampler.magFilter = VK_FILTER_LINEAR;
+            sampler.minFilter = VK_FILTER_LINEAR;
+            sampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            sampler.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            sampler.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        }
+
+        Texture::Info info{imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT};
+        textures[textureID] = std::make_shared<Texture>(device, info, sampler);
         auto texture = textures[textureID];
 
         device->transitionImageLayout(texture->getImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);

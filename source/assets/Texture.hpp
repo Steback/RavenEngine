@@ -17,8 +17,26 @@ namespace re {
      */
     class Texture : public Image {
     public:
-        Texture(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo& imageInfo, VmaMemoryUsage usage,
-                VkImageAspectFlags aspectFlags);
+        struct Info {
+            VkImageCreateInfo& createInfo;
+            VmaMemoryUsage usage;
+            VkImageAspectFlagBits aspectFlagBits;
+        };
+
+        struct Sampler {
+            VkFilter magFilter;
+            VkFilter minFilter;
+            VkSamplerAddressMode addressModeU;
+            VkSamplerAddressMode addressModeV;
+            VkSamplerAddressMode addressModeW;
+
+            static VkSamplerAddressMode getVkWrapMode(int32_t wrapMode);
+
+            static VkFilter getVkFilterMode(int32_t filterMode);
+        };
+
+    public:
+        Texture(const std::shared_ptr<Device>& device, const Info& info, const Sampler& sampler);
 
         ~Texture() override;
 
@@ -29,7 +47,7 @@ namespace re {
         [[nodiscard]] VkDescriptorSet getDescriptorSet() const;
 
     private:
-        void createSampler();
+        void createSampler(const Sampler& sampler);
 
     private:
         VkSampler sampler{};

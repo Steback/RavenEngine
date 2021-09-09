@@ -6,9 +6,37 @@
 
 namespace re {
 
-    Texture::Texture(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage,
-                     VkImageAspectFlags aspectFlags) : Image(device, allocator, imageInfo, usage, aspectFlags) {
-        createSampler();
+    VkSamplerAddressMode Texture::Sampler::getVkWrapMode(int32_t wrapMode) {
+        switch (wrapMode) {
+            case 10497:
+                return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            case 33071:
+                return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            case 33648:
+                return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+        }
+    }
+
+    VkFilter Texture::Sampler::getVkFilterMode(int32_t filterMode) {
+        switch (filterMode) {
+            case 9728:
+                return VK_FILTER_NEAREST;
+            case 9729:
+                return VK_FILTER_LINEAR;
+            case 9984:
+                return VK_FILTER_NEAREST;
+            case 9985:
+                return VK_FILTER_NEAREST;
+            case 9986:
+                return VK_FILTER_LINEAR;
+            case 9987:
+                return VK_FILTER_LINEAR;
+        }
+    }
+
+    Texture::Texture(const std::shared_ptr<Device>& device, const Info& info, const Sampler& sampler)
+            : Image(device->getDevice(), device->getAllocator(), info.createInfo, info.usage, info.aspectFlagBits) {
+        createSampler(sampler);
     }
 
     Texture::~Texture() {
@@ -129,14 +157,14 @@ namespace re {
         return descriptorSet;
     }
 
-    void Texture::createSampler() {
+    void Texture::createSampler(const Sampler& textureSampler) {
         VkSamplerCreateInfo samplerInfo{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
-        samplerInfo.magFilter = VK_FILTER_LINEAR;
-        samplerInfo.minFilter = VK_FILTER_LINEAR;
+        samplerInfo.magFilter = textureSampler.magFilter;
+        samplerInfo.minFilter = textureSampler.minFilter;
         samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.addressModeU = textureSampler.addressModeU;
+        samplerInfo.addressModeV = textureSampler.addressModeV;
+        samplerInfo.addressModeW = textureSampler.addressModeW;
         samplerInfo.mipLodBias = 0.0f;
         samplerInfo.anisotropyEnable = VK_FALSE;
         samplerInfo.maxAnisotropy = 1.0f;
