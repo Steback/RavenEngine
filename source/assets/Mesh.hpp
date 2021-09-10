@@ -33,7 +33,8 @@ namespace re {
         struct Vertex {
             vec3 position{};
             vec3 normal{};
-            vec2 uv{};
+            vec2 uv0{};
+            vec2 uv1{};
 
             /**
              *

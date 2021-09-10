@@ -20,12 +20,13 @@ namespace re {
         return {
             { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) },
             { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) },
-            { 2, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) },
+            { 2, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv0) },
+            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv1) },
         };
     }
 
     bool Mesh::Vertex::operator==(const Mesh::Vertex &other) const {
-        return position == other.position && normal == other.normal && uv == other.uv;
+        return position == other.position && normal == other.normal && uv0 == other.uv0 && uv1 == other.uv1;
     }
 
     Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material)
@@ -83,14 +84,14 @@ namespace re {
                 const float *bufferPos = nullptr;
                 const float *bufferNormals = nullptr;
                 const float *bufferTexCoordSet0 = nullptr;
-//                const float *bufferTexCoordSet1 = nullptr;
+                const float *bufferTexCoordSet1 = nullptr;
 //                const void *bufferJoints = nullptr;
 //                const float *bufferWeights = nullptr;
 
                 int posByteStride;
                 int normByteStride;
                 int uv0ByteStride;
-//                int uv1ByteStride;
+                int uv1ByteStride;
 //                int jointByteStride;
 //                int weightByteStride;
 //
@@ -118,13 +119,13 @@ namespace re {
                     uv0ByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
                 }
 
-//                if (primitive.attributes.find("TEXCOORD_1") != primitive.attributes.end()) {
-//                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("TEXCOORD_1")->second];
-//                    const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
-//                    bufferTexCoordSet1 = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
-//                    uv1ByteStride = accessor.ByteStride(view) ? (accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
-//                }
-//
+                if (primitive.attributes.find("TEXCOORD_1") != primitive.attributes.end()) {
+                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("TEXCOORD_1")->second];
+                    const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
+                    bufferTexCoordSet1 = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
+                    uv1ByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
+                }
+
 //                if (primitive.attributes.find("JOINTS_0") != primitive.attributes.end()) {
 //                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("JOINTS_0")->second];
 //                    const tinygltf::BufferView &view = model.bufferViews[accessor.bufferView];
@@ -146,8 +147,8 @@ namespace re {
                     Mesh::Vertex vert{};
                     vert.position = vec3(&bufferPos[v * posByteStride]);
                     vert.normal = (vec3(bufferNormals ? vec3(&bufferNormals[v * normByteStride]) : vec3(0.0f))).normal();
-                    vert.uv = bufferTexCoordSet0 ? vec2(&bufferTexCoordSet0[v * uv0ByteStride]) : vec2(0.0f);
-//                    vert.uv1 = bufferTexCoordSet1 ? vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : vec2(0.0f);
+                    vert.uv0 = bufferTexCoordSet0 ? vec2(&bufferTexCoordSet0[v * uv0ByteStride]) : vec2(0.0f);
+                    vert.uv1 = bufferTexCoordSet1 ? vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : vec2(0.0f);
 
 //                    if (hasSkin) {
 //                        switch (jointComponentType) {

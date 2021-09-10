@@ -19,7 +19,8 @@ namespace std {
             hash<float> hasher;
             re::hashCombine(seed, hasher(vertex.position.x), hasher(vertex.position.y), hasher(vertex.position.z));
             re::hashCombine(seed, hasher(vertex.normal.x), hasher(vertex.normal.y), hasher(vertex.normal.z));
-            re::hashCombine(seed, hasher(vertex.uv.x), hasher(vertex.uv.y));
+            re::hashCombine(seed, hasher(vertex.uv0.x), hasher(vertex.uv0.y));
+            re::hashCombine(seed, hasher(vertex.uv1.x), hasher(vertex.uv1.y));
             return seed;
         }
     };

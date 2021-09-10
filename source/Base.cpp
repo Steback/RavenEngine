@@ -43,6 +43,7 @@ namespace re {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
+        // TODO: Change this
         if (scene->loaded() && renderSystem) {
             renderSystem->renderScene(commandBuffer, scene);
         }
