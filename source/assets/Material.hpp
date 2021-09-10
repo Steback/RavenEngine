@@ -16,7 +16,12 @@ namespace re {
     class Texture;
     class AssetsManager;
 
+    /**
+     * @brief Material wrapper class
+     */
     class Material {
+        friend AssetsManager;
+
     public:
         enum AlphaMode{ OPAQUE, MASK, BLEND };
 
@@ -46,7 +51,8 @@ namespace re {
 
         ~Material();
 
-    private:
+    // TODO: Should this keep as public?
+    public:
         AlphaMode alphaMode = OPAQUE;
         float alphaCutoff{1.0f};
         float metallicFactor{1.0f};

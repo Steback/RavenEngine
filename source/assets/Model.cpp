@@ -4,6 +4,7 @@
 
 #include "AssetsManager.hpp"
 #include "Texture.hpp"
+#include "Material.hpp"
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
 #include "render/RenderSystem.hpp"
@@ -83,7 +84,11 @@ namespace re {
 
                 node.mesh->bind(commandBuffer);
 
-                std::vector<VkDescriptorSet> sets = {node.mesh->getTexture()->getDescriptorSet()};
+                if (node.mesh->material->alphaMode == Material::AlphaMode::OPAQUE) {
+
+                }
+
+                std::vector<VkDescriptorSet> sets = {node.mesh->getMaterial()->descriptorSet};
                 vkCmdBindDescriptorSets(commandBuffer,
                                         VK_PIPELINE_BIND_POINT_GRAPHICS,
                                         layout, 0, static_cast<uint32_t>(sets.size()), sets.data(),

@@ -117,6 +117,8 @@ namespace re {
          */
         void renderImGui(VkCommandBuffer commandBuffer);
 
+        [[nodiscard]] uint32_t getImageCount() const;
+
     private:
         /**
          * @brief Create command buffers

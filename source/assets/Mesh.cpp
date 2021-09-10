@@ -2,6 +2,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "Material.hpp"
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
 #include "render/Buffer.hpp"
@@ -27,8 +28,8 @@ namespace re {
         return position == other.position && normal == other.normal && uv == other.uv;
     }
 
-    Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Texture> texture)
-            : device(std::move(device)), texture(std::move(texture)) {
+    Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material)
+            : device(std::move(device)), material(std::move(material)) {
         createVertexBuffer(data.vertices);
         createIndexBuffer(data.indices);
     }
@@ -65,8 +66,8 @@ namespace re {
         return hasIndexBuffer;
     }
 
-    std::shared_ptr<Texture> Mesh::getTexture() const {
-        return texture;
+    std::shared_ptr<Material> Mesh::getMaterial() const {
+        return material;
     }
 
     // TODO: Disable some GLTF vertex attributes(Not used for now)

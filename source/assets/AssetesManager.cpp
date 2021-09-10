@@ -4,6 +4,7 @@
 
 #include "Model.hpp"
 #include "Texture.hpp"
+#include "Material.hpp"
 #include "render/Device.hpp"
 #include "files/FilesManager.hpp"
 #include "files/File.hpp"
@@ -14,8 +15,7 @@
 namespace re {
 
     AssetsManager::AssetsManager(std::shared_ptr<Device> device) : device(std::move(device)) {
-        createDescriptorPool();
-        createDescriptorSetLayout();
+
     }
 
     AssetsManager::~AssetsManager() {
@@ -53,12 +53,9 @@ namespace re {
 
         Mesh::Data data = Mesh::loadMesh(model, mesh);
 
-        // TODO: Implement materials
-        const tinygltf::Material material = model.materials[mesh.primitives[0].material];
-        if (material.pbrMetallicRoughness.baseColorTexture.index > -1) {
-            const tinygltf::Texture texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
-
-            return meshes[meshID] = std::make_shared<Mesh>(device, data, addTexture(model, texture));
+        for (auto& primitive : mesh.primitives) {
+            const tinygltf::Material& material = model.materials[primitive.material];
+            return meshes[meshID] = std::make_shared<Mesh>(device, data, addMaterial(model, material));
         }
     }
 
@@ -119,9 +116,103 @@ namespace re {
         device->copyBufferToImage(stagingBuffer, *texture);
 
         texture->generateMipmaps(device);
-        texture->createDescriptorSet(descriptorPool, descriptorSetLayout);
+        texture->updateDescriptor();
 
         return texture;
+    }
+
+    std::shared_ptr<Material> AssetsManager::addMaterial(const tinygltf::Model &gltfModel, const tinygltf::Material &gltfMaterial) {
+        return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(this, gltfModel, gltfMaterial);
+    }
+
+    void AssetsManager::setupDescriptors(uint32_t imageCount) {
+        uint32_t imageSamplerCount = 0;
+        uint32_t materialCount = 0;
+        uint32_t meshCount = 0;
+
+        for (auto& material : materials) {
+            imageSamplerCount += 5;
+            materialCount++;
+        }
+
+        for (auto& mesh : meshes)
+            meshCount++;
+
+        std::vector<VkDescriptorPoolSize> poolSizes = {
+                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageSamplerCount * imageCount }
+        };
+
+        VkDescriptorPoolCreateInfo poolInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
+        poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+        poolInfo.pPoolSizes = poolSizes.data();
+        poolInfo.maxSets = (1 + materialCount + meshCount) * imageCount;
+
+        vkCreateDescriptorPool(device->getDevice(), &poolInfo, nullptr, &descriptorPool);
+
+        std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
+                { 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
+                { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
+                { 2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
+                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
+                { 4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
+        };
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
+        layoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+        layoutInfo.pBindings = setLayoutBindings.data();
+
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
+
+        for (auto& [id, material] : materials) {
+            VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
+            descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+            descriptorSetAllocInfo.descriptorPool = descriptorPool;
+            descriptorSetAllocInfo.pSetLayouts = &descriptorSetLayout;
+            descriptorSetAllocInfo.descriptorSetCount = 1;
+
+            RE_VK_CHECK_RESULT(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
+                               "Failed to allocate material descriptor sets");
+
+            std::vector<VkDescriptorImageInfo> imageDescriptors = {
+                    VkDescriptorImageInfo{},
+                    VkDescriptorImageInfo{},
+                    material->normalTexture ? material->normalTexture->descriptor : VkDescriptorImageInfo{},
+                    material->occlusionTexture ? material->occlusionTexture->descriptor : VkDescriptorImageInfo{},
+                    material->emissiveTexture ? material->emissiveTexture->descriptor : VkDescriptorImageInfo{}
+            };
+
+            // TODO: glTF specs states that metallic roughness should be preferred, even if specular glosiness is present
+
+            if (material->pbrWorkflows.metallicRoughness) {
+                if (material->baseColorTexture) {
+                    imageDescriptors[0] = material->baseColorTexture->descriptor;
+                }
+                if (material->metallicRoughnessTexture) {
+                    imageDescriptors[1] = material->metallicRoughnessTexture->descriptor;
+                }
+            }
+
+            if (material->pbrWorkflows.specularGlossiness) {
+                if (material->extension.diffuseTexture) {
+                    imageDescriptors[0] = material->extension.diffuseTexture->descriptor;
+                }
+                if (material->extension.specularGlossinessTexture) {
+                    imageDescriptors[1] = material->extension.specularGlossinessTexture->descriptor;
+                }
+            }
+
+            std::array<VkWriteDescriptorSet, 5> writeDescriptorSets{};
+            for (size_t i = 0; i < imageDescriptors.size(); i++) {
+                writeDescriptorSets[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                writeDescriptorSets[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                writeDescriptorSets[i].descriptorCount = 1;
+                writeDescriptorSets[i].dstSet = material->descriptorSet;
+                writeDescriptorSets[i].dstBinding = static_cast<uint32_t>(i);
+                writeDescriptorSets[i].pImageInfo = &imageDescriptors[i];
+            }
+
+            vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+        }
     }
 
     std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
@@ -150,34 +241,6 @@ namespace re {
         *size = *width * *height * static_cast<int>(STBI_rgb_alpha);
 
         return image;
-    }
-
-    void AssetsManager::createDescriptorPool() {
-        VkDescriptorPoolSize poolSize{};
-        poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSize.descriptorCount = MAX_OBJECTS;
-
-        VkDescriptorPoolCreateInfo poolInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
-        poolInfo.maxSets = MAX_OBJECTS;
-        poolInfo.poolSizeCount = 1;
-        poolInfo.pPoolSizes = &poolSize;
-
-        vkCreateDescriptorPool(device->getDevice(), &poolInfo, nullptr, &descriptorPool);
-    }
-
-    void AssetsManager::createDescriptorSetLayout() {
-        VkDescriptorSetLayoutBinding layoutBinding{};
-        layoutBinding.binding = 0;
-        layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        layoutBinding.descriptorCount = 1;
-        layoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-        layoutBinding.pImmutableSamplers = VK_NULL_HANDLE;
-
-        VkDescriptorSetLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
-        layoutInfo.bindingCount = 1;
-        layoutInfo.pBindings = &layoutBinding;
-
-        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
     }
 
 } // namespace re

@@ -43,30 +43,6 @@ namespace re {
         vkDestroySampler(device, sampler, nullptr);
     }
 
-    void Texture::createDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout layout) {
-        VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
-        allocateInfo.descriptorPool = pool;
-        allocateInfo.descriptorSetCount = 1;
-        allocateInfo.pSetLayouts = &layout;
-
-        vkAllocateDescriptorSets(device, &allocateInfo, &descriptorSet);
-
-        VkDescriptorImageInfo imageInfo{};
-        imageInfo.sampler = sampler;
-        imageInfo.imageView = view;
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-        VkWriteDescriptorSet writeDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-        writeDescriptorSet.dstSet = descriptorSet;
-        writeDescriptorSet.dstBinding = 0;
-        writeDescriptorSet.dstArrayElement = 0;
-        writeDescriptorSet.descriptorCount = 1;
-        writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        writeDescriptorSet.pImageInfo = &imageInfo;
-
-        vkUpdateDescriptorSets(device, 1, &writeDescriptorSet, 0, nullptr);
-    }
-
     void Texture::generateMipmaps(const std::shared_ptr<Device> &device_) {
         // Check if image format supports linear blitting
         VkFormatProperties formatProperties;
@@ -153,8 +129,10 @@ namespace re {
         device_->endSingleTimeCommands(commandBuffer);
     }
 
-    VkDescriptorSet Texture::getDescriptorSet() const {
-        return descriptorSet;
+    void Texture::updateDescriptor() {
+        descriptor.sampler = sampler;
+        descriptor.imageView = view;
+        descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
     void Texture::createSampler(const Sampler& textureSampler) {

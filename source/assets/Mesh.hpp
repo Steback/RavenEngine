@@ -18,12 +18,14 @@ namespace re {
 
     class Device;
     class Buffer;
-    class Texture;
+    class Material;
 
     /**
      * @brief Mesh Class
      */
     class Mesh : NonCopyable {
+        friend class Model;
+
     public:
         /**
          * @brief Vertex class
@@ -61,9 +63,9 @@ namespace re {
          * Default constructor
          * @param device shared_ptr of Device
          * @param data Data object
-         * @param texture Valid pointer to texture. By default is null
+         * @param material Valid pointer to material. By default is null
          */
-        Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Texture> texture = nullptr);
+        Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material);
 
         ~Mesh() override;
 
@@ -85,7 +87,7 @@ namespace re {
 
         [[nodiscard]] bool isHasIndexBuffer() const;
 
-        [[nodiscard]] std::shared_ptr<Texture> getTexture() const;
+        [[nodiscard]] std::shared_ptr<Material> getMaterial() const;
 
         /**
          * @brief Load Mesh from GLTF2 file
@@ -107,7 +109,7 @@ namespace re {
         uint32_t vertexCount{};
         uint32_t indexCount{};
         bool hasIndexBuffer{false};
-        std::shared_ptr<Texture> texture;
+        std::shared_ptr<Material> material;
     };
 
 } // namespace re

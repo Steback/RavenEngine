@@ -17,6 +17,7 @@ namespace re {
     class Device;
     class Model;
     class Texture;
+    class Material;
 
     /**
      * Assets Manager class
@@ -54,6 +55,10 @@ namespace re {
          */
         std::shared_ptr<Texture> addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture);
 
+        std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
+
+        void setupDescriptors(uint32_t imageCount);
+
         std::shared_ptr<Model> getModel(uint32_t name);
 
         std::shared_ptr<Mesh> getMesh(uint32_t name);
@@ -73,20 +78,13 @@ namespace re {
         static stbi_uc *loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size);
 
     private:
-        void createDescriptorPool();
-
-        void createDescriptorSetLayout();
-
-    public:
-        static const int MAX_OBJECTS = 100;
-
-    private:
         VkDescriptorPool descriptorPool{};
         VkDescriptorSetLayout descriptorSetLayout{};
         std::shared_ptr<Device> device;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
         std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;
         std::unordered_map<uint32_t, std::shared_ptr<Texture>> textures;
+        std::unordered_map<uint32_t, std::shared_ptr<Material>> materials;
     };
 
 } // namespace re

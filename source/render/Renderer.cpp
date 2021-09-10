@@ -153,6 +153,10 @@ namespace re {
         imgui->render(commandBuffer);
     }
 
+    uint32_t Renderer::getImageCount() const {
+        return swapChain->getImageCount();
+    }
+
     void Renderer::createCommandBuffers() {
         commandBuffers.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
 

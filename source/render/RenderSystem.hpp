@@ -24,6 +24,23 @@ namespace re {
         mat4 node{1.f};
     };
 
+    struct PushConstBlockMaterial {
+        vec4 baseColorFactor;
+        vec4 emissiveFactor;
+        vec4 diffuseFactor;
+        vec4 specularFactor;
+        float workflow;
+        int colorTextureSet;
+        int PhysicalDescriptorTextureSet;
+        int normalTextureSet;
+        int occlusionTextureSet;
+        int emissiveTextureSet;
+        float metallicFactor;
+        float roughnessFactor;
+        float alphaMask;
+        float alphaMaskCutoff;
+    };
+
     class RenderSystem : NonCopyable {
     public:
         RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,

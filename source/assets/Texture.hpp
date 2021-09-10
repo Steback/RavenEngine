@@ -16,6 +16,8 @@ namespace re {
      * Inheritance of Image class
      */
     class Texture : public Image {
+        friend class AssetsManager;
+
     public:
         struct Info {
             VkImageCreateInfo& createInfo;
@@ -40,18 +42,16 @@ namespace re {
 
         ~Texture() override;
 
-        void createDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout layout);
-
         void generateMipmaps(const std::shared_ptr<Device>& device_);
 
-        [[nodiscard]] VkDescriptorSet getDescriptorSet() const;
+        void updateDescriptor();
 
     private:
         void createSampler(const Sampler& sampler);
 
     private:
         VkSampler sampler{};
-        VkDescriptorSet descriptorSet{};
+        VkDescriptorImageInfo descriptor{};
     };
 
 } // namespace re

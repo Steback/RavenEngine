@@ -13,7 +13,6 @@ namespace re {
 
         renderer = std::make_unique<Renderer>(appName, config);
         assetsManager = std::make_shared<AssetsManager>(renderer->getDevice());
-        renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
         jobSystem = std::make_shared<JobSystem>();
     }
 
@@ -34,7 +33,8 @@ namespace re {
     }
 
     void Base::update() {
-        renderSystem->update(renderer->getAspectRatio());
+        if (renderSystem) renderSystem->update(renderer->getAspectRatio());
+
         scene->update();
         onUpdate();
     }
@@ -43,7 +43,7 @@ namespace re {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
-        if (scene->loaded()) {
+        if (scene->loaded() && renderSystem) {
             renderSystem->renderScene(commandBuffer, scene);
         }
 
@@ -63,6 +63,8 @@ namespace re {
         jobSystem->submit([=, this](){
             scene->load();
             onLoadScene();
+            assetsManager->setupDescriptors(renderer->getImageCount());
+            renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
         });
     }
 
