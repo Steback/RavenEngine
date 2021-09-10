@@ -25,6 +25,8 @@ namespace re {
     public:
         enum AlphaMode{ OPAQUE, MASK, BLEND };
 
+        enum PBRWorkflows{ METALLIC_ROUGHNESS = 0, SPECULAR_GLOSINESS = 1 };
+
         struct TexCoordSets {
             uint8_t baseColor{};
             uint8_t metallicRoughness{};

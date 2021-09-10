@@ -16,10 +16,10 @@ namespace re {
 
     RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, std::shared_ptr<AssetsManager> assetsManager)
             : device(std::move(device)), assetsManager(std::move(assetsManager)) {
-        VkPushConstantRange pushConstantRange{};
-        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-        pushConstantRange.offset = 0;
-        pushConstantRange.size = sizeof(PushConstant);
+        std::vector<VkPushConstantRange> pushConstantRanges = {
+                {VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstant)},
+                {VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(PushConstant), sizeof(PushConstBlockMaterial)}
+        };
 
         Pipeline::ConfigInfo configInfo;
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);
@@ -28,7 +28,7 @@ namespace re {
                 shadersName + ".vert", shadersName + ".frag",
                 configInfo,
                 std::vector<VkDescriptorSetLayout>{this->assetsManager->getDescriptorSetLayout()},
-                std::vector<VkPushConstantRange>{pushConstantRange}
+                pushConstantRanges
         );
     }
 
