@@ -16,7 +16,7 @@
 
 namespace re {
 
-    struct PushConstant;
+    struct UboModel;
 
     class Device;
     class Mesh;
@@ -71,7 +71,7 @@ namespace re {
          * @param commandBuffer Command buffer in recording state
          * @param layout Valid pipeline layout
          */
-        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, PushConstant& push);
+        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, UboModel& uboModel);
 
         Node& getNode(uint32_t index);
 

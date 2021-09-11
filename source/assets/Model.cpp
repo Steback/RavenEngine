@@ -69,29 +69,15 @@ namespace re {
     }
 
     // TODO: Find another way to calculate MVP * Node Matrix and send it to Shaders
-    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, PushConstant& push) {
+    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, UboModel& uboModel) {
         for (auto& node : nodes) {
             if (node.mesh) {
-                push.node = getNodeMatrix(node.index);
-
-                vkCmdPushConstants(
-                        commandBuffer,
-                        layout,
-                        VK_SHADER_STAGE_VERTEX_BIT,
-                        0,
-                        sizeof(PushConstant),
-                        &push
-                );
-
-
-                if (node.mesh->material->alphaMode == Material::AlphaMode::OPAQUE) {
-
-                }
+                uboModel.node = getNodeMatrix(node.index);
 
                 std::vector<VkDescriptorSet> sets = {node.mesh->getMaterial()->descriptorSet};
                 vkCmdBindDescriptorSets(commandBuffer,
                                         VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                        layout, 0, static_cast<uint32_t>(sets.size()), sets.data(),
+                                        layout, 1, static_cast<uint32_t>(sets.size()), sets.data(),
                                         0, nullptr);
 
 

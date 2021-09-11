@@ -18,8 +18,10 @@ namespace re {
     class Scene;
     class Entity;
     class AssetsManager;
+    class Buffer;
 
-    struct PushConstant {
+    // TODO: Change this for a dynamic uniform object
+    struct UboModel {
         mat4 mvp{1.f};
         mat4 node{1.f};
     };
@@ -59,10 +61,23 @@ namespace re {
         void update(float aspect);
 
     private:
+        void setupDescriptors();
+
+        // TODO: Remove this. Temporally buffer.
+        void setupBuffer();
+
+        void updateBuffer();
+
+    private:
         std::shared_ptr<AssetsManager> assetsManager;
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
+        VkDescriptorPool descriptorPool{};
+        VkDescriptorSetLayout descriptorSetLayout{};
+        VkDescriptorSet descriptorSet{};
+        std::unique_ptr<Buffer> uboModelBuffer;
+        UboModel uboModel;
     };
 
 } // namespace re
