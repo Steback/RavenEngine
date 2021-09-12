@@ -49,11 +49,10 @@ namespace re {
 
         /**
          * @brief Add Texture to AssetsManager
-         * @param gltfModel TinyGLTF Model
-         * @param gltfTexture TinyGLTF Texture
+         * @param texture TinyGLTF Texture
          * @return Pointer to Texture
          */
-        std::shared_ptr<Texture> addTexture(const tinygltf::Model& gltfModel, const tinygltf::Texture &gltfTexture);
+        std::shared_ptr<Texture> addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture);
 
         std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
 
@@ -66,16 +65,6 @@ namespace re {
         std::shared_ptr<Texture> getTexture(uint32_t id);
 
         VkDescriptorSetLayout getDescriptorSetLayout();
-
-        /**
-         * @brief Load image from file using stb_image
-         * @param fileName
-         * @param width
-         * @param height
-         * @param size
-         * @return Pixels of image
-         */
-        static stbi_uc *loadImageFile(const std::string& fileName, int* width, int* height, VkDeviceSize* size);
 
     private:
         VkDescriptorPool descriptorPool{};

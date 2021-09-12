@@ -1,7 +1,12 @@
 #include "Texture.hpp"
 
+#include "stb_image.h"
+
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
+#include "render/Buffer.hpp"
+#include "files/FilesManager.hpp"
+#include "files/File.hpp"
 
 
 namespace re {
@@ -15,6 +20,8 @@ namespace re {
             case 33648:
                 return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
         }
+
+        return VK_SAMPLER_ADDRESS_MODE_REPEAT;
     }
 
     VkFilter Texture::Sampler::getVkFilterMode(int32_t filterMode) {
@@ -32,6 +39,8 @@ namespace re {
             case 9987:
                 return VK_FILTER_LINEAR;
         }
+
+        return VK_FILTER_LINEAR;
     }
 
     Texture::Texture(const std::shared_ptr<Device>& device, const Info& info, const Sampler& sampler)
@@ -133,6 +142,49 @@ namespace re {
         descriptor.sampler = sampler;
         descriptor.imageView = view;
         descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    }
+
+    std::unique_ptr<Texture> Texture::loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler) {
+        int channels, imageWidth, imageHeight;
+        // TODO: Change this access path
+        stbi_uc* pixels = stbi_load(FilesManager::getFile(("textures/" + fileName).c_str()).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
+
+        if (!pixels) RE_THROW_EX("Failed to load image file: " + fileName);
+
+        uint32_t width = imageWidth;
+        uint32_t height = imageHeight;
+        auto mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height))));
+        VkDeviceSize size = width * height * static_cast<int>(STBI_rgb_alpha);
+
+        Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+        stagingBuffer.map();
+        stagingBuffer.copyTo(pixels);
+        stagingBuffer.unmap();
+
+        stbi_image_free(pixels);
+
+        VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
+        VkImageCreateInfo imageInfo{VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.format = format;
+        imageInfo.extent = {width, height, 1};
+        imageInfo.mipLevels = mipLevels;
+        imageInfo.arrayLayers = 1;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        Texture::Info info{imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT};
+        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, info, sampler);
+
+        device->transitionImageLayout(texture->getImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        device->copyBufferToImage(stagingBuffer, *texture);
+
+        texture->generateMipmaps(device);
+        texture->updateDescriptor();
+
+        return texture;
     }
 
     void Texture::createSampler(const Sampler& textureSampler) {

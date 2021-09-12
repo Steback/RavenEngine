@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include "tiny_gltf.h"
+
 #include "render/Image.hpp"
 
 
@@ -26,11 +28,11 @@ namespace re {
         };
 
         struct Sampler {
-            VkFilter magFilter;
-            VkFilter minFilter;
-            VkSamplerAddressMode addressModeU;
-            VkSamplerAddressMode addressModeV;
-            VkSamplerAddressMode addressModeW;
+            VkFilter magFilter = VK_FILTER_LINEAR;
+            VkFilter minFilter = VK_FILTER_LINEAR;
+            VkSamplerAddressMode addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            VkSamplerAddressMode addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            VkSamplerAddressMode addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
             static VkSamplerAddressMode getVkWrapMode(int32_t wrapMode);
 
@@ -45,6 +47,11 @@ namespace re {
         void generateMipmaps(const std::shared_ptr<Device>& device_);
 
         void updateDescriptor();
+
+        /**
+         * @brief Load Texture from image file
+         */
+        static std::unique_ptr<Texture> loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler);
 
     private:
         void createSampler(const Sampler& sampler);
