@@ -177,7 +177,7 @@ namespace re {
     }
 
     void AssetsManager::loadSkybox(const std::string &name) {
-        loadModel("models/Box.gltf", "skybox");
+        loadModel("models/cube.gltf", "skybox");
         textures[std::hash<std::string>()("skybox")] = Texture::loadCubeMap(device, name);
     }
 
