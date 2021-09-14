@@ -30,12 +30,49 @@ namespace re {
          * @param allocator Vulkan Memory Allocator
          * @param imageInfo Vulkan Image create info
          * @param usage Vulkan Memory Allocator memory usage
+         */
+        Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo& imageInfo, VmaMemoryUsage usage);
+
+        /**
+         * @brief Explicit constructor, create Image, allocate its memory and create the image view
+         * @param device Vulkan Device
+         * @param allocator Vulkan Memory Allocator
+         * @param imageInfo Vulkan Image create info
+         * @param usage Vulkan Memory Allocator memory usage
          * @param aspectFlags Image View aspect flags
          */
         Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo& imageInfo, VmaMemoryUsage usage,
               VkImageAspectFlags aspectFlags);
 
         ~Image() override;
+
+        /**
+         * @brief Create Image View
+         * @param aspectFlags Image View aspect flags
+         */
+        void createView(VkImageAspectFlags aspectFlags, VkImageViewType type = VK_IMAGE_VIEW_TYPE_2D, uint32_t layerCount = 1);
+
+        /**
+         * @brief Put an image memory barrier for setting an image layout on the sub resource into the given command buffer
+         */
+        void setLayout(
+                VkCommandBuffer cmdbuffer,
+                VkImageLayout oldImageLayout,
+                VkImageLayout newImageLayout,
+                VkImageSubresourceRange subresourceRange,
+                VkPipelineStageFlags srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+
+        /**
+         * @brief Uses a fixed sub resource layout with first mip level and layer
+         */
+        void setLayout(
+                VkCommandBuffer cmdbuffer,
+                VkImageAspectFlags aspectMask,
+                VkImageLayout oldImageLayout,
+                VkImageLayout newImageLayout,
+                VkPipelineStageFlags srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
 
         /**
          *
@@ -75,21 +112,17 @@ namespace re {
          */
         void createImage(const VkImageCreateInfo& imageInfo, VmaMemoryUsage usage);
 
-        /**
-         * @brief Create Image View
-         * @param aspectFlags Image View aspect flags
-         */
-        void createView(VkImageAspectFlags aspectFlags);
-
     protected:
         VkDevice device{};
-        VmaAllocator allocator{};
         VkImage image{};
         VkImageView view{};
-        VmaAllocation allocation{};
         VkFormat format{};
         VkExtent3D extent{};
         uint32_t mipLevels{1};
+
+    private:
+        VmaAllocator allocator{};
+        VmaAllocation allocation{};
         bool swapChainImages{false};
     };
 

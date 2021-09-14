@@ -35,9 +35,9 @@ namespace re {
         /**
          *
          * @param fileName Name of GLTF2 file
-         * @return shared_ptr of Model
+         * @param name Optional. Specific name to save model. Bu default is empty.
          */
-        std::shared_ptr<Model> loadModel(const std::string& fileName);
+        std::shared_ptr<Model> loadModel(const std::string& fileName, const std::string& name = "");
 
         /**
          * @brief Load Mesh from GLTF Mesh
@@ -57,6 +57,12 @@ namespace re {
         std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
 
         void setupDescriptors(uint32_t imageCount);
+
+        /**
+         *
+         * @param name File name in .ktx format
+         */
+        void loadSkybox(const std::string& name);
 
         std::shared_ptr<Model> getModel(uint32_t name);
 

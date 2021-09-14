@@ -1,6 +1,7 @@
 #include "Texture.hpp"
 
 #include "stb_image.h"
+#include "external/ktx.h"
 
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
@@ -43,8 +44,13 @@ namespace re {
         return VK_FILTER_LINEAR;
     }
 
-    Texture::Texture(const std::shared_ptr<Device>& device, const Info& info, const Sampler& sampler)
-            : Image(device->getDevice(), device->getAllocator(), info.createInfo, info.usage, info.aspectFlagBits) {
+    Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage)
+            : Image(device->getDevice(), device->getAllocator(), createInfo, usage) {
+
+    }
+
+    Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage, VkImageAspectFlagBits aspectFlagBits, const Sampler& sampler)
+            : Image(device->getDevice(), device->getAllocator(), createInfo, usage, aspectFlagBits) {
         createSampler(sampler);
     }
 
@@ -138,6 +144,27 @@ namespace re {
         device_->endSingleTimeCommands(commandBuffer);
     }
 
+    void Texture::createSampler(const Sampler& textureSampler) {
+        VkSamplerCreateInfo samplerInfo{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+        samplerInfo.magFilter = textureSampler.magFilter;
+        samplerInfo.minFilter = textureSampler.minFilter;
+        samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+        samplerInfo.addressModeU = textureSampler.addressModeU;
+        samplerInfo.addressModeV = textureSampler.addressModeV;
+        samplerInfo.addressModeW = textureSampler.addressModeW;
+        samplerInfo.mipLodBias = 0.0f;
+        samplerInfo.anisotropyEnable = VK_FALSE;
+        samplerInfo.maxAnisotropy = 1.0f;
+        samplerInfo.compareEnable = VK_FALSE;
+        samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+        samplerInfo.minLod = 0.0f;
+        samplerInfo.maxLod = static_cast<float>(mipLevels);
+        samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
+        samplerInfo.unnormalizedCoordinates = VK_FALSE;
+
+        vkCreateSampler(device, &samplerInfo, nullptr, &sampler);
+    }
+
     void Texture::updateDescriptor() {
         descriptor.sampler = sampler;
         descriptor.imageView = view;
@@ -175,8 +202,7 @@ namespace re {
         imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        Texture::Info info{imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT};
-        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, info, sampler);
+        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT, sampler);
 
         device->transitionImageLayout(texture->getImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
         device->copyBufferToImage(stagingBuffer, *texture);
@@ -187,25 +213,93 @@ namespace re {
         return texture;
     }
 
-    void Texture::createSampler(const Sampler& textureSampler) {
-        VkSamplerCreateInfo samplerInfo{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
-        samplerInfo.magFilter = textureSampler.magFilter;
-        samplerInfo.minFilter = textureSampler.minFilter;
-        samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-        samplerInfo.addressModeU = textureSampler.addressModeU;
-        samplerInfo.addressModeV = textureSampler.addressModeV;
-        samplerInfo.addressModeW = textureSampler.addressModeW;
-        samplerInfo.mipLodBias = 0.0f;
-        samplerInfo.anisotropyEnable = VK_FALSE;
-        samplerInfo.maxAnisotropy = 1.0f;
-        samplerInfo.compareEnable = VK_FALSE;
-        samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-        samplerInfo.minLod = 0.0f;
-        samplerInfo.maxLod = static_cast<float>(mipLevels);
-        samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
-        samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    std::unique_ptr<Texture> Texture::loadCubeMap(const std::shared_ptr<Device> &device, const std::string &fileName) {
+        ktxTexture* ktxTexture;
+        ktxResult result = ktxTexture_CreateFromNamedFile(FilesManager::getFile(fileName.c_str()).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
 
-        vkCreateSampler(device, &samplerInfo, nullptr, &sampler);
+        uint32_t width = ktxTexture->baseWidth;
+        uint32_t height = ktxTexture->baseHeight;
+        uint32_t mipLevels = ktxTexture->numLevels;
+        ktx_uint8_t *ktxTextureData = ktxTexture_GetData(ktxTexture);
+        ktx_size_t ktxTextureSize = ktxTexture_GetDataSize(ktxTexture);
+
+        Buffer stagingBuffer(device->getAllocator(), ktxTextureSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+        stagingBuffer.map();
+        stagingBuffer.copyTo(ktxTextureData);
+        stagingBuffer.unmap();
+
+        VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
+        VkImageCreateInfo imageInfo{VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.format = format;
+        imageInfo.extent = {width, height, 1};
+        imageInfo.mipLevels = mipLevels;
+        imageInfo.arrayLayers = 6;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, imageInfo, VMA_MEMORY_USAGE_CPU_COPY);
+
+        // Setup buffer copy regions for each face including all of its miplevels
+        std::vector<VkBufferImageCopy> bufferCopyRegions;
+        uint32_t offset = 0;
+
+
+        for (uint32_t face = 0; face < 6; face++) {
+            for (uint32_t level = 0; level < mipLevels; level++) {
+                // Calculate offset into staging buffer for the current mip level and face
+                ktx_size_t offset;
+                KTX_error_code ret = ktxTexture_GetImageOffset(ktxTexture, level, 0, face, &offset);
+                assert(ret == KTX_SUCCESS);
+                VkBufferImageCopy bufferCopyRegion = {};
+                bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                bufferCopyRegion.imageSubresource.mipLevel = level;
+                bufferCopyRegion.imageSubresource.baseArrayLayer = face;
+                bufferCopyRegion.imageSubresource.layerCount = 1;
+                bufferCopyRegion.imageExtent.width = ktxTexture->baseWidth >> level;
+                bufferCopyRegion.imageExtent.height = ktxTexture->baseHeight >> level;
+                bufferCopyRegion.imageExtent.depth = 1;
+                bufferCopyRegion.bufferOffset = offset;
+                bufferCopyRegions.push_back(bufferCopyRegion);
+            }
+        }
+
+        // Image barrier for optimal image (target)
+        // Set initial layout for all array layers (faces) of the optimal (target) tiled texture
+        VkImageSubresourceRange subresourceRange = {};
+        subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        subresourceRange.baseMipLevel = 0;
+        subresourceRange.levelCount = mipLevels;
+        subresourceRange.layerCount = 6;
+
+        VkCommandBuffer copyCmd = device->beginSingleTimeCommands();
+        texture->setLayout(copyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, subresourceRange);
+
+        vkCmdCopyBufferToImage(
+                copyCmd,
+                stagingBuffer.getBuffer(),
+                texture->image,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                static_cast<uint32_t>(bufferCopyRegions.size()),
+                bufferCopyRegions.data()
+        );
+
+        texture->setLayout(copyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, subresourceRange);
+
+        device->endSingleTimeCommands(copyCmd);
+
+        Sampler sampler;
+        sampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        sampler.addressModeW = sampler.addressModeU;
+        sampler.addressModeV = sampler.addressModeU;
+        texture->createSampler(sampler);
+
+        texture->createView(VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE, 6);
+
+        return texture;
     }
 
 } // namespace re

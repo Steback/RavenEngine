@@ -23,9 +23,10 @@ namespace re {
         vkDestroyDescriptorSetLayout(device->getDevice(), descriptorSetLayout, nullptr);
     }
 
-    std::shared_ptr<Model> AssetsManager::loadModel(const std::string &fileName) {
+    std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
         File file = FilesManager::getFile(fileName.c_str());
-        uint32_t nameHash = std::hash<std::string>()(file.getName(true));
+        std::string modelName = name.empty() ? file.getName(true) : name;
+        uint32_t nameHash = std::hash<std::string>()(modelName);
 
         if (models.find(nameHash) != models.end()) return models[nameHash];
 
@@ -173,6 +174,11 @@ namespace re {
 
             vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }
+    }
+
+    void AssetsManager::loadSkybox(const std::string &name) {
+        loadModel("models/Box.gltf", "skybox");
+        textures[std::hash<std::string>()("skybox")] = Texture::loadCubeMap(device, name);
     }
 
     std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {

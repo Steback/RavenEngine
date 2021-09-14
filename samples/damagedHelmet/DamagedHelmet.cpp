@@ -39,6 +39,7 @@ void DamagedHelmet::onDrawImGui() {
 }
 
 void DamagedHelmet::onLoadScene() {
+    assetsManager->loadSkybox("environments/papermill.ktx");
     entity = scene->getEntity("Damaged Helmet");
     auto& transform = entity->getComponent<re::Transform>();
     angles = re::degrees(transform.rotation.getEulerAngles());

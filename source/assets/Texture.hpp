@@ -21,12 +21,6 @@ namespace re {
         friend class AssetsManager;
 
     public:
-        struct Info {
-            VkImageCreateInfo& createInfo;
-            VmaMemoryUsage usage;
-            VkImageAspectFlagBits aspectFlagBits;
-        };
-
         struct Sampler {
             VkFilter magFilter = VK_FILTER_LINEAR;
             VkFilter minFilter = VK_FILTER_LINEAR;
@@ -40,7 +34,9 @@ namespace re {
         };
 
     public:
-        Texture(const std::shared_ptr<Device>& device, const Info& info, const Sampler& sampler);
+        Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage);
+
+        Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage, VkImageAspectFlagBits aspectFlagBits, const Sampler& sampler);
 
         ~Texture() override;
 
@@ -48,13 +44,14 @@ namespace re {
 
         void updateDescriptor();
 
+        void createSampler(const Sampler& sampler);
+
         /**
          * @brief Load Texture from image file
          */
         static std::unique_ptr<Texture> loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler);
 
-    private:
-        void createSampler(const Sampler& sampler);
+        static std::unique_ptr<Texture> loadCubeMap(const std::shared_ptr<Device>& device, const std::string& fileName);
 
     private:
         VkSampler sampler{};
