@@ -8,6 +8,7 @@
 
 #include "entt/entt.hpp"
 #include "external/Json.hpp"
+#include "vulkan/vulkan.h"
 
 #include "utils/NonCopyable.hpp"
 
@@ -18,12 +19,14 @@ namespace re {
 
     class Entity;
     class AssetsManager;
+    class Skybox;
 
     /**
      * @brief Scene class
      */
     class Scene : NonCopyable {
         friend Entity;
+        friend class RenderSystem;
 
     public:
         /**
@@ -75,11 +78,16 @@ namespace re {
 
         bool loaded() const;
 
+        void setLoaded(bool value);
+
+        void loadSkybox(const std::string& name, VkRenderPass renderPass);
+
     private:
         std::string fileName;
         entt::registry registry;
         std::unordered_map<id_t, std::shared_ptr<Entity>> entities;
         std::shared_ptr<AssetsManager> assetsManager;
+        std::unique_ptr<Skybox> skybox;
         bool wasLoaded{};
     };
 

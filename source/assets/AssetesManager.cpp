@@ -10,6 +10,7 @@
 #include "files/File.hpp"
 #include "utils/Macros.hpp"
 #include "render/Buffer.hpp"
+#include "scene/Skybox.hpp"
 
 
 namespace re {
@@ -176,9 +177,13 @@ namespace re {
         }
     }
 
-    void AssetsManager::loadSkybox(const std::string &name) {
-        loadModel("models/cube.gltf", "skybox");
-        textures[std::hash<std::string>()("skybox")] = Texture::loadCubeMap(device, name);
+    // TODO: Change how to create a Skybox
+    std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
+        auto model = loadModel("models/cube.gltf", "Skybox");
+        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
+        texture->updateDescriptor();
+
+        return std::make_unique<Skybox>(device, renderPass, model->getNode(0).mesh, texture);
     }
 
     std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {

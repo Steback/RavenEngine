@@ -2,6 +2,7 @@
 
 #include "external/Json.hpp"
 
+#include "Skybox.hpp"
 #include "entity/Entity.hpp"
 #include "files/File.hpp"
 #include "files/FilesManager.hpp"
@@ -37,8 +38,6 @@ namespace re {
 
         for (auto& entityJson : scene["entities"])
             auto entity = addEntity(entityJson);
-
-        wasLoaded = true;
     }
 
     void Scene::save() {
@@ -75,6 +74,14 @@ namespace re {
 
     bool Scene::loaded() const {
         return wasLoaded;
+    }
+
+    void Scene::setLoaded(bool value) {
+        wasLoaded = value;
+    }
+
+    void Scene::loadSkybox(const std::string& name, VkRenderPass renderPass) {
+        skybox = assetsManager->loadSkybox(name, renderPass);
     }
 
 } // namespace re

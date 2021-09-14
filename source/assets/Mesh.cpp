@@ -129,7 +129,7 @@ namespace re {
 //                if (primitive.attributes.find("JOINTS_0") != primitive.attributes.end()) {
 //                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("JOINTS_0")->second];
 //                    const tinygltf::BufferView &view = model.bufferViews[accessor.bufferView];
-//                    bufferJoints = &(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]);
+//                    bufferJoints = &(model.buffers[view.uboBuffer].data[accessor.byteOffset + view.byteOffset]);
 //                    jointComponentType = accessor.componentType;
 //                    jointByteStride = accessor.ByteStride(view) ? (accessor.ByteStride(view) / tinygltf::GetComponentSizeInBytes(jointComponentType)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC4);
 //                }
@@ -137,7 +137,7 @@ namespace re {
 //                if (primitive.attributes.find("WEIGHTS_0") != primitive.attributes.end()) {
 //                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("WEIGHTS_0")->second];
 //                    const tinygltf::BufferView &view = model.bufferViews[accessor.bufferView];
-//                    bufferWeights = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
+//                    bufferWeights = reinterpret_cast<const float *>(&(model.buffers[view.uboBuffer].data[accessor.byteOffset + view.byteOffset]));
 //                    weightByteStride = accessor.ByteStride(view) ? (accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC4);
 //                }
 

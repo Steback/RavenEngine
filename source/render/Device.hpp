@@ -76,8 +76,8 @@ namespace re {
         VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool = VK_NULL_HANDLE);
 
         /**
-         * Submit commands to the queue and end command buffer
-         * @param commandBuffer Command buffer with all recorded commands
+         * Submit commands to the queue and end command uboBuffer
+         * @param commandBuffer Command uboBuffer with all recorded commands
          * @param queue Queue for submit the commands. By default is a Graphics queue.
          * @param commandPool Command Pool for destroy Command Buffer. By default the Command Pool used are created with Graphics queue family index.
          */
@@ -85,14 +85,14 @@ namespace re {
 
         /**
          * @brief Copy Buffer from other Buffer\n
-         * @param src Source buffer
-         * @param dst Destination buffer
+         * @param src Source uboBuffer
+         * @param dst Destination uboBuffer
          * @param size Buffer size. Must be equal to both buffers
          */
         void copyBuffer(Buffer& src, Buffer& dst, VkDeviceSize size);
 
         /**
-         * @brief Copy buffer to Image
+         * @brief Copy uboBuffer to Image
          * @param src Source Buffer
          * @param dst Destination Image
          */

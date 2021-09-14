@@ -53,7 +53,7 @@ namespace re {
         void createView(VkImageAspectFlags aspectFlags, VkImageViewType type = VK_IMAGE_VIEW_TYPE_2D, uint32_t layerCount = 1);
 
         /**
-         * @brief Put an image memory barrier for setting an image layout on the sub resource into the given command buffer
+         * @brief Put an image memory barrier for setting an image layout on the sub resource into the given command uboBuffer
          */
         void setLayout(
                 VkCommandBuffer cmdbuffer,

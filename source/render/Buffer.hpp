@@ -20,7 +20,7 @@ namespace re {
          * @brief Default constructor
          * @param allocator Vulkan Memory Allocator
          * @param size Buffer size
-         * @param usageFlags Vulkan buffer usage flags
+         * @param usageFlags Vulkan uboBuffer usage flags
          * @param memoryUsage Vulkan Memory Allocator memory usage
          */
         Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage);
@@ -28,7 +28,7 @@ namespace re {
         ~Buffer();
 
         /**
-         * @brief Map buffer using Vulkan Memory Allocator
+         * @brief Map uboBuffer using Vulkan Memory Allocator
          */
         void map();
 
@@ -41,19 +41,19 @@ namespace re {
         void copyTo(T* data) const;
 
         /**
-         * @brief Unmap buffer
+         * @brief Unmap uboBuffer
          */
         void unmap();
 
         /**
          *
-         * @return Raw vulkan buffer
+         * @return Raw vulkan uboBuffer
          */
         [[nodiscard]] const VkBuffer& getBuffer() const;
 
         /**
          *
-         * @return Vulkan buffer size
+         * @return Vulkan uboBuffer size
          */
         [[nodiscard]] VkDeviceSize getSize() const;
 

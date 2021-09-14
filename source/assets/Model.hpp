@@ -68,7 +68,7 @@ namespace re {
 
         /**
          *
-         * @param commandBuffer Command buffer in recording state
+         * @param commandBuffer Command uboBuffer in recording state
          * @param layout Valid pipeline layout
          */
         void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, UboModel& uboModel);

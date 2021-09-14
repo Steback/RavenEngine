@@ -66,6 +66,7 @@ namespace re {
             assetsManager->setupDescriptors(renderer->getImageCount());
             renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
             onLoadScene();
+            scene->setLoaded(true);
         });
     }
 

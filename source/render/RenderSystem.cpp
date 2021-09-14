@@ -5,6 +5,7 @@
 #include "Device.hpp"
 #include "pipelines/GraphicsPipeline.hpp"
 #include "scene/Scene.hpp"
+#include "scene/Skybox.hpp"
 #include "math/Common.hpp"
 #include "assets/AssetsManager.hpp"
 #include "entity/Entity.hpp"
@@ -34,7 +35,6 @@ namespace re {
                 std::vector<VkDescriptorSetLayout>{descriptorSetLayout, this->assetsManager->getDescriptorSetLayout()},
                 std::vector<VkPushConstantRange>{materialPushConstant}
         );
-
     }
 
     RenderSystem::~RenderSystem() {
@@ -44,12 +44,14 @@ namespace re {
     }
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
-        pipeline->bind(commandBuffer);
-
         if (!camera) camera = scene->getEntity("Camera");
 
         auto& cameraComponent = camera->getComponent<Camera>();
         mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
+
+        scene->skybox->draw(commandBuffer, cameraComponent.getProjection(), Matrix4{1.0f});
+
+        pipeline->bind(commandBuffer);
 
         std::vector<VkDescriptorSet> sets = {descriptorSet};
         vkCmdBindDescriptorSets(commandBuffer,
@@ -80,6 +82,7 @@ namespace re {
         }
     }
 
+    // TODO: Remove this descriptor pool and layout from here
     void RenderSystem::setupDescriptors() {
         std::vector<VkDescriptorPoolSize> poolSizes = {
                 {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1}

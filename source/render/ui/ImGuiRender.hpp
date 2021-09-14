@@ -49,7 +49,7 @@ namespace re {
 
             /**
              * @brief Render ImGui Data
-             * @param commandBuffer Valid command buffer in recording state
+             * @param commandBuffer Valid command uboBuffer in recording state
              */
             void render(VkCommandBuffer commandBuffer);
 

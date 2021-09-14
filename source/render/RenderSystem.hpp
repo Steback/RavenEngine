@@ -63,7 +63,7 @@ namespace re {
     private:
         void setupDescriptors();
 
-        // TODO: Remove this. Temporally buffer.
+        // TODO: Remove this. Temporally uboBuffer.
         void setupBuffer();
 
         void updateBuffer();

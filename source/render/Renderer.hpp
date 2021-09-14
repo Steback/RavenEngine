@@ -56,7 +56,7 @@ namespace re {
 
         /**
          *
-         * @return Current command buffer in recording state
+         * @return Current command uboBuffer in recording state
          */
         [[nodiscard]] VkCommandBuffer getCommandBuffer() const;
 
@@ -68,7 +68,7 @@ namespace re {
 
         /**
          * Begin frame for recording the render commands
-         * @return Current command buffer in recording state
+         * @return Current command uboBuffer in recording state
          */
         VkCommandBuffer beginFrame();
 
@@ -79,13 +79,13 @@ namespace re {
 
         /**
          * Set clear color values, viewport and Scissor;
-         * @param commandBuffer Command buffer in recording state
+         * @param commandBuffer Command uboBuffer in recording state
          */
         void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
         /**
          * End Render Pass
-         * @param commandBuffer Command buffer in recording state
+         * @param commandBuffer Command uboBuffer in recording state
          */
         void endSwapChainRenderPass(VkCommandBuffer commandBuffer) const;
 
@@ -113,7 +113,7 @@ namespace re {
 
         /**
          *
-         * @param commandBuffer Valid command buffer in recording state
+         * @param commandBuffer Valid command uboBuffer in recording state
          */
         void renderImGui(VkCommandBuffer commandBuffer);
 

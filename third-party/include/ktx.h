@@ -1446,7 +1446,7 @@ Fixed:
 @li GitHub issue #33: returning incorrect target when loading cubemaps.
 @li GitHub PR #42: loading of texture arrays.
 @li GitHub PR #41: compilation error when KTX_OPENGL_ES2=1 defined.
-@li GitHub issue #39: stack-buffer-overflow in toktx
+@li GitHub issue #39: stack-uboBuffer-overflow in toktx
 @li Don't use GL_EXTENSIONS on recent OpenGL versions.
 
 @section v4 Version 2.0.1

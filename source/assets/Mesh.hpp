@@ -72,13 +72,13 @@ namespace re {
 
         /**
          * @brief Bind mesh
-         * @param commandBuffer Command buffer in recording state
+         * @param commandBuffer Command uboBuffer in recording state
          */
         void bind(VkCommandBuffer commandBuffer);
 
         /**
          * @brief Draw mesh
-         * @param commandBuffer Command buffer in recording state
+         * @param commandBuffer Command uboBuffer in recording state
          */
         void draw(VkCommandBuffer commandBuffer) const;
 

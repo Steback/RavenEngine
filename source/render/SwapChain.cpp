@@ -126,7 +126,7 @@ namespace re {
 
         vkResetFences(logicalDevice, 1, &inFlightFences[currentFrame]);
         RE_VK_CHECK_RESULT(vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]),
-                            "Failed to submit draw command buffer!");
+                            "Failed to submit draw command uboBuffer!");
 
         VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
         presentInfo.waitSemaphoreCount = 1;

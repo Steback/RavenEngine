@@ -78,7 +78,7 @@ namespace re {
         VkCommandBufferBeginInfo beginInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
         RE_VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &beginInfo),
-                            "Failed to begin recording command buffer!");
+                            "Failed to begin recording command uboBuffer!");
 
         return commandBuffer;
     }
@@ -86,7 +86,7 @@ namespace re {
     void Renderer::endFrame() {
         auto commandBuffer = getCommandBuffer();
 
-        RE_VK_CHECK_RESULT(vkEndCommandBuffer(commandBuffer), "Failed to record command buffer!");
+        RE_VK_CHECK_RESULT(vkEndCommandBuffer(commandBuffer), "Failed to record command uboBuffer!");
 
         auto result = swapChain->submitCommandBuffers(commandBuffer, imageIndex);
 

@@ -53,9 +53,11 @@ namespace re {
 
         static std::unique_ptr<Texture> loadCubeMap(const std::shared_ptr<Device>& device, const std::string& fileName);
 
+    public:
+        VkDescriptorImageInfo descriptor{};
+
     private:
         VkSampler sampler{};
-        VkDescriptorImageInfo descriptor{};
     };
 
 } // namespace re

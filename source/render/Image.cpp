@@ -70,13 +70,13 @@ namespace re {
 
             case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
                 // Image is a color attachment
-                // Make sure any writes to the color buffer have been finished
+                // Make sure any writes to the color uboBuffer have been finished
                 imageMemoryBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
                 break;
 
             case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
                 // Image is a depth/stencil attachment
-                // Make sure any writes to the depth/stencil buffer have been finished
+                // Make sure any writes to the depth/stencil uboBuffer have been finished
                 imageMemoryBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
                 break;
 
@@ -119,13 +119,13 @@ namespace re {
 
             case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
                 // Image will be used as a color attachment
-                // Make sure any writes to the color buffer have been finished
+                // Make sure any writes to the color uboBuffer have been finished
                 imageMemoryBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
                 break;
 
             case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
                 // Image layout will be used as a depth/stencil attachment
-                // Make sure any writes to depth/stencil buffer have been finished
+                // Make sure any writes to depth/stencil uboBuffer have been finished
                 imageMemoryBarrier.dstAccessMask = imageMemoryBarrier.dstAccessMask | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
                 break;
 
@@ -143,7 +143,7 @@ namespace re {
                 break;
         }
 
-        // Put barrier inside setup command buffer
+        // Put barrier inside setup command uboBuffer
         vkCmdPipelineBarrier(
                 cmdBuffer,
                 srcStageMask,

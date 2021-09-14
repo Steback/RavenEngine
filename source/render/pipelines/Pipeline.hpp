@@ -41,7 +41,7 @@ namespace re {
 
         /**
          * Bind Pipeline to be used in render
-         * @param commandBuffer Vulkan Command buffer in recording state
+         * @param commandBuffer Vulkan Command uboBuffer in recording state
          */
         virtual void bind(const VkCommandBuffer& commandBuffer) const = 0;
 

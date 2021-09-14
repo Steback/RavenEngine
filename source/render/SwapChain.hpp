@@ -83,10 +83,10 @@ namespace re {
         VkResult acquireNextImage(uint32_t& imageIndex);
 
         /**
-         * @brief Submit command buffer to the graphics queue
-         * @param commandBuffer Command buffer with all recording commands
+         * @brief Submit command uboBuffer to the graphics queue
+         * @param commandBuffer Command uboBuffer with all recording commands
          * @param imageIndex Current image index
-         * @return Submit command buffer operation result
+         * @return Submit command uboBuffer operation result
          */
         VkResult submitCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 

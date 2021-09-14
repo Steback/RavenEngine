@@ -18,6 +18,7 @@ namespace re {
     class Model;
     class Texture;
     class Material;
+    class Skybox;
 
     /**
      * Assets Manager class
@@ -62,7 +63,7 @@ namespace re {
          *
          * @param name File name in .ktx format
          */
-        void loadSkybox(const std::string& name);
+        std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
 
         std::shared_ptr<Model> getModel(uint32_t name);
 

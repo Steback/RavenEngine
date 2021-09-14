@@ -217,6 +217,9 @@ namespace re {
         ktxTexture* ktxTexture;
         ktxResult result = ktxTexture_CreateFromNamedFile(FilesManager::getFile(fileName.c_str()).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
 
+        if (result != KTX_SUCCESS)
+            RE_THROW_EX("Failed to open cubemap file: " + fileName);
+
         uint32_t width = ktxTexture->baseWidth;
         uint32_t height = ktxTexture->baseHeight;
         uint32_t mipLevels = ktxTexture->numLevels;
@@ -243,14 +246,14 @@ namespace re {
         imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
         std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, imageInfo, VMA_MEMORY_USAGE_CPU_COPY);
 
-        // Setup buffer copy regions for each face including all of its miplevels
+        // Setup uboBuffer copy regions for each face including all of its miplevels
         std::vector<VkBufferImageCopy> bufferCopyRegions;
         uint32_t offset = 0;
 
 
         for (uint32_t face = 0; face < 6; face++) {
             for (uint32_t level = 0; level < mipLevels; level++) {
-                // Calculate offset into staging buffer for the current mip level and face
+                // Calculate offset into staging uboBuffer for the current mip level and face
                 ktx_size_t offset;
                 KTX_error_code ret = ktxTexture_GetImageOffset(ktxTexture, level, 0, face, &offset);
                 assert(ret == KTX_SUCCESS);
