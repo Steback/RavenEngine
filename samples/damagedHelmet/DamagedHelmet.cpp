@@ -39,7 +39,7 @@ void DamagedHelmet::onDrawImGui() {
 }
 
 void DamagedHelmet::onLoadScene() {
-    scene->loadSkybox("environments/papermill.ktx", renderer->getRenderPass());
+    scene->loadSkybox("environments/cubemap_yokohama_rgba.ktx", renderer->getRenderPass());
     entity = scene->getEntity("Damaged Helmet");
     auto& transform = entity->getComponent<re::Transform>();
     angles = re::degrees(transform.rotation.getEulerAngles());

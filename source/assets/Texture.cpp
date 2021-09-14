@@ -2,6 +2,7 @@
 
 #include "stb_image.h"
 #include "ktx.h"
+#include "ktxvulkan.h"
 
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
@@ -249,7 +250,6 @@ namespace re {
         // Setup uboBuffer copy regions for each face including all of its miplevels
         std::vector<VkBufferImageCopy> bufferCopyRegions;
         uint32_t offset = 0;
-
 
         for (uint32_t face = 0; face < 6; face++) {
             for (uint32_t level = 0; level < mipLevels; level++) {
