@@ -8,6 +8,10 @@ set(CONAN_DISABLE_CHECK_COMPILER OFF)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(NO_OUTPUT_DIRS)
 
+### Third Party ###
+include_directories(third-party/include)
+file(GLOB_RECURSE THIRD_PARTY third-party/lib/libktx.so)
+
 ### Bindings ###
 include_directories(bindings)
 file(GLOB_RECURSE IMGUI_BINDINGS bindings/*.cpp)

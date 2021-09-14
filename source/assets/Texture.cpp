@@ -1,7 +1,7 @@
 #include "Texture.hpp"
 
 #include "stb_image.h"
-#include "external/ktx.h"
+#include "ktx.h"
 
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
