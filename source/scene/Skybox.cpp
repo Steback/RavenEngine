@@ -10,14 +10,13 @@
 
 namespace re {
 
-    Skybox::Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass, AssetsManager* assetsManager)
-            : device(std::move(device))  {
+    Skybox::Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass) : device(std::move(device))  {
         uint32_t skyboxHash = std::hash<std::string>()("Skybox");
-        mesh = assetsManager->getModel(skyboxHash)->getNode(0).mesh;
-        texture = assetsManager->getTexture(skyboxHash);
+        mesh = AssetsManager::getInstance()->getModel(skyboxHash)->getNode(0).mesh;
+        texture = AssetsManager::getInstance()->getTexture(skyboxHash);
 
         setupBuffer();
-        setupDescriptors(assetsManager);
+        setupDescriptors();
 
         Pipeline::ConfigInfo configInfo;
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);
@@ -25,7 +24,7 @@ namespace re {
                 this->device->getDevice(),
                 "skybox.vert", "skybox.frag",
                 configInfo,
-                std::vector<VkDescriptorSetLayout>{assetsManager->getUboLayout(), assetsManager->getTextureLayout()},
+                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getUboLayout(), AssetsManager::getInstance()->getTextureLayout()},
                 std::vector<VkPushConstantRange>{}
         );
     }
@@ -52,9 +51,9 @@ namespace re {
     }
 
     // TODO: Remove this descriptor pool and layout from here
-    void Skybox::setupDescriptors(AssetsManager* assetsManager) {
-        assetsManager->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
-        assetsManager->allocateDescriptorSet(DescriptorSetType::TEXTURE, &textureDescriptorSet);
+    void Skybox::setupDescriptors() {
+        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
+        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::TEXTURE, &textureDescriptorSet);
 
         std::vector<VkWriteDescriptorSet> writeDescriptors(2);
         writeDescriptors[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

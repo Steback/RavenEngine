@@ -16,8 +16,8 @@
 
 namespace re {
 
-    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName, std::shared_ptr<AssetsManager> assetsManager)
-            : device(std::move(device)), assetsManager(std::move(assetsManager)) {
+    RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName)
+            : device(std::move(device)) {
         VkPushConstantRange materialPushConstant{};
         materialPushConstant.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
         materialPushConstant.size = sizeof(PushConstBlockMaterial);
@@ -32,7 +32,7 @@ namespace re {
                 this->device->getDevice(),
                 shadersName + ".vert", shadersName + ".frag",
                 configInfo,
-                std::vector<VkDescriptorSetLayout>{this->assetsManager->getUboLayout(), this->assetsManager->getMaterialLayout()},
+                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getUboLayout(), AssetsManager::getInstance()->getMaterialLayout()},
                 std::vector<VkPushConstantRange>{materialPushConstant}
         );
     }
@@ -82,7 +82,7 @@ namespace re {
 
     // TODO: Remove this descriptor pool and layout from here
     void RenderSystem::setupDescriptors() {
-        assetsManager->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
+        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
 
         VkWriteDescriptorSet writeDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
         writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;

@@ -49,7 +49,7 @@ namespace re {
         };
 
     public:
-        Material(AssetsManager* assetsManager, const tinygltf::Model& model, const tinygltf::Material& material);
+        Material(const tinygltf::Model& model, const tinygltf::Material& material);
 
         ~Material();
 

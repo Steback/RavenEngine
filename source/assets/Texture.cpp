@@ -302,6 +302,8 @@ namespace re {
 
         texture->createView(VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE, 6);
 
+        ktxTexture_Destroy(ktxTexture);
+
         return texture;
     }
 

@@ -55,7 +55,7 @@ namespace re {
          * @param assetsManager Pointer to Assets Manager
          * @param model TinyGLTF model wasLoaded
          */
-        Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model);
+        Model(std::string name, const tinygltf::Model &model);
 
         ~Model();
 
@@ -83,7 +83,6 @@ namespace re {
     private:
         std::string name;
         std::vector<Node> nodes;
-        AssetsManager* assetsManager{};
     };
 
 } // namespace re

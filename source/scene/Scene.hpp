@@ -34,7 +34,7 @@ namespace re {
          * @param fileName Scene file name
          * @param assetsManager Valid pointer to AssetsManager
          */
-        Scene(std::string fileName, std::shared_ptr<AssetsManager> assetsManager);
+        Scene(std::string fileName);
 
         ~Scene() override;
 
@@ -86,7 +86,6 @@ namespace re {
         std::string fileName;
         entt::registry registry;
         std::unordered_map<id_t, std::shared_ptr<Entity>> entities;
-        std::shared_ptr<AssetsManager> assetsManager;
         std::unique_ptr<Skybox> skybox;
         bool wasLoaded{};
     };

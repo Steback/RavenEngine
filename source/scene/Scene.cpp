@@ -13,8 +13,7 @@
 
 namespace re {
 
-    Scene::Scene(std::string fileName, std::shared_ptr<AssetsManager> assetsManager)
-            : fileName(std::move(fileName)), assetsManager(std::move(assetsManager)) {
+    Scene::Scene(std::string fileName) : fileName(std::move(fileName)) {
 
     }
 
@@ -81,7 +80,7 @@ namespace re {
     }
 
     void Scene::loadSkybox(const std::string& name, VkRenderPass renderPass) {
-        skybox = assetsManager->loadSkybox(name, renderPass);
+        skybox = AssetsManager::getInstance()->loadSkybox(name, renderPass);
     }
 
 } // namespace re

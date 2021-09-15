@@ -26,17 +26,29 @@ namespace re {
     };
 
     /**
-     * Assets Manager class
+     * @brief Assets Manager class\n
      */
-    class AssetsManager {
-    public:
-        /**
-         * Default Constructor
-         * @param device shared_ptr of Device class
-         */
+    class AssetsManager : NonCopyable {
+        friend class Base;
+
         explicit AssetsManager(std::shared_ptr<Device> device);
 
-        ~AssetsManager();
+        static void setup(std::shared_ptr<Device> device);
+
+    public:
+        ~AssetsManager() override;
+
+        static AssetsManager* getInstance();
+
+        void setupDescriptorsPool(uint32_t imageCount);
+
+        void allocateDescriptorSet(DescriptorSetType type,  VkDescriptorSet* set);
+
+        VkDescriptorSetLayout getMaterialLayout();
+
+        VkDescriptorSetLayout getUboLayout();
+
+        VkDescriptorSetLayout getTextureLayout();
 
         /**
          *
@@ -44,6 +56,10 @@ namespace re {
          * @param name Optional. Specific name to save model. Bu default is empty.
          */
         std::shared_ptr<Model> loadModel(const std::string& fileName, const std::string& name = "");
+
+        std::shared_ptr<Model> getModel(uint32_t name);
+
+        std::shared_ptr<Model> getModel(const std::string& name);
 
         /**
          * @brief Load Mesh from GLTF Mesh
@@ -53,6 +69,10 @@ namespace re {
          */
         std::shared_ptr<Mesh> addMesh(const tinygltf::Model& model, const tinygltf::Node& node);
 
+        std::shared_ptr<Mesh> getMesh(uint32_t name);
+
+        std::shared_ptr<Mesh> getMesh(const std::string& name);
+
         /**
          * @brief Add Texture to AssetsManager
          * @param texture TinyGLTF Texture
@@ -60,9 +80,15 @@ namespace re {
          */
         std::shared_ptr<Texture> addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture);
 
+        std::shared_ptr<Texture> getTexture(uint32_t id);
+
+        std::shared_ptr<Texture> getTexture(const std::string& name);
+
         std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
 
-        void setupDescriptorsPool(uint32_t imageCount);
+        std::shared_ptr<Material> getMaterial(uint32_t id);
+
+        std::shared_ptr<Material> getMaterial(const std::string& name);
 
         /**
          *
@@ -70,26 +96,15 @@ namespace re {
          */
         std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
 
-        std::shared_ptr<Model> getModel(uint32_t name);
-
-        std::shared_ptr<Mesh> getMesh(uint32_t name);
-
-        std::shared_ptr<Texture> getTexture(uint32_t id);
-
-        VkDescriptorSetLayout getMaterialLayout();
-
-        VkDescriptorSetLayout getUboLayout();
-
-        VkDescriptorSetLayout getTextureLayout();
-
-        void allocateDescriptorSet(DescriptorSetType type,  VkDescriptorSet* set);
-
     private:
+        AssetsManager() = default;
+
         void setupDescriptorSetsLayout();
 
         void setupMaterialDescriptorsSets();
 
     private:
+        static AssetsManager* singleton;
         VkDescriptorPool descriptorPool{};
         VkDescriptorSetLayout materialSetLayout{};
         VkDescriptorSetLayout uboSetLayout{};

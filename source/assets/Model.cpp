@@ -40,8 +40,7 @@ namespace re {
             ) * matrix;
     }
 
-    Model::Model(AssetsManager* assetsManager, std::string name, const tinygltf::Model &model)
-            : assetsManager(assetsManager), name(std::move(name)) {
+    Model::Model(std::string name, const tinygltf::Model &model) : name(std::move(name)) {
         const tinygltf::Scene& scene = model.scenes[0];
 
         nodes.resize(model.nodes.size());
@@ -150,7 +149,7 @@ namespace re {
         }
 
         if (node.mesh > -1) {
-            newNode.mesh = assetsManager->addMesh(model, node);
+            newNode.mesh = AssetsManager::getInstance()->addMesh(model, node);
         }
 
         if (parentIndex > -1) {

@@ -15,6 +15,8 @@
 
 namespace re {
 
+    AssetsManager* AssetsManager::singleton;
+
     AssetsManager::AssetsManager(std::shared_ptr<Device> device) : device(std::move(device)) {
         textures[std::hash<std::string>()("empty")] = Texture::loadFromFile(this->device, "empty.png", Texture::Sampler{});
     }
@@ -26,66 +28,12 @@ namespace re {
         vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
     }
 
-    std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
-        File file = FilesManager::getFile(fileName.c_str());
-        std::string modelName = name.empty() ? file.getName(true) : name;
-        uint32_t nameHash = std::hash<std::string>()(modelName);
-
-        if (models.find(nameHash) != models.end()) return models[nameHash];
-
-        std::string error;
-        std::string warning;
-
-        tinygltf::Model gltfModel;
-        tinygltf::TinyGLTF gltfContext;
-
-        bool fileLoaded;
-        if (file.getExtension() == ".glb")
-            fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, &error, &warning, file.getPath());
-        else
-            fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
-
-        if (fileLoaded)
-            return models[nameHash] = std::make_shared<Model>(this, fileName, gltfModel);
-
-        return nullptr;
+    void AssetsManager::setup(std::shared_ptr<Device> device) {
+        singleton = new AssetsManager(std::move(device));
     }
 
-    std::shared_ptr<Mesh> AssetsManager::addMesh(const tinygltf::Model &model, const tinygltf::Node &node) {
-        uint32_t meshID = std::hash<std::string>()(node.name);
-        const tinygltf::Mesh& mesh = model.meshes[node.mesh];
-
-        Mesh::Data data = Mesh::loadMesh(model, mesh);
-
-        for (auto& primitive : mesh.primitives) {
-            const tinygltf::Material& material = model.materials[primitive.material];
-            return meshes[meshID] = std::make_shared<Mesh>(device, data, addMaterial(model, material));
-        }
-
-        return nullptr;
-    }
-
-    std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture) {
-        tinygltf::Image image = model.images[texture.source];
-        uint32_t textureID = std::hash<std::string>()(image.name);
-
-        if (textures.find(textureID) != textures.end()) return textures[textureID];
-
-        Texture::Sampler sampler{};
-        if (texture.sampler > -1) {
-            tinygltf::Sampler smpl = model.samplers[texture.sampler];
-            sampler.minFilter = Texture::Sampler::getVkFilterMode(smpl.minFilter);
-            sampler.magFilter = Texture::Sampler::getVkFilterMode(smpl.magFilter);
-            sampler.addressModeU = Texture::Sampler::getVkWrapMode(smpl.wrapS);
-            sampler.addressModeV = Texture::Sampler::getVkWrapMode(smpl.wrapT);
-            sampler.addressModeW = sampler.addressModeV;
-        }
-
-        return textures[textureID] = Texture::loadFromFile(device, image.uri, sampler);
-    }
-
-    std::shared_ptr<Material> AssetsManager::addMaterial(const tinygltf::Model &gltfModel, const tinygltf::Material &gltfMaterial) {
-        return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(this, gltfModel, gltfMaterial);
+    AssetsManager* AssetsManager::getInstance() {
+        return singleton;
     }
 
     void AssetsManager::setupDescriptorsPool(uint32_t imageCount) {
@@ -117,25 +65,12 @@ namespace re {
         setupMaterialDescriptorsSets();
     }
 
-    // TODO: Change how to create a Skybox
-    std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
-        auto model = loadModel("models/cube.gltf", "Skybox");
-        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
-        texture->updateDescriptor();
-
-        return std::make_unique<Skybox>(device, renderPass, this);
-    }
-
-    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
-        return models[name];
-    }
-
-    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
-        return meshes[name];
-    }
-
-    std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
-        return textures[id];
+    void AssetsManager::allocateDescriptorSet(DescriptorSetType type, VkDescriptorSet *set) {
+        VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+        allocateInfo.descriptorPool = descriptorPool;
+        allocateInfo.descriptorSetCount = 1;
+        allocateInfo.pSetLayouts = type == UBO ? &uboSetLayout : &textureSetLayout;
+        vkAllocateDescriptorSets(device->getDevice(), &allocateInfo, set);
     }
 
     VkDescriptorSetLayout AssetsManager::getMaterialLayout() {
@@ -150,12 +85,107 @@ namespace re {
         return textureSetLayout;
     }
 
-    void AssetsManager::allocateDescriptorSet(DescriptorSetType type, VkDescriptorSet *set) {
-        VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
-        allocateInfo.descriptorPool = descriptorPool;
-        allocateInfo.descriptorSetCount = 1;
-        allocateInfo.pSetLayouts = type == UBO ? &uboSetLayout : &textureSetLayout;
-        vkAllocateDescriptorSets(device->getDevice(), &allocateInfo, set);
+    std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
+        File file = FilesManager::getFile(fileName.c_str());
+        std::string modelName = name.empty() ? file.getName(true) : name;
+        uint32_t nameHash = std::hash<std::string>()(modelName);
+
+        if (models.find(nameHash) != models.end()) return models[nameHash];
+
+        std::string error;
+        std::string warning;
+
+        tinygltf::Model gltfModel;
+        tinygltf::TinyGLTF gltfContext;
+
+        bool fileLoaded;
+        if (file.getExtension() == ".glb")
+            fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, &error, &warning, file.getPath());
+        else
+            fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
+
+        if (fileLoaded)
+            return models[nameHash] = std::make_shared<Model>(fileName, gltfModel);
+        else
+            return nullptr;
+    }
+
+    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
+        return models[name];
+    }
+
+    std::shared_ptr<Model> AssetsManager::getModel(const std::string &name) {
+        return models[std::hash<std::string>()(name)];
+    }
+
+    std::shared_ptr<Mesh> AssetsManager::addMesh(const tinygltf::Model &model, const tinygltf::Node &node) {
+        uint32_t meshID = std::hash<std::string>()(node.name);
+        const tinygltf::Mesh& mesh = model.meshes[node.mesh];
+
+        Mesh::Data data = Mesh::loadMesh(model, mesh);
+
+        for (auto& primitive : mesh.primitives) {
+            const tinygltf::Material& material = model.materials[primitive.material];
+            return meshes[meshID] = std::make_shared<Mesh>(device, data, addMaterial(model, material));
+        }
+
+        return nullptr;
+    }
+
+    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
+        return meshes[name];
+    }
+
+    std::shared_ptr<Mesh> AssetsManager::getMesh(const std::string &name) {
+        return meshes[std::hash<std::string>()(name)];
+    }
+
+    std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture) {
+        tinygltf::Image image = model.images[texture.source];
+        uint32_t textureID = std::hash<std::string>()(image.name);
+
+        if (textures.find(textureID) != textures.end()) return textures[textureID];
+
+        Texture::Sampler sampler{};
+        if (texture.sampler > -1) {
+            tinygltf::Sampler smpl = model.samplers[texture.sampler];
+            sampler.minFilter = Texture::Sampler::getVkFilterMode(smpl.minFilter);
+            sampler.magFilter = Texture::Sampler::getVkFilterMode(smpl.magFilter);
+            sampler.addressModeU = Texture::Sampler::getVkWrapMode(smpl.wrapS);
+            sampler.addressModeV = Texture::Sampler::getVkWrapMode(smpl.wrapT);
+            sampler.addressModeW = sampler.addressModeV;
+        }
+
+        return textures[textureID] = Texture::loadFromFile(device, image.uri, sampler);
+    }
+
+    std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
+        return textures[id];
+    }
+
+    std::shared_ptr<Texture> AssetsManager::getTexture(const std::string &name) {
+        return textures[std::hash<std::string>()(name)];
+    }
+
+    std::shared_ptr<Material> AssetsManager::addMaterial(const tinygltf::Model &gltfModel, const tinygltf::Material &gltfMaterial) {
+        return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(gltfModel, gltfMaterial);
+    }
+
+    std::shared_ptr<Material> AssetsManager::getMaterial(uint32_t id) {
+        return materials[id];
+    }
+
+    std::shared_ptr<Material> AssetsManager::getMaterial(const std::string &name) {
+        return materials[std::hash<std::string>()(name)];
+    }
+
+    // TODO: Change how to create a Skybox
+    std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
+        auto model = loadModel("models/cube.gltf", "Skybox");
+        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
+        texture->updateDescriptor();
+
+        return std::make_unique<Skybox>(device, renderPass);
     }
 
     void AssetsManager::setupDescriptorSetsLayout() {

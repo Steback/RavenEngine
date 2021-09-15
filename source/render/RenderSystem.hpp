@@ -45,8 +45,7 @@ namespace re {
 
     class RenderSystem : NonCopyable {
     public:
-        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName,
-                     std::shared_ptr<AssetsManager> assetsManager);
+        RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName);
 
         ~RenderSystem() override;
 
@@ -69,7 +68,6 @@ namespace re {
         void updateBuffer();
 
     private:
-        std::shared_ptr<AssetsManager> assetsManager;
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;

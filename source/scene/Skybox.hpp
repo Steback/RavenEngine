@@ -30,14 +30,14 @@ namespace re {
         };
 
     public:
-        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass, AssetsManager* assetsManager);
+        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass);
 
         ~Skybox() override;
 
         void draw(VkCommandBuffer commandBuffer, const mat4& proj, const mat4& transform);
 
     private:
-        void setupDescriptors(AssetsManager* assetsManager);
+        void setupDescriptors();
 
         void setupBuffer();
 

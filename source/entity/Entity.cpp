@@ -60,7 +60,7 @@ namespace re {
 
         // TODO: Use promises to load mesh in other thread.
         if (!entity["meshRender"].empty())
-            addComponent<MeshRender>(scene->assetsManager->loadModel(entity["meshRender"]["name"]));
+            addComponent<MeshRender>(AssetsManager::getInstance()->loadModel(entity["meshRender"]["name"]));
 
     }
 
