@@ -73,9 +73,7 @@ namespace re {
         std::shared_ptr<Entity> camera;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
-        VkDescriptorPool descriptorPool{};
-        VkDescriptorSetLayout descriptorSetLayout{};
-        VkDescriptorSet descriptorSet{};
+        VkDescriptorSet uboDescriptorSet{};
         std::unique_ptr<Buffer> uboModelBuffer;
         UboModel uboModel;
     };

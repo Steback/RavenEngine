@@ -17,13 +17,12 @@ namespace re {
     class Texture;
     class Buffer;
     class Device;
+    class AssetsManager;
 
     /**
      * @brief Skybox wrapper class
      */
     class Skybox : NonCopyable {
-        friend class AssetsManager;
-
     public:
         struct UboData {
             mat4 projection;
@@ -31,23 +30,22 @@ namespace re {
         };
 
     public:
-        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture);
+        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass, AssetsManager* assetsManager);
 
         ~Skybox() override;
 
         void draw(VkCommandBuffer commandBuffer, const mat4& proj, const mat4& transform);
 
     private:
-        void setupDescriptors();
+        void setupDescriptors(AssetsManager* assetsManager);
 
         void setupBuffer();
 
     private:
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
-        VkDescriptorPool descriptorPool{};
-        VkDescriptorSetLayout descriptorSetLayout{};
-        VkDescriptorSet descriptorSet{};
+        VkDescriptorSet uboDescriptorSet{};
+        VkDescriptorSet textureDescriptorSet{};
         std::shared_ptr<Mesh> mesh;
         std::shared_ptr<Texture> texture;
         std::unique_ptr<Buffer> uboBuffer;

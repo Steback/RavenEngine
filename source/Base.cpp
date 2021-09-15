@@ -63,7 +63,7 @@ namespace re {
 
         jobSystem->submit([=, this](){
             scene->load();
-            assetsManager->setupDescriptors(renderer->getImageCount());
+            assetsManager->setupDescriptorsPool(renderer->getImageCount());
             renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model", assetsManager);
             onLoadScene();
             scene->setLoaded(true);

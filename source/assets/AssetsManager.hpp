@@ -20,6 +20,11 @@ namespace re {
     class Material;
     class Skybox;
 
+    enum DescriptorSetType {
+        UBO = 1,
+        TEXTURE = 2
+    };
+
     /**
      * Assets Manager class
      */
@@ -57,7 +62,7 @@ namespace re {
 
         std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
 
-        void setupDescriptors(uint32_t imageCount);
+        void setupDescriptorsPool(uint32_t imageCount);
 
         /**
          *
@@ -71,11 +76,24 @@ namespace re {
 
         std::shared_ptr<Texture> getTexture(uint32_t id);
 
-        VkDescriptorSetLayout getDescriptorSetLayout();
+        VkDescriptorSetLayout getMaterialLayout();
+
+        VkDescriptorSetLayout getUboLayout();
+
+        VkDescriptorSetLayout getTextureLayout();
+
+        void allocateDescriptorSet(DescriptorSetType type,  VkDescriptorSet* set);
+
+    private:
+        void setupDescriptorSetsLayout();
+
+        void setupMaterialDescriptorsSets();
 
     private:
         VkDescriptorPool descriptorPool{};
-        VkDescriptorSetLayout descriptorSetLayout{};
+        VkDescriptorSetLayout materialSetLayout{};
+        VkDescriptorSetLayout uboSetLayout{};
+        VkDescriptorSetLayout textureSetLayout{};
         std::shared_ptr<Device> device;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
         std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;

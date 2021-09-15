@@ -20,8 +20,10 @@ namespace re {
     }
 
     AssetsManager::~AssetsManager() {
+        vkDestroyDescriptorSetLayout(device->getDevice(), materialSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(device->getDevice(), uboSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(device->getDevice(), textureSetLayout, nullptr);
         vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
-        vkDestroyDescriptorSetLayout(device->getDevice(), descriptorSetLayout, nullptr);
     }
 
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
@@ -86,31 +88,79 @@ namespace re {
         return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(this, gltfModel, gltfMaterial);
     }
 
-    void AssetsManager::setupDescriptors(uint32_t imageCount) {
+    void AssetsManager::setupDescriptorsPool(uint32_t imageCount) {
+        // TODO: Find the way to do this dynamically
+        uint32_t uboCount = 2;
+        uint32_t standaloneTexCount = 1;
         uint32_t imageSamplerCount = 0;
         uint32_t materialCount = 0;
-        uint32_t meshCount = 0;
 
         for (auto& material : materials) {
             imageSamplerCount += 5;
             materialCount++;
         }
 
-        for (auto& mesh : meshes)
-            meshCount++;
-
         std::vector<VkDescriptorPoolSize> poolSizes = {
-                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageSamplerCount * imageCount }
+                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageSamplerCount + standaloneTexCount},
+                { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, uboCount },
         };
 
         VkDescriptorPoolCreateInfo poolInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = (1 + materialCount + meshCount) * imageCount;
+
+        poolInfo.maxSets = uboCount + standaloneTexCount + (materialCount);
 
         vkCreateDescriptorPool(device->getDevice(), &poolInfo, nullptr, &descriptorPool);
 
-        std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
+        setupDescriptorSetsLayout();
+        setupMaterialDescriptorsSets();
+    }
+
+    // TODO: Change how to create a Skybox
+    std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
+        auto model = loadModel("models/cube.gltf", "Skybox");
+        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
+        texture->updateDescriptor();
+
+        return std::make_unique<Skybox>(device, renderPass, this);
+    }
+
+    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
+        return models[name];
+    }
+
+    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
+        return meshes[name];
+    }
+
+    std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
+        return textures[id];
+    }
+
+    VkDescriptorSetLayout AssetsManager::getMaterialLayout() {
+        return materialSetLayout;
+    }
+
+    VkDescriptorSetLayout AssetsManager::getUboLayout() {
+        return uboSetLayout;
+    }
+
+    VkDescriptorSetLayout AssetsManager::getTextureLayout() {
+        return textureSetLayout;
+    }
+
+    void AssetsManager::allocateDescriptorSet(DescriptorSetType type, VkDescriptorSet *set) {
+        VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+        allocateInfo.descriptorPool = descriptorPool;
+        allocateInfo.descriptorSetCount = 1;
+        allocateInfo.pSetLayouts = type == UBO ? &uboSetLayout : &textureSetLayout;
+        vkAllocateDescriptorSets(device->getDevice(), &allocateInfo, set);
+    }
+
+    void AssetsManager::setupDescriptorSetsLayout() {
+        // Materials Descriptor Set Layout
+        std::vector<VkDescriptorSetLayoutBinding> materialBindings = {
                 { 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
                 { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
                 { 2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr },
@@ -119,16 +169,36 @@ namespace re {
         };
 
         VkDescriptorSetLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
-        layoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
-        layoutInfo.pBindings = setLayoutBindings.data();
+        layoutInfo.bindingCount = static_cast<uint32_t>(materialBindings.size());
+        layoutInfo.pBindings = materialBindings.data();
 
-        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &materialSetLayout);
 
+        // UBO Descriptor Set Layout
+        std::vector<VkDescriptorSetLayoutBinding> uboBindings = {
+                {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT}
+        };
+
+        layoutInfo.bindingCount = static_cast<uint32_t>(uboBindings.size());
+        layoutInfo.pBindings = uboBindings.data();
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &uboSetLayout);
+
+        // Standalone Texture Descriptor Set Layout
+        std::vector<VkDescriptorSetLayoutBinding> bindings = {
+                {0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT}
+        };
+
+        layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+        layoutInfo.pBindings = bindings.data();
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &textureSetLayout);
+    }
+
+    void AssetsManager::setupMaterialDescriptorsSets() {
         for (auto& [id, material] : materials) {
             VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
             descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
             descriptorSetAllocInfo.descriptorPool = descriptorPool;
-            descriptorSetAllocInfo.pSetLayouts = &descriptorSetLayout;
+            descriptorSetAllocInfo.pSetLayouts = &materialSetLayout;
             descriptorSetAllocInfo.descriptorSetCount = 1;
 
             RE_VK_CHECK_RESULT(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
@@ -144,7 +214,6 @@ namespace re {
             };
 
             // TODO: glTF specs states that metallic roughness should be preferred, even if specular glosiness is present
-
             if (material->pbrWorkflows.metallicRoughness) {
                 if (material->baseColorTexture) {
                     imageDescriptors[0] = material->baseColorTexture->descriptor;
@@ -175,31 +244,6 @@ namespace re {
 
             vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }
-    }
-
-    // TODO: Change how to create a Skybox
-    std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
-        auto model = loadModel("models/cube.gltf", "Skybox");
-        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
-        texture->updateDescriptor();
-
-        return std::make_unique<Skybox>(device, renderPass, model->getNode(0).mesh, texture);
-    }
-
-    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
-        return models[name];
-    }
-
-    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
-        return meshes[name];
-    }
-
-    std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
-        return textures[id];
-    }
-
-    VkDescriptorSetLayout AssetsManager::getDescriptorSetLayout() {
-        return descriptorSetLayout;
     }
 
 } // namespace re
