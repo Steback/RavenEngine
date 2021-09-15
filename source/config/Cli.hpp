@@ -11,6 +11,8 @@
 namespace re {
 
     class Cli {
+        Cli() = default;
+
     public:
         /**
          * @brief Setup default cli options for engine
@@ -34,9 +36,6 @@ namespace re {
          * @return True if option was added
          */
         static bool getOption(const std::string& name);
-
-    private:
-        Cli() = delete;
 
     private:
         static std::unordered_map<std::string, bool> options;
