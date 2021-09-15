@@ -12,7 +12,7 @@ namespace re {
         config.load();
 
         renderer = std::make_unique<Renderer>(appName, config);
-        AssetsManager::setup(renderer->getDevice());
+        AssetsManager::singleton = new AssetsManager(renderer->getDevice());
         JobSystem::singleton = new JobSystem();
     }
 

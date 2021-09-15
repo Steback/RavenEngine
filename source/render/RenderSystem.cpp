@@ -32,7 +32,7 @@ namespace re {
                 this->device->getDevice(),
                 shadersName + ".vert", shadersName + ".frag",
                 configInfo,
-                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getUboLayout(), AssetsManager::getInstance()->getMaterialLayout()},
+                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getDescriptorSetLayout(UBO), AssetsManager::getInstance()->getDescriptorSetLayout(MATERIAL)},
                 std::vector<VkPushConstantRange>{materialPushConstant}
         );
     }

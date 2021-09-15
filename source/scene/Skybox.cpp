@@ -24,7 +24,7 @@ namespace re {
                 this->device->getDevice(),
                 "skybox.vert", "skybox.frag",
                 configInfo,
-                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getUboLayout(), AssetsManager::getInstance()->getTextureLayout()},
+                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getDescriptorSetLayout(UBO), AssetsManager::getInstance()->getDescriptorSetLayout(TEXTURE)},
                 std::vector<VkPushConstantRange>{}
         );
     }

@@ -22,14 +22,10 @@ namespace re {
     }
 
     AssetsManager::~AssetsManager() {
-        vkDestroyDescriptorSetLayout(device->getDevice(), materialSetLayout, nullptr);
-        vkDestroyDescriptorSetLayout(device->getDevice(), uboSetLayout, nullptr);
-        vkDestroyDescriptorSetLayout(device->getDevice(), textureSetLayout, nullptr);
-        vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
-    }
+        for (auto& [type, layout] : layouts)
+            vkDestroyDescriptorSetLayout(device->getDevice(), layout, nullptr);
 
-    void AssetsManager::setup(std::shared_ptr<Device> device) {
-        singleton = new AssetsManager(std::move(device));
+        vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
     }
 
     AssetsManager* AssetsManager::getInstance() {
@@ -69,20 +65,12 @@ namespace re {
         VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
         allocateInfo.descriptorPool = descriptorPool;
         allocateInfo.descriptorSetCount = 1;
-        allocateInfo.pSetLayouts = type == UBO ? &uboSetLayout : &textureSetLayout;
+        allocateInfo.pSetLayouts = &layouts[type];
         vkAllocateDescriptorSets(device->getDevice(), &allocateInfo, set);
     }
 
-    VkDescriptorSetLayout AssetsManager::getMaterialLayout() {
-        return materialSetLayout;
-    }
-
-    VkDescriptorSetLayout AssetsManager::getUboLayout() {
-        return uboSetLayout;
-    }
-
-    VkDescriptorSetLayout AssetsManager::getTextureLayout() {
-        return textureSetLayout;
+    VkDescriptorSetLayout AssetsManager::getDescriptorSetLayout(DescriptorSetType type) {
+        return layouts[type];
     }
 
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
@@ -202,7 +190,7 @@ namespace re {
         layoutInfo.bindingCount = static_cast<uint32_t>(materialBindings.size());
         layoutInfo.pBindings = materialBindings.data();
 
-        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &materialSetLayout);
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &layouts[MATERIAL]);
 
         // UBO Descriptor Set Layout
         std::vector<VkDescriptorSetLayoutBinding> uboBindings = {
@@ -211,7 +199,7 @@ namespace re {
 
         layoutInfo.bindingCount = static_cast<uint32_t>(uboBindings.size());
         layoutInfo.pBindings = uboBindings.data();
-        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &uboSetLayout);
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &layouts[UBO]);
 
         // Standalone Texture Descriptor Set Layout
         std::vector<VkDescriptorSetLayoutBinding> bindings = {
@@ -220,7 +208,7 @@ namespace re {
 
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         layoutInfo.pBindings = bindings.data();
-        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &textureSetLayout);
+        vkCreateDescriptorSetLayout(device->getDevice(), &layoutInfo, nullptr, &layouts[TEXTURE]);
     }
 
     void AssetsManager::setupMaterialDescriptorsSets() {
@@ -228,7 +216,7 @@ namespace re {
             VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
             descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
             descriptorSetAllocInfo.descriptorPool = descriptorPool;
-            descriptorSetAllocInfo.pSetLayouts = &materialSetLayout;
+            descriptorSetAllocInfo.pSetLayouts = &layouts[MATERIAL];
             descriptorSetAllocInfo.descriptorSetCount = 1;
 
             RE_VK_CHECK_RESULT(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),

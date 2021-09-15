@@ -22,7 +22,8 @@ namespace re {
 
     enum DescriptorSetType {
         UBO = 1,
-        TEXTURE = 2
+        TEXTURE = 2,
+        MATERIAL = 3
     };
 
     /**
@@ -33,8 +34,6 @@ namespace re {
 
         explicit AssetsManager(std::shared_ptr<Device> device);
 
-        static void setup(std::shared_ptr<Device> device);
-
     public:
         ~AssetsManager() override;
 
@@ -44,11 +43,7 @@ namespace re {
 
         void allocateDescriptorSet(DescriptorSetType type,  VkDescriptorSet* set);
 
-        VkDescriptorSetLayout getMaterialLayout();
-
-        VkDescriptorSetLayout getUboLayout();
-
-        VkDescriptorSetLayout getTextureLayout();
+        VkDescriptorSetLayout getDescriptorSetLayout(DescriptorSetType type);
 
         /**
          *
@@ -106,10 +101,8 @@ namespace re {
     private:
         static AssetsManager* singleton;
         VkDescriptorPool descriptorPool{};
-        VkDescriptorSetLayout materialSetLayout{};
-        VkDescriptorSetLayout uboSetLayout{};
-        VkDescriptorSetLayout textureSetLayout{};
         std::shared_ptr<Device> device;
+        std::unordered_map<DescriptorSetType, VkDescriptorSetLayout> layouts;
         std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
         std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;
         std::unordered_map<uint32_t, std::shared_ptr<Texture>> textures;
