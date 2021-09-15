@@ -1,9 +1,9 @@
 #include "JobSystem.hpp"
 
-#include "spdlog/spdlog.h"
-
 
 namespace re {
+
+    JobSystem* JobSystem::singleton;
 
     JobSystem::JobSystem() {
         done = false;
@@ -24,6 +24,10 @@ namespace re {
             thread.join();
 
         pool.clear();
+    }
+
+    JobSystem *JobSystem::getInstance() {
+        return singleton;
     }
 
     void JobSystem::submit(JobSystem::Job job) {

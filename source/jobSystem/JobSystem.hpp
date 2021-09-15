@@ -17,13 +17,16 @@ namespace re {
      * @brief Job System manager class
      */
     class JobSystem : NonCopyable {
+        friend class Base;
+
+        JobSystem();
+
     public:
         using Job = std::function<void()>;
 
-    public:
-        JobSystem();
-
         ~JobSystem() override;
+
+        static JobSystem* getInstance();
 
         /**
          * @brief Submit job to queue
@@ -40,12 +43,13 @@ namespace re {
          void waitJob();
 
     private:
-         bool done;
-         std::queue<Job> jobs;
-         std::mutex queueMutex;
-         std::vector<std::thread> pool;
-         std::mutex poolMutex;
-         std::condition_variable poolSignal;
+        static JobSystem* singleton;
+        bool done;
+        std::queue<Job> jobs;
+        std::mutex queueMutex;
+        std::vector<std::thread> pool;
+        std::mutex poolMutex;
+        std::condition_variable poolSignal;
     };
 
 } // namespace
