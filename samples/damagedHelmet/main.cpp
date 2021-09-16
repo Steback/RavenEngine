@@ -12,7 +12,7 @@ int main(int argc, char** arg) {
         DamagedHelmet gltf;
         gltf.run();
     } catch (const std::exception& e) {
-        RE_ERROR_LOG(e.what());
+        re::logs::error(e.what());
     }
 
     return 0;

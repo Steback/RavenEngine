@@ -9,12 +9,11 @@ namespace re {
 
     Base::Base(const std::string& appName) {
         FilesManager::singleton = new files::FilesManager();
-        files::addPath("logs", true);
+        logs::LogsManager::singleton = new logs::LogsManager();
+
         files::addPath("assets");
         files::addPath("shaders");
         files::addPath("data");
-
-        re::Logger::setup();
 
         config = Config("config.json");
         config.load();
@@ -27,6 +26,7 @@ namespace re {
     Base::~Base() {
         delete JobSystem::singleton;
         delete AssetsManager::singleton;
+        delete logs::LogsManager::singleton;
         delete FilesManager::singleton;
     }
 
