@@ -1,18 +1,13 @@
 #include "FilesManager.hpp"
 
-#include "spdlog/spdlog.h"
-
-#include "File.hpp"
 #include "utils/Macros.hpp"
 
 
-namespace re {
+namespace re::files {
 
-    std::unordered_map<std::string, std::filesystem::path> FilesManager::paths;
+    FilesManager* FilesManager::singleton;
 
-    FilesManager::FilesManager() = default;
-
-    void FilesManager::setupDefaultPaths() {
+    FilesManager::FilesManager() {
         std::filesystem::path root = std::filesystem::current_path();
 
         if (root.filename() == "samples" || root.filename() == "tests")
@@ -30,12 +25,12 @@ namespace re {
             RE_THROW_EX("Failed to setup root path");
 
         paths["root"] = root;
+    }
 
-        addPath("logs", true);
-        addPath("assets");
-        addPath("shaders");
-        addPath("data");
-        addPath("data/scenes");
+    FilesManager::~FilesManager() = default;
+
+    FilesManager *FilesManager::getInstance() {
+        return singleton;
     }
 
     void FilesManager::addPath(const char* name, bool create) {
@@ -59,4 +54,4 @@ namespace re {
         return File(name);
     }
 
-} // namespace re
+} // namespace re::files

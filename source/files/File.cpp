@@ -6,7 +6,7 @@
 #include "utils/Macros.hpp"
 
 
-namespace re {
+namespace re::files {
 
     File::File() = default;
 

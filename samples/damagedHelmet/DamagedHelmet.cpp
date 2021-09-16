@@ -8,7 +8,7 @@
 
 
 DamagedHelmet::DamagedHelmet() : re::Base("DamagedHelmet") {
-    loadScene("damagedHelmet.json");
+    loadScene("scenes/damagedHelmet.json");
 }
 
 DamagedHelmet::~DamagedHelmet() = default;

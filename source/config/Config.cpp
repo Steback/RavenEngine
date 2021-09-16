@@ -6,7 +6,7 @@
 namespace re {
 
     Config::Config(const std::string &name) {
-        file = FilesManager::getFile(name.c_str());
+        file = files::getFile(name);
     }
 
     void Config::load() {

@@ -7,58 +7,68 @@
 #include <string>
 #include <functional>
 
+#include "File.hpp"
+#include "utils/NonCopyable.hpp"
+
 
 namespace re {
 
-    class File;
+    class Base;
 
-    /**
-     * @brief Static class for all files and paths management.
-     *
-     * Not need a instance.
-     */
-    class FilesManager {
-    public:
+    namespace files {
+
         /**
-         * @bried Setup all default paths needed by the engine.
-         * Default paths:
-         * root(Project folder),
-         * assets,
-         * logs,
-         * data,
-         * shaders
+         * @brief Static class for all files and paths management.
          */
-        static void setupDefaultPaths();
+        class FilesManager : NonCopyable {
+            friend re::Base;
+
+            FilesManager();
+
+        public:
+            ~FilesManager() override;
+
+            static FilesManager* getInstance();
+
+            /**
+             * @brief Add a new path for the search paths
+             * @param name New path name
+             * @param create Create directory of path. By default is false
+             */
+            void addPath(const char* name, bool create = false);
+
+            std::filesystem::path getPath(const char* name);
+
+            File getFile(const char* name);
+
+        private:
+            static FilesManager* singleton;
+            std::unordered_map<std::string, std::filesystem::path> paths;
+        };
+
+        inline File getFile(const std::string& name) {
+            return FilesManager::getInstance()->getFile(name.c_str());
+        }
 
         /**
          * @brief Add a new path for the search paths
          * @param name New path name
          * @param create Create directory of path. By default is false
          */
-        static void addPath(const char* name, bool create = false);
+        inline void addPath(const std::string& name, bool create = false) {
+            FilesManager::getInstance()->addPath(name.c_str(), create);
+        }
 
-        /**
-         *
-         * @param name Path name
-         * @return std::path object will the specific path if exists
-         */
-        static std::filesystem::path getPath(const char* name);
+        inline std::filesystem::path getPath(const std::string& name) {
+            return FilesManager::getInstance()->getPath(name.c_str());
+        }
 
-        /**
-         *
-         * @param name File name
-         * @return File object with the specific file if exists
-         */
-        static File getFile(const char* name);
-
-    private:
-        FilesManager();
-
-    private:
-        static std::unordered_map<std::string, std::filesystem::path> paths;
-    };
+    } // namespace files
 
 } // namespace re
+
+
+using FilesManager = re::files::FilesManager;
 
 
 #endif //RAVENENGINE_FILESMANAGER_HPP

@@ -18,7 +18,7 @@ namespace re::ui {
         ImGui::StyleColorsDark();
 
         ImGuiIO& io = ImGui::GetIO(); (void)io;
-        io.Fonts->AddFontFromFileTTF(FilesManager::getFile("fonts/Roboto-Medium.ttf").getPath().c_str(), 16.0f);
+        io.Fonts->AddFontFromFileTTF(files::getFile("fonts/Roboto-Medium.ttf").getPath().c_str(), 16.0f);
 
         createDescriptorPool();
 

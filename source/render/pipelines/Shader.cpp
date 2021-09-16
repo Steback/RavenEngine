@@ -11,7 +11,7 @@ namespace re {
 
     Shader::Shader(const VkDevice& device, const std::string& fileName, const VkShaderStageFlagBits& stage)
             : device(device), stage(stage) {
-        File shader = FilesManager::getFile(fileName.c_str());
+        File shader = files::getFile(fileName.c_str());
 
         // TODO: Improve when how to work with shader and compile it
         if (Cli::getOption("compile-shaders")) {

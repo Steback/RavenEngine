@@ -6,7 +6,7 @@
 
 
 Cube::Cube() : re::Base("Cube") {
-    loadScene("cube.json");
+    loadScene("scenes/cube.json");
 }
 
 Cube::~Cube() = default;

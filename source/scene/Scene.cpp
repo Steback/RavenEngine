@@ -30,7 +30,7 @@ namespace re {
     }
 
     void Scene::load() {
-        File file = FilesManager::getFile(fileName.c_str());
+        File file = files::getFile(fileName.c_str());
 
         json scene;
         file.read(scene);
@@ -46,7 +46,7 @@ namespace re {
         for (auto& [id, entity] : entities)
             scene["entities"].push_back(entity->serialize());
 
-        File file(FilesManager::getPath("data/scenes") / fileName);
+        File file(files::getPath("data/scenes") / fileName);
         file.write(scene);
     }
 

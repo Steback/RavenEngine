@@ -9,7 +9,7 @@
 #include "external/Json.hpp"
 
 
-namespace re {
+namespace re::files {
 
     /**
      * @brief Class with file management functionalities. read/write
@@ -77,7 +77,9 @@ namespace re {
         std::filesystem::path path;
     };
 
-} // namespace re
+} // namespace re::files
+
+using File = re::files::File;
 
 
 #endif //RAVENENGINE_FILE_HPP

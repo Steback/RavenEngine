@@ -74,7 +74,7 @@ namespace re {
     }
 
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
-        File file = FilesManager::getFile(fileName.c_str());
+        File file = files::getFile(fileName);
         std::string modelName = name.empty() ? file.getName(true) : name;
         uint32_t nameHash = std::hash<std::string>()(modelName);
 

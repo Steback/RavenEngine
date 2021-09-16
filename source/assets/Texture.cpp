@@ -175,7 +175,7 @@ namespace re {
     std::unique_ptr<Texture> Texture::loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler) {
         int channels, imageWidth, imageHeight;
         // TODO: Change this access path
-        stbi_uc* pixels = stbi_load(FilesManager::getFile(("textures/" + fileName).c_str()).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
+        stbi_uc* pixels = stbi_load(files::getFile("textures/" + fileName).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
 
         if (!pixels) RE_THROW_EX("Failed to load image file: " + fileName);
 
@@ -216,7 +216,7 @@ namespace re {
 
     std::unique_ptr<Texture> Texture::loadCubeMap(const std::shared_ptr<Device> &device, const std::string &fileName) {
         ktxTexture* ktxTexture;
-        ktxResult result = ktxTexture_CreateFromNamedFile(FilesManager::getFile(fileName.c_str()).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
+        ktxResult result = ktxTexture_CreateFromNamedFile(files::getFile(fileName).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
 
         if (result != KTX_SUCCESS)
             RE_THROW_EX("Failed to open cubemap file: " + fileName);

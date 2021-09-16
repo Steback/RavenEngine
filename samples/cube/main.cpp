@@ -8,9 +8,6 @@ int main(int argc, char** arg) {
     re::Cli::setupOptions(app);
     CLI11_PARSE(app, argc, arg);
 
-    re::FilesManager::setupDefaultPaths();
-    re::Logger::setup();
-
     try {
         Cube cube;
         cube.run();
