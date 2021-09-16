@@ -4,6 +4,7 @@
 #include "Instance.hpp"
 #include "Device.hpp"
 #include "SwapChain.hpp"
+#include "utils/Utils.hpp"
 #include "config/Config.hpp"
 #include "ui/ImGuiRender.hpp"
 
@@ -70,15 +71,15 @@ namespace re {
         }
 
         if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-            RE_THROW_EX("Failed to acquire swap chain image!");
+            throwEx("Failed to acquire swap chain image!");
 
         isFrameStarted = true;
 
         auto commandBuffer = getCommandBuffer();
         VkCommandBufferBeginInfo beginInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
-        RE_VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &beginInfo),
-                            "Failed to begin recording command uboBuffer!");
+        checkResult(vkBeginCommandBuffer(commandBuffer, &beginInfo),
+                    "Failed to begin recording command uboBuffer!");
 
         return commandBuffer;
     }
@@ -86,7 +87,7 @@ namespace re {
     void Renderer::endFrame() {
         auto commandBuffer = getCommandBuffer();
 
-        RE_VK_CHECK_RESULT(vkEndCommandBuffer(commandBuffer), "Failed to record command uboBuffer!");
+        checkResult(vkEndCommandBuffer(commandBuffer), "Failed to record command uboBuffer!");
 
         auto result = swapChain->submitCommandBuffers(commandBuffer, imageIndex);
 
@@ -94,7 +95,7 @@ namespace re {
             window->resetWindowResizedFlag();
             recreateSwapChain();
         } else if (result != VK_SUCCESS) {
-            RE_THROW_EX("Failed to present swap chain image!");
+            throwEx("Failed to present swap chain image!");
         }
 
         isFrameStarted = false;
@@ -119,8 +120,8 @@ namespace re {
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = CAST_FLOAT(swapChain->getExtent().width);
-        viewport.height = CAST_FLOAT(swapChain->getExtent().height);
+        viewport.width = static_cast<float>(swapChain->getExtent().width);
+        viewport.height = static_cast<float>(swapChain->getExtent().height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         VkRect2D scissor{{0, 0}, swapChain->getExtent()};
@@ -163,18 +164,14 @@ namespace re {
         VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandPool = commandPool;
-        allocInfo.commandBufferCount = CAST_U32(commandBuffers.size());
+        allocInfo.commandBufferCount = commandBuffers.size();
 
-        RE_VK_CHECK_RESULT(vkAllocateCommandBuffers(logicalDevice, &allocInfo, commandBuffers.data()),
-                           "Failed to allocate command buffers!");
+        checkResult(vkAllocateCommandBuffers(logicalDevice, &allocInfo, commandBuffers.data()),
+                    "Failed to allocate command buffers!");
     }
 
     void Renderer::freeCommandBuffers() {
-        vkFreeCommandBuffers(
-                logicalDevice,
-                commandPool,
-                CAST_U32(commandBuffers.size()),
-                commandBuffers.data());
+        vkFreeCommandBuffers(logicalDevice, commandPool, commandBuffers.size(), commandBuffers.data());
         commandBuffers.clear();
     }
 
@@ -191,7 +188,7 @@ namespace re {
         swapChain = std::make_unique<SwapChain>(device, extent, oldSwapChain);
 
         if (!oldSwapChain->compareFormats(*swapChain)) {
-            RE_THROW_EX("Swap chain image(or depth) format has changed!");
+            throwEx("Swap chain image(or depth) format has changed!");
         }
 
         imgui->resize(*swapChain);

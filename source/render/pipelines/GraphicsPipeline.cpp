@@ -2,7 +2,7 @@
 
 #include "files/FilesManager.hpp"
 #include "assets/Mesh.hpp"
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re  {
@@ -28,19 +28,19 @@ namespace re  {
         auto bindingDescriptions = Mesh::Vertex::getBindingDescriptions();
         auto attributeDescriptions = Mesh::Vertex::getAttributeDescriptions();
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
-        vertexInputInfo.vertexAttributeDescriptionCount = CAST_U32(attributeDescriptions.size());
-        vertexInputInfo.vertexBindingDescriptionCount = CAST_U32(bindingDescriptions.size());
+        vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
+        vertexInputInfo.vertexBindingDescriptionCount = bindingDescriptions.size();
         vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
         vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
-        pipelineLayoutInfo.setLayoutCount = CAST_U32(layouts.size());
+        pipelineLayoutInfo.setLayoutCount = layouts.size();
         pipelineLayoutInfo.pSetLayouts = layouts.data();
-        pipelineLayoutInfo.pushConstantRangeCount = CAST_U32(constantRanges.size());
+        pipelineLayoutInfo.pushConstantRangeCount = constantRanges.size();
         pipelineLayoutInfo.pPushConstantRanges = constantRanges.data();
 
-        RE_VK_CHECK_RESULT(vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &layout),
-                            "Failed to create pipeline layout!");
+        checkResult(vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &layout),
+                    "Failed to create pipeline layout!");
 
         VkGraphicsPipelineCreateInfo pipelineInfo{VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
         pipelineInfo.stageCount = 2;
@@ -59,8 +59,8 @@ namespace re  {
         pipelineInfo.basePipelineIndex = -1;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        RE_VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline),
-                            "Failed to create graphics pipeline");
+        checkResult(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline),
+                    "Failed to create graphics pipeline");
     }
 
     void GraphicsPipeline::bind(VkCommandBuffer const &commandBuffer) const {
@@ -140,7 +140,7 @@ namespace re  {
         configInfo.dynamicStateEnables = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
         configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
-        configInfo.dynamicStateInfo.dynamicStateCount = CAST_U32(configInfo.dynamicStateEnables.size());
+        configInfo.dynamicStateInfo.dynamicStateCount = configInfo.dynamicStateEnables.size();
         configInfo.dynamicStateInfo.flags = 0;
 
         configInfo.renderPass = renderPass;

@@ -1,12 +1,12 @@
 #include "Window.hpp"
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re {
 
     Window::Window(std::string name, int width, int height) : name(std::move(name)), width(width), height(height) {
-        if (!glfwInit()) RE_THROW_EX("Failed to init GLFW");
+        if (!glfwInit()) throwEx("Failed to init GLFW");
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -27,12 +27,12 @@ namespace re {
     }
 
     void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {
-        RE_VK_CHECK_RESULT(glfwCreateWindowSurface(instance, window, nullptr, surface),
-                           "Failed to create window surface");
+        checkResult(glfwCreateWindowSurface(instance, window, nullptr, surface),
+                    "Failed to create window surface");
     }
 
     VkExtent2D Window::getExtent() const {
-        return {CAST_U32(width), CAST_U32(height)};
+        return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
     }
 
     bool Window::wasWindowResized() const {

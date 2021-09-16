@@ -2,7 +2,7 @@
 
 #include "spdlog/spdlog.h"
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 #include "files/FilesManager.hpp"
 #include "config/Cli.hpp"
 
@@ -52,8 +52,8 @@ namespace re {
         createInfo.codeSize = code.size();
         createInfo.pCode = code.data();
 
-        RE_VK_CHECK_RESULT(vkCreateShaderModule(device, &createInfo, nullptr, &module),
-                           "Failed to create shader module");
+        checkResult(vkCreateShaderModule(device, &createInfo, nullptr, &module),
+                    "Failed to create shader module");
     }
 
     void Shader::compileShader(File& file, const VkShaderStageFlagBits& stage) {
@@ -108,7 +108,9 @@ namespace re {
             return shaderc_glsl_fragment_shader;
         }
 
-        RE_THROW_EX("Failed to find correct shader kind");
+        throwEx("Failed to find correct shader kind");
+
+        return shaderc_glsl_vertex_shader;
     }
 
 } // namespace re

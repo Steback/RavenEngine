@@ -5,7 +5,7 @@
 #include "Device.hpp"
 #include "Image.hpp"
 #include "Instance.hpp"
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re {
@@ -88,7 +88,7 @@ namespace re {
     }
 
     float SwapChain::getExtentAspectRatio() const {
-        return CAST_FLOAT(extent.width) / CAST_FLOAT(extent.height);
+        return static_cast<float>(extent.width) / static_cast<float>(extent.height);
     }
 
     VkResult SwapChain::acquireNextImage(uint32_t &imageIndex) {
@@ -125,8 +125,8 @@ namespace re {
         submitInfo.pSignalSemaphores = signalSemaphores;
 
         vkResetFences(logicalDevice, 1, &inFlightFences[currentFrame]);
-        RE_VK_CHECK_RESULT(vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]),
-                            "Failed to submit draw command uboBuffer!");
+        checkResult(vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]),
+                    "Failed to submit draw command uboBuffer!");
 
         VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
         presentInfo.waitSemaphoreCount = 1;
@@ -224,8 +224,8 @@ namespace re {
         createInfo.clipped = VK_TRUE;
         createInfo.oldSwapchain = ( !oldSwapChain ? VK_NULL_HANDLE : oldSwapChain->swapChain);
 
-        RE_VK_CHECK_RESULT(vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChain),
-                           "Failed to create swap chain!");
+        checkResult(vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChain),
+                    "Failed to create swap chain!");
 
         vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, nullptr);
         std::vector<VkImage> swapChainImages(imageCount);
@@ -257,8 +257,8 @@ namespace re {
         for (auto& image : images) {
             viewInfo.image = image->image;
 
-            RE_VK_CHECK_RESULT(vkCreateImageView(logicalDevice, &viewInfo, nullptr, &image->view),
-                               "Failed to create texture image view!");
+            checkResult(vkCreateImageView(logicalDevice, &viewInfo, nullptr, &image->view),
+                        "Failed to create texture image view!");
         }
     }
 
@@ -336,15 +336,15 @@ namespace re {
 
         std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
         VkRenderPassCreateInfo renderPassInfo{VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO};
-        renderPassInfo.attachmentCount = CAST_U32(attachments.size());
+        renderPassInfo.attachmentCount = attachments.size();
         renderPassInfo.pAttachments = attachments.data();
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpass;
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        RE_VK_CHECK_RESULT(vkCreateRenderPass(logicalDevice, &renderPassInfo, nullptr, &renderPass),
-                           "Failed to create render pass!");
+        checkResult(vkCreateRenderPass(logicalDevice, &renderPassInfo, nullptr, &renderPass),
+                    "Failed to create render pass!");
     }
 
     void SwapChain::createFramebuffers() {
@@ -357,11 +357,11 @@ namespace re {
         framebuffers.resize(getImageCount());
         for (size_t i = 0; i < getImageCount(); i++) {
             std::array<VkImageView, 2> attachments = {images[i]->view, depthImages[i]->view};
-            framebufferInfo.attachmentCount = CAST_U32(attachments.size());
+            framebufferInfo.attachmentCount = attachments.size();
             framebufferInfo.pAttachments = attachments.data();
 
-            RE_VK_CHECK_RESULT(vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &framebuffers[i]),
-                               "failed to create framebuffer!");
+            checkResult(vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &framebuffers[i]),
+                        "failed to create framebuffer!");
         }
     }
 
@@ -377,14 +377,14 @@ namespace re {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            RE_VK_CHECK_RESULT(vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
-                               "Failed to create synchronization objects for a frame!");
+            checkResult(vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
+                        "Failed to create synchronization objects for a frame!");
 
-            RE_VK_CHECK_RESULT(vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
-                               "Failed to create synchronization objects for a frame!");
+            checkResult(vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
+                        "Failed to create synchronization objects for a frame!");
 
-            RE_VK_CHECK_RESULT(vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFences[i]),
-                               "Failed to create synchronization objects for a frame!");
+            checkResult(vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFences[i]),
+                        "Failed to create synchronization objects for a frame!");
         }
     }
 

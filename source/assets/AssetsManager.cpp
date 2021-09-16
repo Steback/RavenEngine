@@ -8,7 +8,7 @@
 #include "render/Device.hpp"
 #include "files/FilesManager.hpp"
 #include "files/File.hpp"
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 #include "render/Buffer.hpp"
 #include "scene/Skybox.hpp"
 
@@ -219,8 +219,8 @@ namespace re {
             descriptorSetAllocInfo.pSetLayouts = &layouts[MATERIAL];
             descriptorSetAllocInfo.descriptorSetCount = 1;
 
-            RE_VK_CHECK_RESULT(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
-                               "Failed to allocate material descriptor sets");
+            checkResult(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
+                        "Failed to allocate material descriptor sets");
 
             auto empty = textures[std::hash<std::string>()("empty")]->descriptor;
             std::vector<VkDescriptorImageInfo> imageDescriptors = {

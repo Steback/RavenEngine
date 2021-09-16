@@ -3,6 +3,7 @@
 #include "GLFW/glfw3.h"
 
 #include "logs/Logs.hpp"
+#include "utils/Utils.hpp"
 
 
 #ifdef RE_DEBUG
@@ -61,7 +62,7 @@ namespace re {
 
     Instance::Instance(const char* appName, const std::vector<const char*>& layers) {
 #ifdef RE_DEBUG
-        if (!checkLayersSupport(layers)) RE_THROW_EX("Validation layers requested, but not available!");
+        if (!checkLayersSupport(layers)) throwEx("Validation layers requested, but not available!");
 #endif
 
         VkApplicationInfo appInfo{VK_STRUCTURE_TYPE_APPLICATION_INFO};
@@ -73,22 +74,22 @@ namespace re {
 
         VkInstanceCreateInfo instanceInfo{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
         instanceInfo.pApplicationInfo = &appInfo;
-        instanceInfo.enabledLayerCount = CAST_U32(layers.size());
+        instanceInfo.enabledLayerCount = layers.size();
         instanceInfo.ppEnabledLayerNames = layers.data();
 
         auto extensions = getRequiredExtensions();
-        instanceInfo.enabledExtensionCount = CAST_U32(extensions.size());
+        instanceInfo.enabledExtensionCount = extensions.size();
         instanceInfo.ppEnabledExtensionNames = extensions.data();
 
-        RE_VK_CHECK_RESULT(vkCreateInstance(&instanceInfo, nullptr, &instance),
-                           "Failed to create Instance");
+        checkResult(vkCreateInstance(&instanceInfo, nullptr, &instance),
+                    "Failed to create Instance");
 
 #ifdef RE_DEBUG
         VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerInfo{};
         populateDebugMessengerCreateInfo(debugUtilsMessengerInfo);
 
-        RE_VK_CHECK_RESULT(CreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerInfo, nullptr, &debugMessenger),
-                           "Failed to create debug utils messenger");
+        checkResult(CreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerInfo, nullptr, &debugMessenger),
+                    "Failed to create debug utils messenger");
 #endif
     }
 
@@ -104,7 +105,7 @@ namespace re {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-        if (deviceCount == 0) RE_THROW_EX("Failed to find GPUs with Vulkan support!");
+        if (deviceCount == 0) throwEx("Failed to find GPUs with Vulkan support!");
 
         std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, physicalDevices.data());
@@ -112,7 +113,7 @@ namespace re {
         for (auto& device : physicalDevices)
             if (checkExtensionsSupport(device, extensions)) return device;
 
-        RE_THROW_EX("Failed to find a suitable GPU!");
+        throwEx("Failed to find a suitable GPU!");
     }
 
     bool Instance::checkExtensionsSupport(VkPhysicalDevice device, const std::vector<const char *> &extensions) {

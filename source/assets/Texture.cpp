@@ -4,7 +4,7 @@
 #include "ktx.h"
 #include "ktxvulkan.h"
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 #include "render/Device.hpp"
 #include "render/Buffer.hpp"
 #include "files/FilesManager.hpp"
@@ -65,7 +65,7 @@ namespace re {
         vkGetPhysicalDeviceFormatProperties(device_->getPhysicalDevice(), format, &formatProperties);
 
         if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)) {
-            RE_THROW_EX("texture image format does not support linear blitting!");
+            throwEx("texture image format does not support linear blitting!");
         }
 
         VkCommandBuffer commandBuffer = device_->beginSingleTimeCommands();
@@ -177,7 +177,7 @@ namespace re {
         // TODO: Change this access path
         stbi_uc* pixels = stbi_load(files::getFile("textures/" + fileName).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
 
-        if (!pixels) RE_THROW_EX("Failed to load image file: " + fileName);
+        if (!pixels) throwEx("Failed to load image file: " + fileName);
 
         uint32_t width = imageWidth;
         uint32_t height = imageHeight;
@@ -219,7 +219,7 @@ namespace re {
         ktxResult result = ktxTexture_CreateFromNamedFile(files::getFile(fileName).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
 
         if (result != KTX_SUCCESS)
-            RE_THROW_EX("Failed to open cubemap file: " + fileName);
+            throwEx("Failed to open cubemap file: " + fileName);
 
         uint32_t width = ktxTexture->baseWidth;
         uint32_t height = ktxTexture->baseHeight;

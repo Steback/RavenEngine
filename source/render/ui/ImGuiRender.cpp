@@ -6,6 +6,7 @@
 #include "render/SwapChain.hpp"
 #include "files/FilesManager.hpp"
 #include "files/File.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re::ui {
@@ -91,8 +92,8 @@ namespace re::ui {
         pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
         pool_info.pPoolSizes = pool_sizes;
 
-        RE_VK_CHECK_RESULT(vkCreateDescriptorPool(logicalDevice, &pool_info, nullptr, &descriptorPool),
-                           "failed to set up descriptor pool for ImGui");
+        checkResult(vkCreateDescriptorPool(logicalDevice, &pool_info, nullptr, &descriptorPool),
+                    "failed to set up descriptor pool for ImGui");
     }
 
 } // namespace re::ui

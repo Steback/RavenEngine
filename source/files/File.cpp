@@ -3,7 +3,7 @@
 #include <fstream>
 #include <utility>
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re::files {
@@ -18,7 +18,7 @@ namespace re::files {
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
         // TODO: Change this throw to another position
-        if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());
+        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
 
         size_t fileSize = static_cast<size_t>(file.tellg());
         std::vector<uint32_t> buffer(fileSize);
@@ -34,7 +34,7 @@ namespace re::files {
     std::vector<char> File::read() const {
         std::ifstream file{path, std::ios::ate};
 
-        if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());
+        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
 
         size_t fileSize = static_cast<size_t>(file.tellg());
         std::vector<char> buffer(fileSize);
@@ -50,7 +50,7 @@ namespace re::files {
     void File::read(json &data) {
         std::ifstream file(path);
 
-        if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());
+        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
 
         file >> data;
         file.close();
@@ -59,7 +59,7 @@ namespace re::files {
     void File::write(json &data) {
         std::ofstream file(path);
 
-        if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());
+        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
 
         file << std::setw(4) << data;
         file.close();
@@ -68,7 +68,7 @@ namespace re::files {
     void File::write(const std::vector<uint32_t> &binary) {
         std::ofstream file(path, std::ios::binary);
 
-        if (!file.is_open()) RE_THROW_EX("Failed to open file: " + path.string());
+        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
 
         file.write(reinterpret_cast<const char *>(binary.data()), sizeof(uint32_t) * binary.size());
 

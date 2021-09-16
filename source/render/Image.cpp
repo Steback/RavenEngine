@@ -1,6 +1,6 @@
 #include "Image.hpp"
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re {
@@ -37,8 +37,8 @@ namespace re {
         viewInfo.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
         viewInfo.subresourceRange = { aspectFlags, 0, mipLevels, 0, layerCount };
 
-        RE_VK_CHECK_RESULT(vkCreateImageView(device, &viewInfo, nullptr, &view),
-                           "Failed to create Image View");
+        checkResult(vkCreateImageView(device, &viewInfo, nullptr, &view),
+                    "Failed to create Image View");
     }
 
     void Image::setLayout(VkCommandBuffer cmdBuffer, VkImageLayout oldImageLayout, VkImageLayout newImageLayout, VkImageSubresourceRange subresourceRange,
@@ -188,8 +188,8 @@ namespace re {
         VmaAllocationCreateInfo allocationInfo{};
         allocationInfo.usage = usage;
 
-        RE_VK_CHECK_RESULT(vmaCreateImage(allocator, &imageInfo, &allocationInfo, &image, &allocation, nullptr),
-                           "Failed to create Image and memory Allocation");
+        checkResult(vmaCreateImage(allocator, &imageInfo, &allocationInfo, &image, &allocation, nullptr),
+                    "Failed to create Image and memory Allocation");
     }
 
 } // namespace re

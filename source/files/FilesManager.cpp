@@ -1,6 +1,6 @@
 #include "FilesManager.hpp"
 
-#include "utils/Macros.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re::files {
@@ -22,7 +22,7 @@ namespace re::files {
 #endif
 
         if (!std::filesystem::exists(root / "bin"))
-            RE_THROW_EX("Failed to setup root path");
+            throwEx("Failed to setup root path");
 
         paths["root"] = root;
     }

@@ -3,6 +3,12 @@
 
 
 #include <functional>
+#include <stdexcept>
+#include <string>
+
+#include "vulkan/vulkan_core.h"
+
+#include "Macros.hpp"
 
 
 namespace re {
@@ -13,6 +19,22 @@ namespace re {
         seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         (hashCombine(seed, rest), ...);
     };
+
+    /**
+     * @brief Default throw exception macro
+     */
+    inline void throwEx(const std::string& message) {
+        throw std::runtime_error(message);
+    }
+
+    /**
+     * @brief Default Vulkan result check.
+     *
+     * If result isn't success throw a exception
+     */
+     inline void checkResult(VkResult result, const std::string& message) {
+         if (result != VK_SUCCESS) throwEx(message);
+     }
 
 } // namespace re
 

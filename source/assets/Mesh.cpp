@@ -222,7 +222,7 @@ namespace re {
     }
 
     void Mesh::createVertexBuffer(const std::vector<Vertex> &vertices) {
-        vertexCount = CAST_U32(vertices.size());
+        vertexCount = vertices.size();
         VkDeviceSize size = sizeof(vertices[0]) * vertexCount;
 
         Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
@@ -236,7 +236,7 @@ namespace re {
     }
 
     void Mesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
-        indexCount = CAST_U32(indices.size());
+        indexCount = indices.size();
         hasIndexBuffer = indexCount > 0;
 
         if (!hasIndexBuffer) return;

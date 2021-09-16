@@ -3,6 +3,7 @@
 #include "Instance.hpp"
 #include "Buffer.hpp"
 #include "Image.hpp"
+#include "utils/Utils.hpp"
 
 
 namespace re {
@@ -55,20 +56,20 @@ namespace re {
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, properties.data());
 
         if (queue & VK_QUEUE_COMPUTE_BIT) {
-            for (uint32_t i = 0; i < CAST_U32(properties.size()); ++i) {
+            for (uint32_t i = 0; i < properties.size(); ++i) {
                 if ((properties[i].queueFlags & queue) && (!(properties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)))
                     return i;
             }
         }
 
         if (queue & VK_QUEUE_TRANSFER_BIT) {
-            for (uint32_t i = 0; i < CAST_U32(properties.size()); ++i) {
+            for (uint32_t i = 0; i < properties.size(); ++i) {
                 if ((properties[i].queueFlags & queue) && (!(properties[i].queueFlags & VK_QUEUE_COMPUTE_BIT)))
                     return i;
             }
         }
 
-        for (uint32_t i = 0; i < CAST_U32(properties.size()); ++i) {
+        for (uint32_t i = 0; i < properties.size(); ++i) {
             if (properties[i].queueFlags & queue) {
                 if (surface_) {
                     VkBool32 supported = false;
@@ -81,7 +82,8 @@ namespace re {
             }
         }
 
-        RE_THROW_EX("Could not find a matching queue family index");
+        throwEx("Could not find a matching queue family index");
+        return 0;
     }
 
     VkFormat Device::findSupportFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
@@ -97,7 +99,8 @@ namespace re {
             }
         }
 
-        RE_THROW_EX("Failed to find supported format!");
+        throwEx("Failed to find supported format!");
+        return VK_FORMAT_R8G8B8A8_SNORM;
     }
 
     void Device::createCommandPool(VkCommandPool &commandPool, uint32_t index, uint32_t flags) {
@@ -210,7 +213,7 @@ namespace re {
             sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
             destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
         } else {
-            RE_THROW_EX("Unsupported layout transition!");
+            throwEx("Unsupported layout transition!");
         }
 
         vkCmdPipelineBarrier(
@@ -307,14 +310,14 @@ namespace re {
         }
 
         VkDeviceCreateInfo deviceInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
-        deviceInfo.enabledExtensionCount = CAST_U32(extensions.size());
+        deviceInfo.enabledExtensionCount = extensions.size();
         deviceInfo.ppEnabledExtensionNames = extensions.data();
-        deviceInfo.queueCreateInfoCount = CAST_U32(queueCreateInfos.size());
+        deviceInfo.queueCreateInfoCount = queueCreateInfos.size();
         deviceInfo.pQueueCreateInfos = queueCreateInfos.data();
         deviceInfo.pEnabledFeatures = &features;
 
-        RE_VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device),
-                           "Failed to create logical device!");
+        checkResult(vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device),
+                    "Failed to create logical device!");
     }
 
     void Device::createAllocator(const std::shared_ptr<Instance> &instance_) {
@@ -324,8 +327,8 @@ namespace re {
         allocatorInfo.physicalDevice = physicalDevice;
         allocatorInfo.instance = instance_->getInstance();
 
-        RE_VK_CHECK_RESULT(vmaCreateAllocator(&allocatorInfo, &allocator),
-                           "Failed to create Vulkan Memory Allocator");
+        checkResult(vmaCreateAllocator(&allocatorInfo, &allocator),
+                    "Failed to create Vulkan Memory Allocator");
     }
 
 } // namespace re
