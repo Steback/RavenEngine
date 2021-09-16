@@ -20,11 +20,11 @@ namespace re {
 
         renderer = std::make_unique<Renderer>(appName, config);
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
-        JobSystem::singleton = new JobSystem();
+        jobs::JobSystem::singleton = new jobs::JobSystem();
     }
 
     Base::~Base() {
-        delete JobSystem::singleton;
+        delete jobs::JobSystem::singleton;
         delete AssetsManager::singleton;
         delete logs::LogsManager::singleton;
         delete FilesManager::singleton;
@@ -73,7 +73,7 @@ namespace re {
     void Base::loadScene(const std::string &fileName) {
         scene = std::make_shared<re::Scene>(fileName);
 
-        JobSystem::getInstance()->submit([=, this](){
+        jobs::submit([=, this](){
             scene->load();
             AssetsManager::getInstance()->setupDescriptorsPool(renderer->getImageCount());
             renderSystem = std::make_unique<re::RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model");

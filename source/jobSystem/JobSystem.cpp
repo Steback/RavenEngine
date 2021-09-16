@@ -1,7 +1,7 @@
 #include "JobSystem.hpp"
 
 
-namespace re {
+namespace re::jobs {
 
     JobSystem* JobSystem::singleton;
 
@@ -30,7 +30,7 @@ namespace re {
         return singleton;
     }
 
-    void JobSystem::submit(JobSystem::Job job) {
+    void JobSystem::submit(Job job) {
         {
             std::unique_lock<std::mutex> lock(queueMutex);
             jobs.push(std::move(job));
@@ -58,4 +58,4 @@ namespace re {
         }
     }
 
-} // namespace re
+} // namespace re::jobs

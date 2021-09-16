@@ -7,52 +7,74 @@
 #include <atomic>
 #include <queue>
 #include <condition_variable>
+#include <utility>
 
 #include "utils/NonCopyable.hpp"
 
 
 namespace re {
 
-    /**
-     * @brief Job System manager class
-     */
-    class JobSystem : NonCopyable {
-        friend class Base;
+    class Base;
 
-        JobSystem();
-
-    public:
+    namespace jobs {
         using Job = std::function<void()>;
 
-        ~JobSystem() override;
+        /**
+         * @brief Job System manager class
+         */
+        class JobSystem : NonCopyable {
+            friend re::Base;
 
-        static JobSystem* getInstance();
+            JobSystem();
+
+        public:
+
+            ~JobSystem() override;
+
+            static JobSystem* getInstance();
+
+            /**
+             * @brief Submit job to queue
+             * @param job void function without parameters
+             */
+            void submit(Job job);
+
+            /**
+             * @brief Check if jobs queue is empty
+             */
+            bool empty();
+
+        private:
+            void waitJob();
+
+        private:
+            static JobSystem* singleton;
+            bool done;
+            std::queue<Job> jobs;
+            std::mutex queueMutex;
+            std::vector<std::thread> pool;
+            std::mutex poolMutex;
+            std::condition_variable poolSignal;
+        };
 
         /**
          * @brief Submit job to queue
          * @param job void function without parameters
          */
-         void submit(Job job);
+        inline void submit(Job job) {
+            JobSystem::getInstance()->submit(std::move(job));
+        }
 
         /**
          * @brief Check if jobs queue is empty
          */
-         bool empty();
+        inline bool empty() {
+            return JobSystem::getInstance()->empty();
+        }
 
-    private:
-         void waitJob();
+    } // namespace jobs
 
-    private:
-        static JobSystem* singleton;
-        bool done;
-        std::queue<Job> jobs;
-        std::mutex queueMutex;
-        std::vector<std::thread> pool;
-        std::mutex poolMutex;
-        std::condition_variable poolSignal;
-    };
-
-} // namespace
+} // namespace re
 
 
 #endif //PROTOTYPE_ACTION_RPG_THREADPOOL_HPP
