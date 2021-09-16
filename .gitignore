@@ -22,3 +22,6 @@ latex/
 
 ### Bindings ###
 bindings/
+
+### ImGui ###
+*.ini
