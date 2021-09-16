@@ -17,7 +17,7 @@
 #include "assets/AssetsManager.hpp"
 #include "render/RenderSystem.hpp"
 #include "scene/Scene.hpp"
-#include "config/Cli.hpp"
+#include "config/CliOptions.hpp"
 #include "jobSystem/JobSystem.hpp"
 
 
@@ -31,7 +31,7 @@ namespace re {
         /**
          * @param appName Application/Game name
          */
-        explicit Base(const std::string& appName);
+        explicit Base(const std::string& appName, CLI::App& app);
 
         ~Base() override;
 

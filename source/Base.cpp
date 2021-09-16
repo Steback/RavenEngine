@@ -7,7 +7,10 @@
 
 namespace re {
 
-    Base::Base(const std::string& appName) {
+    Base::Base(const std::string& appName, CLI::App& app) {
+        cli::CliOptions::singleton = new cli::CliOptions(app);
+        cli::addFlag("compile-shaders", "Compile shaders at moment to create shader module");
+
         FilesManager::singleton = new files::FilesManager();
         logs::LogsManager::singleton = new logs::LogsManager();
 
@@ -28,6 +31,7 @@ namespace re {
         delete AssetsManager::singleton;
         delete logs::LogsManager::singleton;
         delete FilesManager::singleton;
+        delete cli::CliOptions::singleton;
     }
 
     void Base::loop() {

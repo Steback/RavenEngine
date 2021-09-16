@@ -7,7 +7,7 @@
 
 class DamagedHelmet : public re::Base {
 public:
-    DamagedHelmet();
+    DamagedHelmet(CLI::App& app);
 
     ~DamagedHelmet() override;
 

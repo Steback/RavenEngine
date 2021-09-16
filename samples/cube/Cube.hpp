@@ -7,7 +7,7 @@
 
 class Cube : public re::Base {
 public:
-    Cube();
+    Cube(CLI::App& app);
 
     ~Cube() override;
 

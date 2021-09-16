@@ -4,12 +4,11 @@
 
 
 int main(int argc, char** arg) {
-    CLI::App app("Raven Engine CLI options");
-    re::Cli::setupOptions(app);
-    CLI11_PARSE(app, argc, arg);
+    CLI::App app("Raven Engine CLI flags");
 
     try {
-        DamagedHelmet gltf;
+        DamagedHelmet gltf(app);
+        CLI11_PARSE(app, argc, arg);
         gltf.run();
     } catch (const std::exception& e) {
         re::logs::error(e.what());

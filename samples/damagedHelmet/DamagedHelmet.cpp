@@ -7,7 +7,7 @@
 
 
 
-DamagedHelmet::DamagedHelmet() : re::Base("DamagedHelmet") {
+DamagedHelmet::DamagedHelmet(CLI::App& app) : re::Base("DamagedHelmet", app) {
     loadScene("scenes/damagedHelmet.json");
 }
 

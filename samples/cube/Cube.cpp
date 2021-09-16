@@ -5,7 +5,7 @@
 #include "entity/components/MeshRender.hpp"
 
 
-Cube::Cube() : re::Base("Cube") {
+Cube::Cube(CLI::App& app) : re::Base("Cube", app) {
     loadScene("scenes/cube.json");
 }
 

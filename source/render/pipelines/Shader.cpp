@@ -4,7 +4,7 @@
 
 #include "utils/Utils.hpp"
 #include "files/FilesManager.hpp"
-#include "config/Cli.hpp"
+#include "config/CliOptions.hpp"
 
 
 namespace re {
@@ -14,7 +14,7 @@ namespace re {
         File shader = files::getFile(fileName.c_str());
 
         // TODO: Improve when how to work with shader and compile it
-        if (Cli::getOption("compile-shaders")) {
+        if (cli::getOption("compile-shaders")) {
             Shader::compileShader(shader, stage);
         } else {
             shader.setPath(shader.getPath() + ".spv");

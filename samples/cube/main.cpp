@@ -4,12 +4,11 @@
 
 
 int main(int argc, char** arg) {
-    CLI::App app("Raven Engine CLI options");
-    re::Cli::setupOptions(app);
-    CLI11_PARSE(app, argc, arg);
+    CLI::App app("Raven Engine CLI flags");
 
     try {
-        Cube cube;
+        Cube cube(app);
+        CLI11_PARSE(app, argc, arg);
         cube.run();
     } catch (const std::exception& e) {
         re::logs::error(e.what());
