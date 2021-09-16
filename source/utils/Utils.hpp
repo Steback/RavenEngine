@@ -7,6 +7,7 @@
 #include <string>
 
 #include "vulkan/vulkan_core.h"
+#include "fmt/format.h"
 
 #include "Macros.hpp"
 

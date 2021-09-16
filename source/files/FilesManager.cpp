@@ -43,13 +43,14 @@ namespace re::files {
         return paths[name];
     }
 
-    // TODO: Improve feedback when file is not found
     File FilesManager::getFile(const char* name) {
         for (auto& [id, path] : paths) {
             std::filesystem::path filePath(path / name);
             if (std::filesystem::exists(filePath))
                 return File(filePath);
         }
+
+        throwEx(fmt::format("Failed to find file: ", name));
 
         return File(name);
     }

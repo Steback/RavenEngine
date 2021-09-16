@@ -17,9 +17,6 @@ namespace re::files {
     std::vector<uint32_t> File::readBytes() {
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
-        // TODO: Change this throw to another position
-        if (!file.is_open()) throwEx("Failed to open file: " + path.string());
-
         size_t fileSize = static_cast<size_t>(file.tellg());
         std::vector<uint32_t> buffer(fileSize);
 
