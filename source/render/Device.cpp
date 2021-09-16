@@ -270,7 +270,7 @@ namespace re {
             if (queueFamilyIndices.graphics == queueFamilyIndices.present) {
                 // The first queue will use only by the SwapChain. the second will be used for other thing such generated
                 // texture mipmaps
-                float priorityQueues[] = {DEFAULT_QUEUE_PRIORITY, DEFAULT_QUEUE_PRIORITY};
+                const float priorityQueues[] = {DEFAULT_QUEUE_PRIORITY, DEFAULT_QUEUE_PRIORITY};
                 VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfo.queueFamilyIndex = queueFamilyIndices.graphics;
                 createInfo.queueCount = 2;

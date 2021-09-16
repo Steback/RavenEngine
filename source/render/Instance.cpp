@@ -8,10 +8,10 @@
 
 #ifdef RE_DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-        VkDebugUtilsMessageTypeFlagsEXT messageType,
+        VkDebugUtilsMessageSeverityFlagBitsEXT ,
+        VkDebugUtilsMessageTypeFlagsEXT ,
         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-        void *pUserData) {
+        void *) {
     re::logs::error(pCallbackData->pMessage);
 
     return VK_FALSE;
@@ -114,6 +114,7 @@ namespace re {
             if (checkExtensionsSupport(device, extensions)) return device;
 
         throwEx("Failed to find a suitable GPU!");
+        return VK_NULL_HANDLE;
     }
 
     bool Instance::checkExtensionsSupport(VkPhysicalDevice device, const std::vector<const char *> &extensions) {
