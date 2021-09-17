@@ -48,7 +48,7 @@ namespace re {
         /**
          * @brief Check if flag was added to program
          */
-        inline bool getOption(const std::string& name) {
+        inline bool getFlag(const std::string& name) {
             return CliOptions::getInstance()->getFlag(name);
         }
 
