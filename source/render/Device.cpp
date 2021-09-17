@@ -268,8 +268,7 @@ namespace re {
 
         {
             if (queueFamilyIndices.graphics == queueFamilyIndices.present) {
-                // The first queue will use only by the SwapChain. the second will be used for other thing such generated
-                // texture mipmaps
+                // TODO: Create 1:1 queue per thread?
                 const float priorityQueues[] = {DEFAULT_QUEUE_PRIORITY, DEFAULT_QUEUE_PRIORITY};
                 VkDeviceQueueCreateInfo createInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
                 createInfo.queueFamilyIndex = queueFamilyIndices.graphics;
@@ -291,6 +290,7 @@ namespace re {
             }
         }
 
+        // TODO: Is necessary have compute and transfers queues?
         {
             queueFamilyIndices.compute = getQueueFamilyIndex(VK_QUEUE_COMPUTE_BIT);
             VkDeviceQueueCreateInfo computeCreateInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
