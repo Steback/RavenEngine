@@ -82,38 +82,11 @@ namespace re {
 
                 Material& material = *node.mesh->material;
                 // Pass material parameters as push constants
-                PushConstBlockMaterial pushConstBlockMaterial{};
-                pushConstBlockMaterial.emissiveFactor = material.emissiveFactor;
-                // To save push constant space, availabilty and texture coordiante set are combined
-                // -1 = texture not used for this material, >= 0 texture used and index of texture coordinate set
-                pushConstBlockMaterial.colorTextureSet = material.baseColorTexture ? material.texCoordSets.baseColor : -1;
-                pushConstBlockMaterial.normalTextureSet = material.normalTexture ? material.texCoordSets.normal : -1;
-                pushConstBlockMaterial.occlusionTextureSet = material.occlusionTexture ? material.texCoordSets.occlusion : -1;
-                pushConstBlockMaterial.emissiveTextureSet = material.emissiveTexture ? material.texCoordSets.emissive : -1;
-                pushConstBlockMaterial.alphaMask = static_cast<float>(material.alphaMode == Material::AlphaMode::MASK);
-                pushConstBlockMaterial.alphaMaskCutoff = material.alphaCutoff;
+                Material::PushConstantBlock pushConstBlockMaterial{};
+                pushConstBlockMaterial.colorTextureSet = material.textures[Material::BASE] ? material.texCoordSets.baseColor : -1;
+                pushConstBlockMaterial.baseColorFactor = material.baseColorFactor;
 
-                // TODO: glTF specs states that metallic roughness should be preferred, even if specular glosiness is present
-                if (material.pbrWorkflows.metallicRoughness) {
-                    // Metallic roughness workflow
-                    pushConstBlockMaterial.workflow = static_cast<float>(Material::PBRWorkflows::METALLIC_ROUGHNESS);
-                    pushConstBlockMaterial.baseColorFactor = material.baseColorFactor;
-                    pushConstBlockMaterial.metallicFactor = material.metallicFactor;
-                    pushConstBlockMaterial.roughnessFactor = material.roughnessFactor;
-                    pushConstBlockMaterial.PhysicalDescriptorTextureSet = material.metallicRoughnessTexture != nullptr ? material.texCoordSets.metallicRoughness : -1;
-                    pushConstBlockMaterial.colorTextureSet = material.baseColorTexture != nullptr ? material.texCoordSets.baseColor : -1;
-                }
-
-                if (material.pbrWorkflows.specularGlossiness) {
-                    // Specular glossiness workflow
-                    pushConstBlockMaterial.workflow = static_cast<float>(Material::PBRWorkflows::SPECULAR_GLOSINESS);
-                    pushConstBlockMaterial.PhysicalDescriptorTextureSet = material.extension.specularGlossinessTexture != nullptr ? material.texCoordSets.specularGlossiness : -1;
-                    pushConstBlockMaterial.colorTextureSet = material.extension.diffuseTexture != nullptr ? material.texCoordSets.baseColor : -1;
-                    pushConstBlockMaterial.diffuseFactor = material.extension.diffuseFactor;
-                    pushConstBlockMaterial.specularFactor = vec4(material.extension.specularFactor.x, material.extension.specularFactor.y, material.extension.specularFactor.z, 1.0f);
-                }
-
-                vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstBlockMaterial), &pushConstBlockMaterial);
+                vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(pushConstBlockMaterial), &pushConstBlockMaterial);
 
                 node.mesh->bind(commandBuffer);
                 node.mesh->draw(commandBuffer);

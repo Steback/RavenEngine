@@ -8,6 +8,7 @@
 #include "scene/Skybox.hpp"
 #include "math/Common.hpp"
 #include "assets/AssetsManager.hpp"
+#include "assets/Material.hpp"
 #include "entity/Entity.hpp"
 #include "render/Buffer.hpp"
 #include "entity/components/Transform.hpp"
@@ -20,7 +21,7 @@ namespace re {
             : device(std::move(device)) {
         VkPushConstantRange materialPushConstant{};
         materialPushConstant.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-        materialPushConstant.size = sizeof(PushConstBlockMaterial);
+        materialPushConstant.size = sizeof(Material::PushConstantBlock);
 
         Pipeline::ConfigInfo configInfo;
         GraphicsPipeline::defaultConfigInfo(configInfo, renderPass);

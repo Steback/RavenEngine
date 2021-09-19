@@ -40,7 +40,7 @@ namespace re {
         uint32_t materialCount = 0;
 
         for (auto& material : materials) {
-            imageSamplerCount += 5;
+            imageSamplerCount += 1;
             materialCount++;
         }
 
@@ -225,32 +225,13 @@ namespace re {
             auto empty = textures[std::hash<std::string>()("empty")]->descriptor;
             std::vector<VkDescriptorImageInfo> imageDescriptors = {
                     empty,
-                    empty,
-                    material->normalTexture ? material->normalTexture->descriptor : empty,
-                    material->occlusionTexture ? material->occlusionTexture->descriptor : empty,
-                    material->emissiveTexture ? material->emissiveTexture->descriptor : empty
             };
 
-            // TODO: glTF specs states that metallic roughness should be preferred, even if specular glosiness is present
-            if (material->pbrWorkflows.metallicRoughness) {
-                if (material->baseColorTexture) {
-                    imageDescriptors[0] = material->baseColorTexture->descriptor;
-                }
-                if (material->metallicRoughnessTexture) {
-                    imageDescriptors[1] = material->metallicRoughnessTexture->descriptor;
-                }
+            if (material->textures[Material::BASE]) {
+                imageDescriptors[0] = material->textures[Material::BASE]->descriptor;
             }
 
-            if (material->pbrWorkflows.specularGlossiness) {
-                if (material->extension.diffuseTexture) {
-                    imageDescriptors[0] = material->extension.diffuseTexture->descriptor;
-                }
-                if (material->extension.specularGlossinessTexture) {
-                    imageDescriptors[1] = material->extension.specularGlossinessTexture->descriptor;
-                }
-            }
-
-            std::array<VkWriteDescriptorSet, 5> writeDescriptorSets{};
+            std::array<VkWriteDescriptorSet, 1> writeDescriptorSets{};
             for (size_t i = 0; i < imageDescriptors.size(); i++) {
                 writeDescriptorSets[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
                 writeDescriptorSets[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
