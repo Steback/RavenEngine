@@ -48,7 +48,8 @@ namespace re {
         auto& cameraComponent = camera->getComponent<Camera>();
         mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
 
-        scene->skybox->draw(commandBuffer, cameraComponent.getProjection(), Matrix4{1.0f});
+        if (scene->skybox)
+            scene->skybox->draw(commandBuffer, cameraComponent.getProjection(), Matrix4{1.0f});
 
         pipeline->bind(commandBuffer);
 
