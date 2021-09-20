@@ -46,7 +46,7 @@ namespace re {
         for (auto& [id, entity] : entities)
             scene["entities"].push_back(entity->serialize());
 
-        File file(files::getPath("data/scenes") / fileName);
+        File file(files::getPath("data") / fileName);
         file.write(scene);
     }
 
