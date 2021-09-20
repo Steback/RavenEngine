@@ -11,8 +11,6 @@
 #include "assets/Material.hpp"
 #include "entity/Entity.hpp"
 #include "render/Buffer.hpp"
-#include "entity/components/Transform.hpp"
-#include "entity/components/MeshRender.hpp"
 
 
 namespace re {
@@ -39,7 +37,8 @@ namespace re {
     }
 
     RenderSystem::~RenderSystem() {
-        uboModelBuffer->unmap();
+        uboTransformBuffer->unmap();
+        uboNodeBuffer->unmap();
     }
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
@@ -64,9 +63,9 @@ namespace re {
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            uboModel.mvp = viewProj * transform.getWorldMatrix();
+            uboTransform.mvp = viewProj * transform.getWorldMatrix();
 
-            meshRender.model->render(commandBuffer, pipeline->getLayout(), uboModel);
+            meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
             updateBuffer();
         }
     }
@@ -86,28 +85,46 @@ namespace re {
     void RenderSystem::setupDescriptors() {
         AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
 
-        VkWriteDescriptorSet writeDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-        writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        writeDescriptorSet.descriptorCount = 1;
-        writeDescriptorSet.dstSet = uboDescriptorSet;
-        writeDescriptorSet.dstBinding = 0;
-        writeDescriptorSet.pBufferInfo = &uboModelBuffer->descriptor;
-        vkUpdateDescriptorSets(device->getDevice(), 1, &writeDescriptorSet, 0, nullptr);
+        std::array<VkWriteDescriptorSet, 2> writeDescriptorSets{};
+        writeDescriptorSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeDescriptorSets[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        writeDescriptorSets[0].descriptorCount = 1;
+        writeDescriptorSets[0].dstSet = uboDescriptorSet;
+        writeDescriptorSets[0].dstBinding = 0;
+        writeDescriptorSets[0].pBufferInfo = &uboTransformBuffer->descriptor;
+
+        writeDescriptorSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeDescriptorSets[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        writeDescriptorSets[1].descriptorCount = 1;
+        writeDescriptorSets[1].dstSet = uboDescriptorSet;
+        writeDescriptorSets[1].dstBinding = 1;
+        writeDescriptorSets[1].pBufferInfo = &uboNodeBuffer->descriptor;
+
+        vkUpdateDescriptorSets(device->getDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);
     }
 
     void RenderSystem::setupBuffer() {
-        uboModelBuffer = std::make_unique<Buffer>(
+        uboTransformBuffer = std::make_unique<Buffer>(
                 device->getAllocator(),
-                sizeof(UboModel),
+                sizeof(Transform::Ubo),
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 VMA_MEMORY_USAGE_CPU_TO_GPU
         );
-        uboModelBuffer->map();
+        uboTransformBuffer->map();
+
+        uboNodeBuffer = std::make_unique<Buffer>(
+                device->getAllocator(),
+                sizeof(Transform::Ubo),
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VMA_MEMORY_USAGE_CPU_TO_GPU
+        );
+        uboNodeBuffer->map();
     }
 
     // TODO: Remove this
     void RenderSystem::updateBuffer() {
-        uboModelBuffer->copyTo(&uboModel);
+        uboTransformBuffer->copyTo(&uboTransform);
+        uboNodeBuffer->copyTo(&uboNode);
     }
 
 } // namespace re

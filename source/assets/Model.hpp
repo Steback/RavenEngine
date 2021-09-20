@@ -49,6 +49,10 @@ namespace re {
 
         };
 
+        struct Ubo {
+            mat4 nodeMatrix{1.0f};
+        };
+
     public:
         /**
          * @brief Default constructor. Create Model object from GLTF2 file
@@ -71,7 +75,7 @@ namespace re {
          * @param commandBuffer Command uboBuffer in recording state
          * @param layout Valid pipeline layout
          */
-        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, UboModel& uboModel);
+        void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, Ubo& ubo);
 
         Node& getNode(uint32_t index);
 

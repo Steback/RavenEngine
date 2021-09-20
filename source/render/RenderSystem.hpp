@@ -9,6 +9,8 @@
 
 #include "utils/NonCopyable.hpp"
 #include "entity/components/Camera.hpp"
+#include "entity/components/Transform.hpp"
+#include "entity/components/MeshRender.hpp"
 
 
 namespace re {
@@ -19,12 +21,6 @@ namespace re {
     class Entity;
     class AssetsManager;
     class Buffer;
-
-    // TODO: Change this for a dynamic uniform object
-    struct UboModel {
-        mat4 mvp{1.f};
-        mat4 node{1.f};
-    };
 
     class RenderSystem : NonCopyable {
     public:
@@ -55,8 +51,10 @@ namespace re {
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
         VkDescriptorSet uboDescriptorSet{};
-        std::unique_ptr<Buffer> uboModelBuffer;
-        UboModel uboModel;
+        std::unique_ptr<Buffer> uboTransformBuffer;
+        std::unique_ptr<Buffer> uboNodeBuffer;
+        Transform::Ubo uboTransform{};
+        Model::Ubo uboNode{};
     };
 
 } // namespace re

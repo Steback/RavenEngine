@@ -16,6 +16,12 @@ namespace re {
      */
     class Transform : public  Component {
     public:
+        // TODO: Change this for a dynamic uniform object
+        struct Ubo {
+            mat4 mvp;
+        };
+
+    public:
         /**
          *
          * @param position

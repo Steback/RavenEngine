@@ -7,7 +7,6 @@
 #include "Material.hpp"
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
-#include "render/RenderSystem.hpp"
 
 
 namespace std {
@@ -67,11 +66,10 @@ namespace re {
         return nodeMatrix;
     }
 
-    // TODO: Find another way to calculate MVP * Node Matrix and send it to Shaders
-    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, UboModel& uboModel) {
+    void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, Ubo& ubo) {
         for (auto& node : nodes) {
             if (node.mesh) {
-                uboModel.node = getNodeMatrix(node.index);
+                ubo.nodeMatrix = getNodeMatrix(node.index);
 
                 std::vector<VkDescriptorSet> sets = {node.mesh->getMaterial()->descriptorSet};
                 vkCmdBindDescriptorSets(commandBuffer,

@@ -10,14 +10,17 @@ layout(location = 1) out vec3 fragNormal;
 layout(location = 2) out vec2 fragUV0;
 layout(location = 3) out vec2 fragUV1;
 
-layout(set = 0, binding = 0) uniform UboModel {
-    mat4 mvp; // projection * view * model
-    mat4 node; // Node local transform
-} uboModel;
+layout(set = 0, binding = 0) uniform UboTransform {
+    mat4 mvp;
+} uboTransform;
+
+layout(set = 0, binding = 1) uniform UboNode {
+    mat4 matrix;
+} uboNode;
 
 
 void main() {
-    vec4 locPos = uboModel.mvp * uboModel.node * vec4(position, 1.0);
+    vec4 locPos = uboTransform.mvp * uboNode.matrix * vec4(position, 1.0);
     gl_Position = locPos;
     fragUV0 = uv0;
     fragUV1 = uv0;
