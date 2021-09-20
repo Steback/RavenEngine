@@ -11,6 +11,7 @@
 #include "entity/components/Camera.hpp"
 #include "entity/components/Transform.hpp"
 #include "entity/components/MeshRender.hpp"
+#include "entity/components/Light.hpp"
 
 
 namespace re {
@@ -48,13 +49,17 @@ namespace re {
 
     private:
         std::shared_ptr<Entity> camera;
+        std::shared_ptr<Entity> light;
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
         VkDescriptorSet uboDescriptorSet{};
+        // TODO: Change this
         std::unique_ptr<UniformBuffer> uboTransformBuffer;
         std::unique_ptr<UniformBuffer> uboNodeBuffer;
+        std::unique_ptr<UniformBuffer> uboLightBuffer;
         Transform::Ubo uboTransform{};
         Model::Ubo uboNode{};
+        Light::Ubo uboLight;
     };
 
 } // namespace re

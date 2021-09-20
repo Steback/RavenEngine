@@ -40,6 +40,7 @@ namespace re {
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
         if (!camera) camera = scene->getEntity("Camera");
+        if (!light) light = scene->getEntity("Light");
 
         auto& cameraComponent = camera->getComponent<Camera>();
         mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
@@ -48,6 +49,13 @@ namespace re {
             scene->skybox->draw(commandBuffer, cameraComponent.getProjection(), Matrix4{1.0f});
 
         pipeline->bind(commandBuffer);
+
+        if (light) {
+            auto& lightComponent = light->getComponent<Light>();
+            uboLight.color = lightComponent.color;
+            uboLight.ambient = lightComponent.ambient;
+            uboLightBuffer->update(&uboLight);
+        }
 
         std::vector<VkDescriptorSet> sets = {uboDescriptorSet};
         vkCmdBindDescriptorSets(commandBuffer,
@@ -82,7 +90,7 @@ namespace re {
     void RenderSystem::setupDescriptors() {
         AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
 
-        std::array<VkWriteDescriptorSet, 2> writeDescriptorSets{};
+        std::array<VkWriteDescriptorSet, 3> writeDescriptorSets{};
         writeDescriptorSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeDescriptorSets[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         writeDescriptorSets[0].descriptorCount = 1;
@@ -99,9 +107,18 @@ namespace re {
         VkDescriptorBufferInfo nodeDescriptor = uboNodeBuffer->getDescriptor();
         writeDescriptorSets[1].pBufferInfo = &nodeDescriptor;
 
+        writeDescriptorSets[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeDescriptorSets[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        writeDescriptorSets[2].descriptorCount = 1;
+        writeDescriptorSets[2].dstSet = uboDescriptorSet;
+        writeDescriptorSets[2].dstBinding = 2;
+        VkDescriptorBufferInfo lightDescriptor = uboLightBuffer->getDescriptor();
+        writeDescriptorSets[2].pBufferInfo = &lightDescriptor;
+
         vkUpdateDescriptorSets(device->getDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);
     }
 
+    // TODO: Change how uniform buffer are used by RenderSystem
     void RenderSystem::setupBuffer() {
         uboTransformBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),
@@ -109,7 +126,11 @@ namespace re {
         );
         uboNodeBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),
-                sizeof(Transform::Ubo)
+                sizeof(Model::Ubo)
+        );
+        uboLightBuffer = std::make_unique<UniformBuffer>(
+                device->getAllocator(),
+                sizeof(Light::Ubo)
         );
     }
 

@@ -13,6 +13,11 @@ namespace re {
      */
     class Light : public Component {
     public:
+        struct Ubo {
+            vec3 color{1.0f};
+            float ambient = 0.1f;
+        };
+
         /**
          *
          * @param color

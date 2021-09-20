@@ -195,7 +195,8 @@ namespace re {
         // UBO Descriptor Set Layout
         std::vector<VkDescriptorSetLayoutBinding> uboBindings = {
                 {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT},
-                {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT}
+                {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT},
+                {2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_FRAGMENT_BIT}
         };
 
         layoutInfo.bindingCount = static_cast<uint32_t>(uboBindings.size());

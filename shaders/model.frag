@@ -6,12 +6,15 @@
 
 layout(location = 0) out vec4 outColor;
 
-layout(location = 0) in vec3 inWorldPos;
-layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 inUV0;
 layout(location = 3) in vec2 inUV1;
 
 layout (set = 1, binding = 0) uniform sampler2D colorMap;
+
+layout (set = 0, binding = 2) uniform UboLight {
+    vec3 color;
+    float ambient;
+} uboLight;
 
 layout (push_constant) uniform Material {
     vec4 baseColorFactor;
@@ -27,5 +30,5 @@ void main() {
         baseColor = material.baseColorFactor;
     }
 
-    outColor = vec4(baseColor);
+    outColor = baseColor * vec4(uboLight.color * uboLight.ambient, 1.0);
 }
