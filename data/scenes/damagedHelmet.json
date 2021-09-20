@@ -25,6 +25,35 @@
             }
         },
         {
+            "light": {
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "ambient": 0.1
+            },
+            "name": "Light",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 5.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
             "meshRender": {
                 "name": "models/DamagedHelmet.gltf"
             },

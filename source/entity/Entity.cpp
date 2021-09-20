@@ -4,6 +4,7 @@
 #include "components/Transform.hpp"
 #include "components/MeshRender.hpp"
 #include "components/Camera.hpp"
+#include "components/Light.hpp"
 
 
 namespace re {
@@ -46,6 +47,10 @@ namespace re {
             entity["camera"] = getComponent<Camera>().serialize();
         }
 
+        if (hasComponent<Light>()) {
+            entity["light"] = getComponent<Light>().serialize();
+        }
+
         return entity;
     }
 
@@ -57,6 +62,9 @@ namespace re {
 
         if (!entity["camera"].empty())
             addComponent<Camera>(entity["camera"]);
+
+        if (!entity["light"].empty())
+            addComponent<Light>(entity["light"]);
 
         // TODO: Use promises to load mesh in other thread.
         if (!entity["meshRender"].empty())
