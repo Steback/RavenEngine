@@ -20,6 +20,7 @@ public:
 private:
     re::vec3 angles;
     std::shared_ptr<re::Entity> entity;
+    std::shared_ptr<re::Entity> light;
 };
 
 
