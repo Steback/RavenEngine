@@ -32,7 +32,9 @@ void DamagedHelmet::onDrawImGui() {
 
             ImGui::Separator();
 
+            auto& lightTransform = light->getComponent<re::Transform>();
             auto& lightComponent = light->getComponent<re::Light>();
+            ImGui::InputFloat3("Light Position", lightTransform.position.ptr());
             ImGui::ColorEdit3("Light Color", lightComponent.color.ptr());
             ImGui::InputFloat("Light Ambient", &lightComponent.ambient);
 

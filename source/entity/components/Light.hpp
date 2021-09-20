@@ -14,8 +14,9 @@ namespace re {
     class Light : public Component {
     public:
         struct Ubo {
-            vec3 color{1.0f};
-            float ambient = 0.1f;
+            alignas(16) vec3 position{0.0f};
+            alignas(16) vec3 color{1.0f};
+            float ambient = 0.2f;
         };
 
         /**

@@ -52,6 +52,8 @@ namespace re {
 
         if (light) {
             auto& lightComponent = light->getComponent<Light>();
+            auto& transform = light->getComponent<Transform>();
+            uboLight.position = transform.position;
             uboLight.color = lightComponent.color;
             uboLight.ambient = lightComponent.ambient;
             uboLightBuffer->update(&uboLight);
@@ -68,7 +70,8 @@ namespace re {
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            uboTransform.mvp = viewProj * transform.getWorldMatrix();
+            mat4 transformMatrix = transform.getWorldMatrix();
+            uboTransform.mvp = viewProj * transformMatrix;
 
             meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
             updateBuffer();
