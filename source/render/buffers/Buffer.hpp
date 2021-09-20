@@ -57,11 +57,7 @@ namespace re {
          */
         [[nodiscard]] VkDeviceSize getSize() const;
 
-    private:
-        void updateDescriptor();
-
-    public:
-        VkDescriptorBufferInfo descriptor{};
+        VkDescriptorBufferInfo getDescriptor();
 
     private:
         VmaAllocator allocator{};

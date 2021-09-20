@@ -10,7 +10,7 @@
 #include "assets/AssetsManager.hpp"
 #include "assets/Material.hpp"
 #include "entity/Entity.hpp"
-#include "render/Buffer.hpp"
+#include "render/buffers/UniformBuffer.hpp"
 
 
 namespace re {
@@ -36,10 +36,7 @@ namespace re {
         );
     }
 
-    RenderSystem::~RenderSystem() {
-        uboTransformBuffer->unmap();
-        uboNodeBuffer->unmap();
-    }
+    RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
         if (!camera) camera = scene->getEntity("Camera");
@@ -91,40 +88,35 @@ namespace re {
         writeDescriptorSets[0].descriptorCount = 1;
         writeDescriptorSets[0].dstSet = uboDescriptorSet;
         writeDescriptorSets[0].dstBinding = 0;
-        writeDescriptorSets[0].pBufferInfo = &uboTransformBuffer->descriptor;
+        VkDescriptorBufferInfo transformDescriptor = uboTransformBuffer->getDescriptor();
+        writeDescriptorSets[0].pBufferInfo = &transformDescriptor;
 
         writeDescriptorSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeDescriptorSets[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         writeDescriptorSets[1].descriptorCount = 1;
         writeDescriptorSets[1].dstSet = uboDescriptorSet;
         writeDescriptorSets[1].dstBinding = 1;
-        writeDescriptorSets[1].pBufferInfo = &uboNodeBuffer->descriptor;
+        VkDescriptorBufferInfo nodeDescriptor = uboNodeBuffer->getDescriptor();
+        writeDescriptorSets[1].pBufferInfo = &nodeDescriptor;
 
         vkUpdateDescriptorSets(device->getDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);
     }
 
     void RenderSystem::setupBuffer() {
-        uboTransformBuffer = std::make_unique<Buffer>(
+        uboTransformBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),
-                sizeof(Transform::Ubo),
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VMA_MEMORY_USAGE_CPU_TO_GPU
+                sizeof(Transform::Ubo)
         );
-        uboTransformBuffer->map();
-
-        uboNodeBuffer = std::make_unique<Buffer>(
+        uboNodeBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),
-                sizeof(Transform::Ubo),
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VMA_MEMORY_USAGE_CPU_TO_GPU
+                sizeof(Transform::Ubo)
         );
-        uboNodeBuffer->map();
     }
 
     // TODO: Remove this
     void RenderSystem::updateBuffer() {
-        uboTransformBuffer->copyTo(&uboTransform);
-        uboNodeBuffer->copyTo(&uboNode);
+        uboTransformBuffer->update(&uboTransform);
+        uboNodeBuffer->update(&uboNode);
     }
 
 } // namespace re

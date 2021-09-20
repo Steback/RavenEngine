@@ -15,7 +15,7 @@ namespace re {
     class GraphicsPipeline;
     class Mesh;
     class Texture;
-    class Buffer;
+    class UniformBuffer;
     class Device;
     class AssetsManager;
 
@@ -48,7 +48,7 @@ namespace re {
         VkDescriptorSet textureDescriptorSet{};
         std::shared_ptr<Mesh> mesh;
         std::shared_ptr<Texture> texture;
-        std::unique_ptr<Buffer> uboBuffer;
+        std::unique_ptr<UniformBuffer> uboBuffer;
         UboData uboData{};
     };
 

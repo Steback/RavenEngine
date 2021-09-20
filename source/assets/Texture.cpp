@@ -6,7 +6,7 @@
 
 #include "utils/Utils.hpp"
 #include "render/Device.hpp"
-#include "render/Buffer.hpp"
+#include "render/buffers/Buffer.hpp"
 #include "files/FilesManager.hpp"
 #include "files/File.hpp"
 

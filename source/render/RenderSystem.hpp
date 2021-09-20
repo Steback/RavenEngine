@@ -20,7 +20,7 @@ namespace re {
     class Scene;
     class Entity;
     class AssetsManager;
-    class Buffer;
+    class UniformBuffer;
 
     class RenderSystem : NonCopyable {
     public:
@@ -51,8 +51,8 @@ namespace re {
         std::shared_ptr<Device> device;
         std::unique_ptr<GraphicsPipeline> pipeline;
         VkDescriptorSet uboDescriptorSet{};
-        std::unique_ptr<Buffer> uboTransformBuffer;
-        std::unique_ptr<Buffer> uboNodeBuffer;
+        std::unique_ptr<UniformBuffer> uboTransformBuffer;
+        std::unique_ptr<UniformBuffer> uboNodeBuffer;
         Transform::Ubo uboTransform{};
         Model::Ubo uboNode{};
     };

@@ -5,7 +5,7 @@
 #include "Material.hpp"
 #include "utils/Macros.hpp"
 #include "render/Device.hpp"
-#include "render/Buffer.hpp"
+#include "render/buffers/Buffer.hpp"
 
 
 namespace re {

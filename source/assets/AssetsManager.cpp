@@ -9,7 +9,7 @@
 #include "files/FilesManager.hpp"
 #include "files/File.hpp"
 #include "utils/Utils.hpp"
-#include "render/Buffer.hpp"
+#include "render/buffers/Buffer.hpp"
 #include "scene/Skybox.hpp"
 
 

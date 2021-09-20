@@ -4,7 +4,7 @@
 #include "assets/Texture.hpp"
 #include "assets/AssetsManager.hpp"
 #include "render/Device.hpp"
-#include "render/Buffer.hpp"
+#include "render/buffers/UniformBuffer.hpp"
 #include "render/pipelines/GraphicsPipeline.hpp"
 
 
@@ -29,9 +29,7 @@ namespace re {
         );
     }
 
-    Skybox::~Skybox() {
-        uboBuffer->unmap();
-    }
+    Skybox::~Skybox() = default;
 
     void Skybox::draw(VkCommandBuffer commandBuffer, const mat4& proj, const mat4& transform) {
         pipeline->bind(commandBuffer);
@@ -44,7 +42,7 @@ namespace re {
 
         uboData.projection = proj;
         uboData.transform = transform;
-        uboBuffer->copyTo(&uboData);
+        uboBuffer->update(&uboData);
 
         mesh->bind(commandBuffer);
         mesh->draw(commandBuffer);
@@ -61,7 +59,8 @@ namespace re {
         writeDescriptors[0].descriptorCount = 1;
         writeDescriptors[0].dstSet = uboDescriptorSet;
         writeDescriptors[0].dstBinding = 0;
-        writeDescriptors[0].pBufferInfo = &uboBuffer->descriptor;
+        VkDescriptorBufferInfo descriptor = uboBuffer->getDescriptor();
+        writeDescriptors[0].pBufferInfo = &descriptor;
 
         writeDescriptors[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeDescriptors[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -73,13 +72,10 @@ namespace re {
     }
 
     void Skybox::setupBuffer() {
-        uboBuffer = std::make_unique<Buffer>(
+        uboBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),
-                sizeof(UboData),
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VMA_MEMORY_USAGE_CPU_TO_GPU
+                sizeof(UboData)
         );
-        uboBuffer->map();
     }
 
 } // namespace re

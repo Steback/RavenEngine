@@ -15,8 +15,6 @@ namespace re {
         allocationCreateInfo.usage = memoryUsage;
 
         vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationCreateInfo, &buffer, &allocation, nullptr);
-
-        updateDescriptor();
     }
 
     Buffer::~Buffer() {
@@ -42,10 +40,8 @@ namespace re {
         return size;
     }
 
-    void Buffer::updateDescriptor() {
-        descriptor.offset = 0;
-        descriptor.buffer = buffer;
-        descriptor.range = size;
+    VkDescriptorBufferInfo Buffer::getDescriptor() {
+        return {buffer, 0, size};
     }
 
 } // namespace lv

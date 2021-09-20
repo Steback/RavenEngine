@@ -1,7 +1,7 @@
 #include "Device.hpp"
 
 #include "Instance.hpp"
-#include "Buffer.hpp"
+#include "render/buffers/Buffer.hpp"
 #include "Image.hpp"
 #include "utils/Utils.hpp"
 
