@@ -7,4 +7,20 @@ namespace re {
 
     }
 
+    /**
+     *
+     * @return JSON object with component serialized data
+     */
+    json Component::serialize() {
+        return {};
+    }
+
+    /**
+     *
+     * @param component Component data serialized in JSON
+     */
+    void Component::serialize(json &component) {
+
+    }
+
 } // namespace re

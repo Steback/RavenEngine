@@ -19,9 +19,6 @@ namespace re {
     class Device;
     class AssetsManager;
 
-    /**
-     * @brief Skybox wrapper class
-     */
     class Skybox : NonCopyable {
     public:
         struct UboData {

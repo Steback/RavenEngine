@@ -9,47 +9,18 @@ namespace re {
 
     class Matrix3 {
     public:
-        /**
-         * @brief Default Constructor
-         */
         Matrix3();
 
-        /**
-         * Constructor for set each axis with the same value
-         * @param n Real number
-         */
         explicit Matrix3(float n);
 
-        /**
-         * Constructor from specific values for each row
-         * @param a Vector3 object 1rt row
-         * @param b Vector3 object 2nd row
-         * @param c Vector3 object 3rd row
-         */
         Matrix3(const Vector3& a, const Vector3& b, const Vector3& c);
 
-        /**
-         * @brief Constructor from C-Style array
-         * @param m C-Style array of Vector3
-         */
         explicit Matrix3(const Vector3 m[3]);
 
-        /**
-         * @brief Constructor form pointer
-         * @param p C_style array of size 9
-         */
         explicit Matrix3(const float* p);
 
-        /**
-         * @brief Constructor form pointer
-         * @param p C_style array of size 9
-         */
         explicit Matrix3(const double * p);
 
-        /**
-         * @brief Copy constructor
-         * @param m Matrix3 object
-         */
         Matrix3(const Matrix3& m);
 
         Matrix3& operator=(const Matrix3& m);
@@ -86,35 +57,14 @@ namespace re {
 
         Matrix3& operator/=(float n);
 
-        /**
-         *
-         * @return Determinant of matrix
-         */
         [[nodiscard]] float determinant() const;
 
-        /**
-         *
-         * @return Adjugate matrix
-         */
         [[nodiscard]] Matrix3 adjugate() const;
 
-        /**
-         *
-         * @return Matrix inverse
-         */
         [[nodiscard]] Matrix3 inverse() const;
 
-        /**
-         *
-         * @return Matrix transpose
-         */
         [[nodiscard]] Matrix3 transpose() const;
 
-        /**
-         *
-         * @param newLine Define if each row was separated by new line instead space. By default is true
-         * @return Matrix string
-         */
         [[nodiscard]] std::string str(bool newLine = true) const;
 
     private:

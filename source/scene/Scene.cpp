@@ -13,6 +13,7 @@
 
 namespace re {
 
+    // TODO: Refactored Scene class and add Doxygen comments
     Scene::Scene(std::string fileName) : fileName(std::move(fileName)) {
 
     }

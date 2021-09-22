@@ -5,6 +5,9 @@ namespace re::jobs {
 
     JobSystem* JobSystem::singleton;
 
+    /**
+     * @brief Construct instance and setup threads
+     */
     JobSystem::JobSystem() {
         done = false;
 
@@ -26,10 +29,18 @@ namespace re::jobs {
         pool.clear();
     }
 
+    /**
+     *
+     * @return Singleton instance
+     */
     JobSystem *JobSystem::getInstance() {
         return singleton;
     }
 
+    /**
+     * @brief Submit job to queue
+     * @param job void function without parameters
+     */
     void JobSystem::submit(Job job) {
         {
             std::unique_lock<std::mutex> lock(queueMutex);
@@ -38,6 +49,9 @@ namespace re::jobs {
         poolSignal.notify_one();
     }
 
+    /**
+     * @brief Check if jobs queue are empty
+     */
     bool JobSystem::empty() {
         return jobs.empty();
     }

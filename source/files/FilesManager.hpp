@@ -17,9 +17,6 @@ namespace re {
 
     namespace files {
 
-        /**
-         * @brief Static class for all files and paths management.
-         */
         class FilesManager : NonCopyable {
             friend re::Base;
 
@@ -30,11 +27,6 @@ namespace re {
 
             static FilesManager* getInstance();
 
-            /**
-             * @brief Add a new path for the search paths
-             * @param name New path name
-             * @param create Create directory of path. By default is false
-             */
             void addPath(const char* name, bool create = false);
 
             std::filesystem::path getPath(const char* name);
@@ -50,11 +42,6 @@ namespace re {
             return FilesManager::getInstance()->getFile(name.c_str());
         }
 
-        /**
-         * @brief Add a new path for the search paths
-         * @param name New path name
-         * @param create Create directory of path. By default is false
-         */
         inline void addPath(const std::string& name, bool create = false) {
             FilesManager::getInstance()->addPath(name.c_str(), create);
         }

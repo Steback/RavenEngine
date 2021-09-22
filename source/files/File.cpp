@@ -10,10 +10,17 @@ namespace re::files {
 
     File::File() = default;
 
+    /**
+     *
+     * @param path Valid file path
+     */
     File::File(std::filesystem::path path) : path(std::move(path)) {
 
     }
 
+    /**
+     * @brief Read file with binary mode
+     */
     std::vector<uint32_t> File::readBytes() {
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
@@ -28,6 +35,9 @@ namespace re::files {
         return buffer;
     }
 
+    /**
+     * @brief Read file without binary mode
+     */
     std::vector<char> File::read() const {
         std::ifstream file{path, std::ios::ate};
 
@@ -44,6 +54,10 @@ namespace re::files {
         return buffer;
     }
 
+    /**
+     * @brief Read file and save its data in JSON format(The file will be .json)
+     * @param data Reference to JSON object
+     */
     void File::read(json &data) {
         std::ifstream file(path);
 
@@ -53,6 +67,10 @@ namespace re::files {
         file.close();
     }
 
+    /**
+     * @brief Write file in JSON format
+     * @param data Reference to JSON object
+     */
     void File::write(json &data) {
         std::ofstream file(path);
 
@@ -62,6 +80,10 @@ namespace re::files {
         file.close();
     }
 
+    /**
+     * @brief Write file in Binary format
+     * @param binary Binary data
+     */
     void File::write(const std::vector<uint32_t> &binary) {
         std::ofstream file(path, std::ios::binary);
 
@@ -72,6 +94,11 @@ namespace re::files {
         file.close();
     }
 
+    /**
+     *
+     * @param extension [Optional] Get the name without extension or not.
+     * @return File name
+     */
     std::string File::getName(bool extension) const {
         std::string fileName = path.filename().string();
 
@@ -83,14 +110,26 @@ namespace re::files {
         return fileName;
     }
 
+    /**
+     *
+     * @return File Path
+     */
     std::string File::getPath() const {
         return path.string();
     }
 
+    /**
+     *
+     * @return File extension
+     */
     std::string File::getExtension() const {
         return path.extension().string();
     }
 
+    /**
+     *
+     * @param path_ New path to set to file
+     */
     void File::setPath(std::filesystem::path path_) {
         path = std::move(path_);
     }

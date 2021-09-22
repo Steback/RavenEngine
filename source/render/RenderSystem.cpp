@@ -15,6 +15,7 @@
 
 namespace re {
 
+    // TODO: Refactored RenderSystem class and add doxygen comments
     RenderSystem::RenderSystem(std::shared_ptr<Device> device, VkRenderPass renderPass, const std::string& shadersName)
             : device(std::move(device)) {
         VkPushConstantRange materialPushConstant{};

@@ -39,10 +39,6 @@ namespace re {
 
         ~Pipeline() = default;
 
-        /**
-         * Bind Pipeline to be used in render
-         * @param commandBuffer Vulkan Command uboBuffer in recording state
-         */
         virtual void bind(const VkCommandBuffer& commandBuffer) const = 0;
 
         [[nodiscard]] virtual const VkPipeline& getPipeline() const = 0;

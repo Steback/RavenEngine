@@ -33,10 +33,6 @@ namespace re {
 
         std::shared_ptr<Entity> getCamera();
 
-        /**
-         *
-         * @param aspect SwapChain extent aspect ratio
-         */
         void update(float aspect);
 
     private:

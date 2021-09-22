@@ -19,9 +19,6 @@ namespace re {
     namespace jobs {
         using Job = std::function<void()>;
 
-        /**
-         * @brief Job System manager class
-         */
         class JobSystem : NonCopyable {
             friend re::Base;
 
@@ -33,15 +30,8 @@ namespace re {
 
             static JobSystem* getInstance();
 
-            /**
-             * @brief Submit job to queue
-             * @param job void function without parameters
-             */
             void submit(Job job);
 
-            /**
-             * @brief Check if jobs queue is empty
-             */
             bool empty();
 
         private:
@@ -57,17 +47,10 @@ namespace re {
             std::condition_variable poolSignal;
         };
 
-        /**
-         * @brief Submit job to queue
-         * @param job void function without parameters
-         */
         inline void submit(Job job) {
             JobSystem::getInstance()->submit(std::move(job));
         }
 
-        /**
-         * @brief Check if jobs queue is empty
-         */
         inline bool empty() {
             return JobSystem::getInstance()->empty();
         }

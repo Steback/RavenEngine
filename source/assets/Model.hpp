@@ -16,20 +16,12 @@
 
 namespace re {
 
-    struct UboModel;
-
     class Device;
     class Mesh;
     class AssetsManager;
 
-    /**
-     * @brief Model interface class
-     */
     class Model {
     public:
-        /**
-         * @brief Model node struct
-         */
         struct Node {
             int32_t parent{-1};
             uint32_t index;
@@ -41,12 +33,7 @@ namespace re {
             Vector3 scale{1.0f};
             Quaternion rotation;
 
-            /**
-             *
-             * @return Node matrix in local space
-             */
             [[nodiscard]] Matrix4 getLocalMatrix() const;
-
         };
 
         struct Ubo {
@@ -54,27 +41,12 @@ namespace re {
         };
 
     public:
-        /**
-         * @brief Default constructor. Create Model object from GLTF2 file
-         * @param assetsManager Pointer to Assets Manager
-         * @param model TinyGLTF model wasLoaded
-         */
         Model(std::string name, const tinygltf::Model &model);
 
         ~Model();
 
-        /**
-         *
-         * @param index Node index
-         * @return Node matrix in world space. Multiply with the patent matrix
-         */
         [[nodiscard]] Matrix4 getNodeMatrix(size_t index) const;
 
-        /**
-         *
-         * @param commandBuffer Command uboBuffer in recording state
-         * @param layout Valid pipeline layout
-         */
         void render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, Ubo& ubo);
 
         Node& getNode(uint32_t index);

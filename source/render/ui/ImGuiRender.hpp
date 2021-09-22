@@ -20,37 +20,16 @@ namespace re {
 
     namespace ui {
 
-        // TODO: Change ImGui implementation to use Vulkan Memory Allocator
-        /**
-         * @brief ImGuiRender wrapper class
-         */
         class ImGuiRender : NonCopyable {
         public:
-            /**
-             *
-             * @param device Pointer to Device
-             * @param swapChain Reference to valid SwapChain
-             * @param window Pointer to current Window
-             */
             ImGuiRender(const std::shared_ptr<Device>& device, const SwapChain& swapChain, const std::shared_ptr<Window>& window);
 
             ~ImGuiRender() override;
 
-            /**
-             *
-             * @param swapChain
-             */
             void resize(const SwapChain& swapChain);
 
-            /**
-             * @brief New ImGui frame
-             */
             void newFrame();
 
-            /**
-             * @brief Render ImGui Data
-             * @param commandBuffer Valid command uboBuffer in recording state
-             */
             void render(VkCommandBuffer commandBuffer);
 
         private:

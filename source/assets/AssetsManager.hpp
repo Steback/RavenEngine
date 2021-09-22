@@ -26,9 +26,6 @@ namespace re {
         MATERIAL = 3
     };
 
-    /**
-     * @brief Assets Manager class\n
-     */
     class AssetsManager : NonCopyable {
         friend class Base;
 
@@ -45,34 +42,18 @@ namespace re {
 
         VkDescriptorSetLayout getDescriptorSetLayout(DescriptorSetType type);
 
-        /**
-         *
-         * @param fileName Name of GLTF2 file
-         * @param name Optional. Specific name to save model. Bu default is empty.
-         */
         std::shared_ptr<Model> loadModel(const std::string& fileName, const std::string& name = "");
 
         std::shared_ptr<Model> getModel(uint32_t name);
 
         std::shared_ptr<Model> getModel(const std::string& name);
 
-        /**
-         * @brief Load Mesh from GLTF Mesh
-         * @param model TinyGLTF Model
-         * @param node  TinyGLTF node
-         * @return shared_ptr of created Mesh
-         */
         std::shared_ptr<Mesh> addMesh(const tinygltf::Model& model, const tinygltf::Node& node);
 
-        std::shared_ptr<Mesh> getMesh(uint32_t name);
+        std::shared_ptr<Mesh> getMesh(uint32_t id);
 
         std::shared_ptr<Mesh> getMesh(const std::string& name);
 
-        /**
-         * @brief Add Texture to AssetsManager
-         * @param texture TinyGLTF Texture
-         * @return Pointer to Texture
-         */
         std::shared_ptr<Texture> addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture);
 
         std::shared_ptr<Texture> getTexture(uint32_t id);
@@ -85,10 +66,6 @@ namespace re {
 
         std::shared_ptr<Material> getMaterial(const std::string& name);
 
-        /**
-         *
-         * @param name File name in .ktx format
-         */
         std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
 
     private:

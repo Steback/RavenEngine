@@ -17,6 +17,10 @@ namespace re {
 
     AssetsManager* AssetsManager::singleton;
 
+    /**
+     *
+     * @param device Pointer to Device object
+     */
     AssetsManager::AssetsManager(std::shared_ptr<Device> device) : device(std::move(device)) {
         textures[std::hash<std::string>()("empty")] = Texture::loadFromFile(this->device, "empty.png", Texture::Sampler{});
     }
@@ -28,10 +32,18 @@ namespace re {
         vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
     }
 
+    /**
+     *
+     * @return Instance of AssetsManager singleton
+     */
     AssetsManager* AssetsManager::getInstance() {
         return singleton;
     }
 
+    /**
+     * @brief Create the Descriptor pool used by all needed assists
+     * @param imageCount SwapChain image count
+     */
     void AssetsManager::setupDescriptorsPool(uint32_t imageCount) {
         // TODO: Find the way to do this dynamically
         uint32_t uboCount = 2;
@@ -61,6 +73,11 @@ namespace re {
         setupMaterialDescriptorsSets();
     }
 
+    /**
+     * @brief Allocate Vulkan Descriptor set
+     * @param type Type of Descriptor Set. Define the layout used to create it.
+     * @param set Pointer to set to allocate.
+     */
     void AssetsManager::allocateDescriptorSet(DescriptorSetType type, VkDescriptorSet *set) {
         VkDescriptorSetAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
         allocateInfo.descriptorPool = descriptorPool;
@@ -69,10 +86,21 @@ namespace re {
         vkAllocateDescriptorSets(device->getDevice(), &allocateInfo, set);
     }
 
+    /**
+     *
+     * @param type Type of descriptor set layout required
+     * @return Vulkan Descriptor set layout
+     */
     VkDescriptorSetLayout AssetsManager::getDescriptorSetLayout(DescriptorSetType type) {
         return layouts[type];
     }
 
+    /**
+     * @brief Load a 3D Model from to a GLTF2 format file
+     * @param fileName Name of GLTF2 file
+     * @param name [Optional] Specific name to save model
+     * @return Pointer to Model object
+     */
     std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
         File file = files::getFile(fileName);
         std::string modelName = name.empty() ? file.getName(true) : name;
@@ -106,6 +134,12 @@ namespace re {
         return models[std::hash<std::string>()(name)];
     }
 
+    /**
+     * @brief Load Mesh from GLTF2 Mesh
+     * @param model TinyGLTF Model
+     * @param node  TinyGLTF node
+     * @return Pointer to Mesh
+     */
     std::shared_ptr<Mesh> AssetsManager::addMesh(const tinygltf::Model &model, const tinygltf::Node &node) {
         uint32_t meshID = std::hash<std::string>()(node.name);
         const tinygltf::Mesh& mesh = model.meshes[node.mesh];
@@ -120,14 +154,29 @@ namespace re {
         return nullptr;
     }
 
-    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t name) {
-        return meshes[name];
+    /**
+     *
+     * @param id Hashed name of Mesh
+     * @return Pointer to Mesh
+     */
+    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t id) {
+        return meshes[id];
     }
 
+    /**
+     *
+     * @param name Name of Mesh
+     * @return Pointer to Mesh
+     */
     std::shared_ptr<Mesh> AssetsManager::getMesh(const std::string &name) {
         return meshes[std::hash<std::string>()(name)];
     }
 
+    /**
+     * @brief Add Texture form GLTF2 file
+     * @param texture TinyGLTF Texture
+     * @return Pointer to Texture
+     */
     std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture) {
         tinygltf::Image image = model.images[texture.source];
         uint32_t textureID = std::hash<std::string>()(image.name);
@@ -147,27 +196,59 @@ namespace re {
         return textures[textureID] = Texture::loadFromFile(device, image.uri, sampler);
     }
 
+    /**
+     *
+     * @param id Hashed name of Texture
+     * @return Pointer to Texture
+     */
     std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
         return textures[id];
     }
 
+    /**
+     *
+     * @param name Name of Texture
+     * @return Pointer to Texture
+     */
     std::shared_ptr<Texture> AssetsManager::getTexture(const std::string &name) {
         return textures[std::hash<std::string>()(name)];
     }
 
+    /**
+     * @brief Add Material from GLTF2 file
+     * @param gltfModel TinyGLTF Model
+     * @param gltfMaterial TinyGLTF Material
+     * @return Pointer to Material
+     */
     std::shared_ptr<Material> AssetsManager::addMaterial(const tinygltf::Model &gltfModel, const tinygltf::Material &gltfMaterial) {
         return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(gltfModel, gltfMaterial);
     }
 
+    /**
+     *
+     * @param id Hashed name of Material
+     * @return Pointer to Material
+     */
     std::shared_ptr<Material> AssetsManager::getMaterial(uint32_t id) {
         return materials[id];
     }
 
+    /**
+     *
+     * @param name Name of Material
+     * @return Pointer to Material
+     */
     std::shared_ptr<Material> AssetsManager::getMaterial(const std::string &name) {
         return materials[std::hash<std::string>()(name)];
     }
 
     // TODO: Change how to create a Skybox
+    /**
+     * @brief Load Skybox form a .ktx file
+     * @param name Name of file
+     * @param renderPass Valid Vulkan render pass
+     * @return Pointer to Skybox
+     */
     std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
         auto model = loadModel("models/cube.gltf", "Skybox");
         auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);

@@ -21,18 +21,10 @@ namespace re {
         (hashCombine(seed, rest), ...);
     };
 
-    /**
-     * @brief Default throw exception macro
-     */
     inline void throwEx(const std::string& message) {
         throw std::runtime_error(message);
     }
 
-    /**
-     * @brief Default Vulkan result check.
-     *
-     * If result isn't success throw a exception
-     */
      inline void checkResult(VkResult result, const std::string& message) {
          if (result != VK_SUCCESS) throwEx(message);
      }

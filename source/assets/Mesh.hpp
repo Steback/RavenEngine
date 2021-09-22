@@ -20,66 +20,35 @@ namespace re {
     class Buffer;
     class Material;
 
-    /**
-     * @brief Mesh Class
-     */
     class Mesh : NonCopyable {
         friend class Model;
 
     public:
-        /**
-         * @brief Vertex class
-         */
         struct Vertex {
             vec3 position{};
             vec3 normal{};
             vec2 uv0{};
             vec2 uv1{};
 
-            /**
-             *
-             * @return Vector with the Vulkan Vertex Input Binding Description of Vertex
-             */
             static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 
-            /**
-             *
-             * @return Vector with the Vulkan Input Attributes Description of Vertex
-             */
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
             bool operator==(const Vertex &other) const;
         };
 
-        /**
-         * @brief Vertex create Data. Vertices and indices
-         */
         struct Data {
             std::vector<Vertex> vertices;
             std::vector<uint32_t> indices;
         };
 
     public:
-        /**
-         * Default constructor
-         * @param device shared_ptr of Device
-         * @param data Data object
-         * @param material Valid pointer to material. By default is null
-         */
         Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material);
 
         ~Mesh() override;
 
-        /**
-         * @brief Bind mesh
-         * @param commandBuffer Command uboBuffer in recording state
-         */
         void bind(VkCommandBuffer commandBuffer);
 
-        /**
-         * @brief Draw mesh
-         * @param commandBuffer Command uboBuffer in recording state
-         */
         void draw(VkCommandBuffer commandBuffer) const;
 
         [[nodiscard]] uint32_t getVertexCount() const;
@@ -90,12 +59,6 @@ namespace re {
 
         [[nodiscard]] std::shared_ptr<Material> getMaterial() const;
 
-        /**
-         * @brief Load Mesh from GLTF2 file
-         * @param model TinyGLTF Model
-         * @param mesh  TinyGLTF mesh
-         * @return Mesh vertices and Indices
-         */
         static Data loadMesh(const tinygltf::Model& model, const tinygltf::Mesh& mesh);
 
     private:

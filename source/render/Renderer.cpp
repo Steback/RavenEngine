@@ -11,6 +11,11 @@
 
 namespace re {
 
+    /**
+     * @brief Create and setup all necessary render stuff
+     * @param appName Application name
+     * @param config Application config
+     */
     Renderer::Renderer(const std::string& appName, const Config& config) {
         window = std::make_shared<Window>(appName, config.getWidth(), config.getHeight());
 
@@ -43,26 +48,48 @@ namespace re {
         vkDestroyCommandPool(logicalDevice, commandPool, nullptr);
     }
 
+    /**
+     * @brief Check if window is open
+     */
     bool Renderer::isWindowOpen() const {
         return window->isOpen();
     }
 
+    /**
+     *
+     * @return Raw vulkan SwapChain render pass
+     */
     VkRenderPass Renderer::getRenderPass() const {
         return swapChain->getRenderPass();
     }
 
+    /**
+     * @brief Check if current frame is in progress
+     */
     bool Renderer::isFrameInProgress() const {
         return isFrameStarted;
     }
 
+    /**
+     *
+     * @return Current command buffer used to record frame data
+     */
     VkCommandBuffer Renderer::getCommandBuffer() const {
         return commandBuffers[currentFrameIndex];
     }
 
+    /**
+     *
+     * @return Current frame index
+     */
     int Renderer::getFrameIndex() const {
         return currentFrameIndex;
     }
 
+    /**
+     * @brief Acquire image and begin frame
+     * @return Current command buffer used to record frame data
+     */
     VkCommandBuffer Renderer::beginFrame() {
         auto result = swapChain->acquireNextImage(imageIndex);
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -84,6 +111,9 @@ namespace re {
         return commandBuffer;
     }
 
+    /**
+     * @brief End frame and submit command buffer
+     */
     void Renderer::endFrame() {
         auto commandBuffer = getCommandBuffer();
 
@@ -102,6 +132,10 @@ namespace re {
         currentFrameIndex = (currentFrameIndex + 1) % SwapChain::MAX_FRAMES_IN_FLIGHT;
     }
 
+    /**
+     * @brief Begin render pass, set viewport and clear values
+     * @param commandBuffer Current command buffer used to record frame data
+     */
     void Renderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
         VkRenderPassBeginInfo renderPassInfo{VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
         renderPassInfo.renderPass = swapChain->getRenderPass();
@@ -130,30 +164,56 @@ namespace re {
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
     }
 
+    /**
+     * @brief End render pass
+     * @param commandBuffer Current command buffer used to record frame data
+     */
     void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) const {
         vkCmdEndRenderPass(commandBuffer);
     }
 
+    /**
+     * @brief Wait until all commands will be submitted
+     */
     void Renderer::waitDeviceIde() {
         vkDeviceWaitIdle(logicalDevice);
     }
 
+    /**
+     *
+     * @return Pointer to Device
+     */
     std::shared_ptr<Device> Renderer::getDevice() const {
         return device;
     }
 
+    /**
+     *
+     * @return Current windows aspect ratio
+     */
     float Renderer::getAspectRatio() const {
         return swapChain->getExtentAspectRatio();
     }
 
+    /**
+     * @brief Begin ImGui frame
+     */
     void Renderer::newImGuiFrame() {
         imgui->newFrame();
     }
 
+    /**
+     *
+     * @param commandBuffer Current command buffer used to record frame data
+     */
     void Renderer::renderImGui(VkCommandBuffer commandBuffer) {
         imgui->render(commandBuffer);
     }
 
+    /**
+     *
+     * @return Get SwapChain images count
+     */
     uint32_t Renderer::getImageCount() const {
         return swapChain->getImageCount();
     }

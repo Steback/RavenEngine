@@ -5,6 +5,11 @@
 
 namespace re {
 
+    /**
+     * @brief Construct Material from a GLTF2 file
+     * @param model TinyGLTF model
+     * @param material TinyGLTF material
+     */
     Material::Material(const tinygltf::Model& model, const tinygltf::Material& material) {
         if (material.values.find("baseColorTexture") != material.values.end()) {
             textures[TextureType::BASE] = AssetsManager::getInstance()->addTexture(model, model.textures[material.pbrMetallicRoughness.baseColorTexture.index]);

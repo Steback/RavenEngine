@@ -28,6 +28,10 @@ namespace std {
 
 namespace re {
 
+    /**
+     *
+     * @return Matrix4 of Node local space.
+     */
     Matrix4 Model::Node::getLocalMatrix() const {
         Matrix3 rotationMatrix = rotation.unit().getRotationMatrix();
 
@@ -39,6 +43,11 @@ namespace re {
             ) * matrix;
     }
 
+    /**
+     * @brief Construct Model from GLTF2 file
+     * @param name Model name
+     * @param model TinyGLTF model
+     */
     Model::Model(std::string name, const tinygltf::Model &model) : name(std::move(name)) {
         const tinygltf::Scene& scene = model.scenes[0];
 
@@ -52,6 +61,10 @@ namespace re {
 
     Model::~Model() = default;
 
+    /**
+     * @brief Calculate a Node matrix in Local Space with the parent matrix
+     * @param index Node index
+     */
     Matrix4 Model::getNodeMatrix(size_t index) const {
         const Node& node = nodes[index];
         Matrix4 nodeMatrix = node.getLocalMatrix();
@@ -66,6 +79,12 @@ namespace re {
         return nodeMatrix;
     }
 
+    /**
+     * @brief Prepare and use all necessary stuff to render Model
+     * @param commandBuffer Valid Command Buffer in recording state
+     * @param layout Valid Vulkan pipeline layout to send data to Shader
+     * @param ubo Model Ubo(Uniform Buffer Object) to save all Node data
+     */
     void Model::render(VkCommandBuffer commandBuffer, VkPipelineLayout layout, Ubo& ubo) {
         for (auto& node : nodes) {
             if (node.mesh) {
@@ -92,6 +111,11 @@ namespace re {
         }
     }
 
+    /**
+     *
+     * @param index Node index
+     * @return Reference of Node
+     */
     Model::Node &Model::getNode(uint32_t index) {
         return nodes[index];
     }

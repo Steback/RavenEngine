@@ -22,14 +22,8 @@ namespace re {
         public:
             static CliOptions* getInstance();
 
-            /**
-             * @brief Add flag to CLI
-             */
             void addFlag(const std::string &name, const std::string& desc, const std::string& flagName = "");
 
-            /**
-             * @brief Check if flag was added to program
-             */
             bool getFlag(const std::string& name);
 
         private:
@@ -38,16 +32,10 @@ namespace re {
             std::unordered_map<std::string, bool> flags;
         };
 
-        /**
-         * @brief Add flag to CLI
-         */
         inline void addFlag(const std::string &name, const std::string& desc, const std::string& flagName = "") {
             CliOptions::getInstance()->addFlag(name, desc, flagName);
         }
 
-        /**
-         * @brief Check if flag was added to program
-         */
         inline bool getFlag(const std::string& name) {
             return CliOptions::getInstance()->getFlag(name);
         }

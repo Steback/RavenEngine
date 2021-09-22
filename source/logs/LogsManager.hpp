@@ -13,9 +13,6 @@ namespace re {
     class Base;
 
     namespace logs {
-        /**
-         * @brief Static class with all log functionalities, using spdlog.
-         */
         class LogsManager {
             friend re::Base;
 
@@ -26,17 +23,8 @@ namespace re {
 
             static LogsManager* getInstance();
 
-            /**
-             * @brief Creates a new file in the logs folder
-             * @param name File name
-             */
             void addFile(const char* name);
 
-            /**
-             *
-             * @param name File name
-             * @return shared pointer with the spdlog log file
-             */
             std::shared_ptr<spdlog::logger> getFile(const char* name);
 
         private:

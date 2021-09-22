@@ -10,6 +10,11 @@
 
 namespace re {
 
+    /**
+     *
+     * @param device Pointer to Device
+     * @param windowExtent Valid windows extent
+     */
     SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent)
             : device(device), windowExtent(windowExtent) {
         logicalDevice = device->getDevice();
@@ -26,6 +31,12 @@ namespace re {
         init();
     }
 
+    /**
+     *
+     * @param device Pointer to Device
+     * @param windowExtent Valid windows extent
+     * @param oldSwapChain Old SwapChain to use when SwapChain is recreated
+     */
     SwapChain::SwapChain(const std::shared_ptr<Device>& device, VkExtent2D windowExtent, std::shared_ptr<SwapChain>  oldSwapChain)
             : device(device), windowExtent(windowExtent), oldSwapChain(std::move(oldSwapChain)) {
         logicalDevice = device->getDevice();
@@ -63,34 +74,69 @@ namespace re {
         }
     }
 
+    /**
+     *
+     * @param index Current image index
+     * @return Current framebuffer
+     */
     VkFramebuffer SwapChain::getFrameBuffer(uint32_t index) const {
         return framebuffers[index];
     }
 
+    /**
+     *
+     * @return Raw vulkan render pass
+     */
     VkRenderPass SwapChain::getRenderPass() const {
         return renderPass;
     }
 
+    /**
+     *
+     * @param index Current image index
+     * @return Current image view
+     */
     VkImageView SwapChain::getImageView(uint32_t index) const {
         return images[index]->view;
     }
 
+    /**
+     *
+     * @return SwanChain images count
+     */
     size_t SwapChain::getImageCount() const {
         return images.size();
     }
 
+    /**
+     *
+     * @return SwapChain format
+     */
     VkFormat SwapChain::getFormat() const {
         return format;
     }
 
+    /**
+     *
+     * @return SwapChain extent
+     */
     VkExtent2D SwapChain::getExtent() const {
         return extent;
     }
 
+    /**
+     *
+     * @return Aspect ratio of current extent
+     */
     float SwapChain::getExtentAspectRatio() const {
         return static_cast<float>(extent.width) / static_cast<float>(extent.height);
     }
 
+    /**
+     * @brief Acquire nex image to begin frame render
+     * @param imageIndex Reference to image index to set the current index
+     * @return Vulkan result with success value or error code if failed
+     */
     VkResult SwapChain::acquireNextImage(uint32_t &imageIndex) {
         vkWaitForFences(logicalDevice, 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 
@@ -104,6 +150,12 @@ namespace re {
         );
     }
 
+    /**
+     * @brief Submit command buffers to draw frame to present queue
+     * @param commandBuffer Valid command buffer
+     * @param imageIndex Current image index
+     * @return Vulkan result with success value or error code if failed
+     */
     VkResult SwapChain::submitCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
         if (imagesInFlight[imageIndex] != VK_NULL_HANDLE)
             vkWaitForFences(logicalDevice, 1, &imagesInFlight[imageIndex], VK_TRUE, std::numeric_limits<uint64_t>::max());
@@ -142,10 +194,20 @@ namespace re {
         return result;
     }
 
+    /**
+     * @brief Compare format of two SwapChain in case change format in recreating SwapChain
+     * @param other SwapChain instance
+     */
     bool SwapChain::compareFormats(const SwapChain &other) const {
         return other.depthFormat == depthFormat && other.format == format;
     }
 
+    /**
+     *
+     * @param device Raw vulkan physical device
+     * @param surface Valid SwapChain surface
+     * @return SwapChain SupportDetails with all supported data
+     */
     SwapChain::SupportDetails SwapChain::querySurfaceSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
         SupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);

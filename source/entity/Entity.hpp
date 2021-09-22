@@ -11,51 +11,20 @@
 
 namespace re {
 
-    /**
-     * @brief Entity class
-     */
     class Entity : NonCopyable {
     public:
-        /**
-         *
-         * @param name Entity name
-         * @param id Valid entity id
-         * @param scene Pointer to scene that owns the entity
-         */
         Entity(std::string  name, id_t id, Scene* scene);
 
-        /**
-         * @brief Construct Entity from JSON
-         * @param entity json Object
-         * @param id Valid entity id
-         * @param scene
-         */
         Entity(json& entity, id_t id, Scene* scene);
 
         ~Entity() override;
 
-        /**
-         * @brief Add a new Component to Entity
-         * @tparam T Component type
-         * @tparam Args Constructor args types of Component
-         * @param args Constructor args of Component
-         * @return Reference of Component
-         */
         template<typename T, typename ...Args>
         T& addComponent(Args&& ...args);
 
-        /**
-         *
-         * @tparam T Component type
-         * @return Reference of Component
-         */
         template<typename T>
         T& getComponent();
 
-        /**
-         *
-         * @tparam T Component type
-         */
         template<typename T>
         bool hasComponent();
 
@@ -65,16 +34,8 @@ namespace re {
 
         void setName(const std::string &name_);
 
-        /**
-         * @brief Serialize Entity to JSON
-         * @param data
-         */
         json serialize();
 
-        /**
-         * @brief Serialize Entity from JSON
-         * @param entity json object
-         */
         void serialize(json& entity);
 
     private:

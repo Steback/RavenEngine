@@ -1,10 +1,10 @@
 #include "GraphicsPipeline.hpp"
 
-#include "files/FilesManager.hpp"
 #include "assets/Mesh.hpp"
 #include "utils/Utils.hpp"
 
 
+// TODO: Refactored Graphics pipeline class and add Doxygen comments
 namespace re  {
 
     GraphicsPipeline::GraphicsPipeline() = default;

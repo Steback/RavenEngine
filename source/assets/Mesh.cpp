@@ -29,6 +29,12 @@ namespace re {
         return position == other.position && normal == other.normal && uv0 == other.uv0 && uv1 == other.uv1;
     }
 
+    /**
+     *
+     * @param device Pointer to Device
+     * @param data Mesh Data(Vertices and Indices)
+     * @param material Valid pointer to material
+     */
     Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material)
             : device(std::move(device)), material(std::move(material)) {
         createVertexBuffer(data.vertices);
@@ -37,6 +43,10 @@ namespace re {
 
     Mesh::~Mesh() = default;
 
+    /**
+     * @brief Prepare Mesh to be used in Draw
+     * @param commandBuffer Valid Command buffer in recording state
+     */
     void Mesh::bind(VkCommandBuffer commandBuffer) {
         VkBuffer buffers[] = { vertexBuffer->getBuffer() };
         VkDeviceSize offsets[] = { 0 };
@@ -47,6 +57,10 @@ namespace re {
         }
     }
 
+    /**
+     * @brief Draw Mesh
+     * @param commandBuffer Valid Command buffer in recording state
+     */
     void Mesh::draw(VkCommandBuffer commandBuffer) const {
         if (hasIndexBuffer) {
             vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
@@ -55,23 +69,44 @@ namespace re {
         }
     }
 
+    /**
+     *
+     * @return Current Vertex count of Mesh
+     */
     uint32_t Mesh::getVertexCount() const {
         return vertexCount;
     }
 
+    /**
+     *
+     * @return Current Index count of Mesh. If mesh have no indices the value will be 0.
+     */
     uint32_t Mesh::getIndexCount() const {
         return indexCount;
     }
 
+    /**
+     * @brief Check if Mesh have Index buffer
+     */
     bool Mesh::isHasIndexBuffer() const {
         return hasIndexBuffer;
     }
 
+    /**
+     * @brief Get current material used by Mesh
+     * @return Pointer to Material
+     */
     std::shared_ptr<Material> Mesh::getMaterial() const {
         return material;
     }
 
     // TODO: Disable some GLTF vertex attributes(Not used for now)
+    /**
+     * @brief Load Mesh Data from GLTF2 file
+     * @param model TinyGLTF Model
+     * @param mesh TinyGLTF Mesh
+     * @return Mesh Data(Vertices and Indices)
+     */
     Mesh::Data Mesh::loadMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh) {
         std::vector<Mesh::Vertex> vertices;
         std::vector<uint32_t> indices;

@@ -60,6 +60,11 @@ void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create
 
 namespace re {
 
+    /**
+     * @brief Create Vulkan Instance and set Debug utils if required
+     * @param appName Application name
+     * @param layers Required validation layers
+     */
     Instance::Instance(const char* appName, const std::vector<const char*>& layers) {
 #ifdef RE_DEBUG
         if (!checkLayersSupport(layers)) throwEx("Validation layers requested, but not available!");
@@ -101,6 +106,10 @@ namespace re {
         vkDestroyInstance(instance, nullptr);
     }
 
+    /**
+     * @brief Find a GPU with vulkan support
+     * @param extensions Required Physical device extensions
+     */
     VkPhysicalDevice Instance::pickPhysicalDevice(const std::vector<const char *> &extensions) {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -117,6 +126,11 @@ namespace re {
         return VK_NULL_HANDLE;
     }
 
+    /**
+     * @brief Check if physical device support extensions
+     * @param device Vulkan physical device
+     * @param extensions Required physical device extensions
+     */
     bool Instance::checkExtensionsSupport(VkPhysicalDevice device, const std::vector<const char *> &extensions) {
         uint32_t extensionsCount = 0;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionsCount, nullptr);
@@ -131,6 +145,10 @@ namespace re {
         });
     }
 
+    /**
+     *
+     * @return Raw vulkan instance
+     */
     VkInstance Instance::getInstance() const {
         return instance;
     }

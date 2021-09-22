@@ -2,13 +2,11 @@
 
 #include "stb_image.h"
 #include "ktx.h"
-#include "ktxvulkan.h"
 
 #include "utils/Utils.hpp"
 #include "render/Device.hpp"
 #include "render/buffers/Buffer.hpp"
 #include "files/FilesManager.hpp"
-#include "files/File.hpp"
 
 
 namespace re {
@@ -45,11 +43,25 @@ namespace re {
         return VK_FILTER_LINEAR;
     }
 
+    /**
+     * @brief Construct Texture. Just create the Vulkan Image and allocate memory. Not create Image View and Sampler
+     * @param device Pointer to Device
+     * @param createInfo Vulkan Image Create Info
+     * @param usage VMA(Vulkan Memory Allocator) memory usage
+     */
     Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage)
             : Image(device->getDevice(), device->getAllocator(), createInfo, usage) {
 
     }
 
+    /**
+     * @brief Construct Texture. Create Image, Image View, allocate memory and create Sampler.
+     * @param device Pointer to Device
+     * @param createInfo Vulkan Image Create Info
+     * @param usage VMA(Vulkan Memory Allocator) memory usage
+     * @param aspectFlagBits Vulkan Image View aspect flags
+     * @param sampler Texture Sampler data
+     */
     Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage, VkImageAspectFlagBits aspectFlagBits, const Sampler& sampler)
             : Image(device->getDevice(), device->getAllocator(), createInfo, usage, aspectFlagBits) {
         createSampler(sampler);
@@ -59,6 +71,10 @@ namespace re {
         vkDestroySampler(device, sampler, nullptr);
     }
 
+    /**
+     * @brief Generate Texture mipmap levels
+     * @param device_ Pointer to Device
+     */
     void Texture::generateMipmaps(const std::shared_ptr<Device> &device_) {
         // Check if image format supports linear blitting
         VkFormatProperties formatProperties;
@@ -145,6 +161,10 @@ namespace re {
         device_->endSingleTimeCommands(commandBuffer);
     }
 
+    /**
+     *
+     * @param textureSampler Texture Sampler data
+     */
     void Texture::createSampler(const Sampler& textureSampler) {
         VkSamplerCreateInfo samplerInfo{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
         samplerInfo.magFilter = textureSampler.magFilter;
@@ -166,15 +186,22 @@ namespace re {
         vkCreateSampler(device, &samplerInfo, nullptr, &sampler);
     }
 
+    // TODO: Remove this and texture descriptor form Texture class
     void Texture::updateDescriptor() {
         descriptor.sampler = sampler;
         descriptor.imageView = view;
         descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
+    /**
+     * @brief Load Texture form image file
+     * @param device Pointer to Device
+     * @param fileName Image file name
+     * @param sampler Texture Sampler data
+     * @return Pointer to Texture
+     */
     std::unique_ptr<Texture> Texture::loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler) {
         int channels, imageWidth, imageHeight;
-        // TODO: Change this access path
         stbi_uc* pixels = stbi_load(files::getFile("textures/" + fileName).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
 
         if (!pixels) throwEx("Failed to load image file: " + fileName);
@@ -214,6 +241,12 @@ namespace re {
         return texture;
     }
 
+    /**
+     * @brief Load Texture cube map form .ktx file
+     * @param device Pointer to Device
+     * @param fileName File name
+     * @return Pointer to Texture
+     */
     std::unique_ptr<Texture> Texture::loadCubeMap(const std::shared_ptr<Device> &device, const std::string &fileName) {
         ktxTexture* ktxTexture;
         ktxResult result = ktxTexture_CreateFromNamedFile(files::getFile(fileName).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);

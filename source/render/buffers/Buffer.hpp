@@ -11,50 +11,21 @@
 
 namespace re {
 
-    /**
-     * @brief Buffer class
-     */
     class Buffer {
     public:
-        /**
-         * @brief Default constructor
-         * @param allocator Vulkan Memory Allocator
-         * @param size Buffer size
-         * @param usageFlags Vulkan uboBuffer usage flags
-         * @param memoryUsage Vulkan Memory Allocator memory usage
-         */
         Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage);
 
         ~Buffer();
 
-        /**
-         * @brief Map uboBuffer using Vulkan Memory Allocator
-         */
         void map();
 
-        /**
-         * @brief Copy data to mapped pointer
-         * @tparam T Data type
-         * @param data Raw pointer of data
-         */
         template<typename T>
         void copyTo(T* data) const;
 
-        /**
-         * @brief Unmap uboBuffer
-         */
         void unmap();
 
-        /**
-         *
-         * @return Raw vulkan uboBuffer
-         */
         [[nodiscard]] const VkBuffer& getBuffer() const;
 
-        /**
-         *
-         * @return Vulkan uboBuffer size
-         */
         [[nodiscard]] VkDeviceSize getSize() const;
 
         VkDescriptorBufferInfo getDescriptor();

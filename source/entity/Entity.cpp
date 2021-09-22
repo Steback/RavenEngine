@@ -9,28 +9,56 @@
 
 namespace re {
 
+    /**
+     *
+     * @param name Entity name
+     * @param id Valid EnTT id
+     * @param scene Valid pointer to Scene
+     */
     Entity::Entity(std::string name, id_t id, Scene *scene) : name(std::move(name)), id(id), scene(scene) {
 
     }
 
+    /**
+     *
+     * @param entity Entity serialized data in JSON
+     * @param id Valid EnTT id
+     * @param scene Valid pointer to Scene
+     */
     Entity::Entity(json &entity, id_t id, Scene *scene) : scene(scene), id(id) {
         serialize(entity);
     }
 
     Entity::~Entity() = default;
 
+    /**
+     *
+     * @return EnTT id
+     */
     id_t Entity::getId() const {
         return id;
     }
 
+    /**
+     *
+     * @return Entity name
+     */
     const std::string &Entity::getName() const {
         return name;
     }
 
+    /**
+     *
+     * @param name_ New name to set to Entity
+     */
     void Entity::setName(const std::string &name_) {
         Entity::name = name_;
     }
 
+    /**
+     *
+     * @return JSON object with Entity serialized data
+     */
     json Entity::serialize() {
         json entity = {};
         entity["name"] = name;
@@ -54,6 +82,10 @@ namespace re {
         return entity;
     }
 
+    /**
+     *
+     * @param entity JSON Serialized data to set Entity
+     */
     void Entity::serialize(json &entity) {
         name = entity["name"];
 

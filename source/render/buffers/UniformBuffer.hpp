@@ -7,18 +7,9 @@
 
 namespace re {
 
-    /**
-     * @brief Uniform Buffer Object class wrappers
-     */
+    // TODO: Add Doxygen comments
     class UniformBuffer : public Buffer {
     public:
-        /**
-         * @brief Default constructor
-         * @param allocator Vulkan Memory Allocator
-         * @param size Buffer size
-         * @param usageFlags Vulkan uboBuffer usage flags
-         * @param memoryUsage Vulkan Memory Allocator memory usage
-         */
         UniformBuffer(VmaAllocator allocator, VkDeviceSize size, VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         ~UniformBuffer();

@@ -26,21 +26,12 @@ namespace re {
 
         ~GraphicsPipeline() override;
 
-        /**
-         * Bind Pipeline to be used in render
-         * @param commandBuffer Vulkan Command uboBuffer in recording state
-         */
         void bind(VkCommandBuffer const &commandBuffer) const override;
 
         [[nodiscard]] VkPipeline const &getPipeline() const override;
 
         [[nodiscard]] VkPipelineLayout const &getLayout() const override;
 
-        /**
-         * @brief Setup the necessary configuration for create a Graphics Pipeline
-         * @param configInfo ConfigInfo object to save the configuration
-         * @param renderPass Valid Render Pass
-         */
         static void defaultConfigInfo(ConfigInfo& configInfo, VkRenderPass renderPass);
 
     private:

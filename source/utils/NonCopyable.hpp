@@ -4,9 +4,6 @@
 
 namespace re {
 
-    /**
-     * @brief Pure virtual class with default constructors for not allow copy operations
-     */
     class NonCopyable {
     protected:
         NonCopyable() = default;

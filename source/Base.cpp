@@ -7,6 +7,7 @@
 
 namespace re {
 
+    // TODO: Refactored Base class and add Doxygen comments
     Base::Base(const std::string& appName, CLI::App& app) {
         cli::CliOptions::singleton = new cli::CliOptions(app);
         cli::addFlag("compile-shaders", "Compile shaders at moment to create shader module");

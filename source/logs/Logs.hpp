@@ -10,9 +10,6 @@
 
 namespace re::logs {
 
-    /**
-     * @brief Send a message to default error file
-     */
     inline void error(const std::string& message) {
 #ifdef RE_DEBUG
         spdlog::error(message);

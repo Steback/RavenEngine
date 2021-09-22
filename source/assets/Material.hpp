@@ -16,9 +16,6 @@ namespace re {
     class Texture;
     class AssetsManager;
 
-    /**
-     * @brief Material wrapper class
-     */
     class Material {
         friend AssetsManager;
 

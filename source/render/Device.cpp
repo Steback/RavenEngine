@@ -8,6 +8,13 @@
 
 namespace re {
 
+    /**
+     * @brief Create Device and setup Queue Family Indices
+     * @param instance Valid pointer to Instance
+     * @param extensions Required extensions
+     * @param features Required features
+     * @param surface [Optional] Valid SwapChain surface
+     */
     Device::Device(const std::shared_ptr<Instance>& instance, const std::vector<const char*>& extensions, VkPhysicalDeviceFeatures features,
                    VkSurfaceKHR surface) : instance(instance), surface(surface) {
         physicalDevice = instance->pickPhysicalDevice(extensions);
@@ -48,6 +55,12 @@ namespace re {
         vkDestroyDevice(device, nullptr);
     }
 
+    /**
+     *
+     * @param queue Queue type flag
+     * @param surface_ [Optional] SwapChain Surface to present queue
+     * @return Queue family index
+     */
     uint32_t Device::getQueueFamilyIndex(VkQueueFlagBits queue, VkSurfaceKHR surface_) {
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
@@ -86,6 +99,13 @@ namespace re {
         return 0;
     }
 
+    /**
+     *
+     * @param candidates Formats supported by GPU
+     * @param tiling Required image tiling
+     * @param features Required format features
+     * @return Format if exists otherwise throw exception
+     */
     VkFormat Device::findSupportFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
                                        VkFormatFeatureFlags features) {
         for (VkFormat format : candidates) {
@@ -103,6 +123,12 @@ namespace re {
         return VK_FORMAT_R8G8B8A8_SNORM;
     }
 
+    /**
+     *
+     * @param commandPool Reference of Command pool to create
+     * @param index [Optinal] Queue Family index to create Command Pool
+     * @param flags [Optinal] Command pool create flags. By default are Reset command pool and transfer
+     */
     void Device::createCommandPool(VkCommandPool &commandPool, uint32_t index, uint32_t flags) {
         VkCommandPoolCreateInfo createInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
         createInfo.flags = flags;
@@ -119,6 +145,11 @@ namespace re {
         }
     }
 
+    /**
+     * @brief Create a Command buffer with one time submit flag and begin recording
+     * @param commandPool [Optional] Command pool to create command buffer
+     * @return Command buffer in recording state
+     */
     VkCommandBuffer Device::beginSingleTimeCommands(VkCommandPool commandPool) {
         VkCommandBufferAllocateInfo allocateInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
         allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -135,6 +166,12 @@ namespace re {
         return commandBuffer;
     }
 
+    /**
+     * @brief End-destroy command buffer and submit commands
+     * @param commandBuffer One time submit command buffer
+     * @param queue_ [Optional] Queue to submit commands
+     * @param commandPool [Optional] Command pool used to create command buffer
+     */
     void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue queue_, VkCommandPool commandPool) {
         VkQueue queue = queue_ ? queue_ : queues[queueFamilyIndices.graphics];
 
@@ -150,6 +187,12 @@ namespace re {
         vkFreeCommandBuffers(device, (commandPool ? commandPool : commandPools[queueFamilyIndices.graphics]), 1, &commandBuffer);
     }
 
+    /**
+     * @brief Copy buffer data to other buffer
+     * @param src Source buffer
+     * @param dst Destination buffer
+     * @param size Valid buffer size(both buffers should have same size)
+     */
     void Device::copyBuffer(Buffer &src, Buffer &dst, VkDeviceSize size) {
         VkQueue queue = getQueue(static_cast<int32_t>(queueFamilyIndices.transfer));
         VkCommandPool commandPool = getCommandPool(static_cast<int32_t>(queueFamilyIndices.transfer));
@@ -164,6 +207,11 @@ namespace re {
         endSingleTimeCommands(commandBuffer, queue, commandPool);
     }
 
+    /**
+     * @brief Copy buffer data to Image
+     * @param src
+     * @param dst
+     */
     void Device::copyBufferToImage(Buffer& src, Image& dst) {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -182,6 +230,7 @@ namespace re {
         endSingleTimeCommands(commandBuffer);
     }
 
+    // TODO: Should this method will removed?
     void Device::transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -228,34 +277,68 @@ namespace re {
         endSingleTimeCommands(commandBuffer);
     }
 
+    /**
+     *
+     * @return Vulkan raw Device
+     */
     VkDevice Device::getDevice() const {
         return device;
     }
 
+    /**
+     *
+     * @return Vulkan raw Physical Device
+     */
     VkPhysicalDevice Device::getPhysicalDevice() const {
         return physicalDevice;
     }
 
+    /**
+     *
+     * @return Current queue family indices(graphics-present-compute-transfer)
+     */
     Device::QueueFamilyIndices Device::getQueueFamilyIndices() const {
         return queueFamilyIndices;
     }
 
+    /**
+     *
+     * @return Raw VMA allocator
+     */
     VmaAllocator Device::getAllocator() const {
         return allocator;
     }
 
+    /**
+     *
+     * @return Pointer to Instance
+     */
     std::shared_ptr<Instance> Device::getInstance() const {
         return instance;
     }
 
+    /**
+     *
+     * @return SwapChain surface
+     */
     VkSurfaceKHR Device::getSurface() const {
         return surface;
     }
 
+    /**
+     *
+     * @param index [Optional] Specific queue family index
+     * @return Raw Vulkan Queue
+     */
     VkQueue Device::getQueue(int32_t index) {
         return queues[index > -1 ? index : queueFamilyIndices.graphics];
     }
 
+    /**
+     *
+     * @param index [Optional] Specific queue family index
+     * @return Raw vulkan command pool
+     */
     VkCommandPool Device::getCommandPool(int32_t index) {
         return commandPools[index > -1 ? index : queueFamilyIndices.graphics];
     }

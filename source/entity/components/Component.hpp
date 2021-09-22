@@ -9,29 +9,16 @@ namespace re {
 
     class Entity;
 
-    /**
-     * @brief Base Component class
-     * Any Component that be used in an Entity need to inherit this class
-     */
+    // TODO: Implement Constructor form serialized
     class Component {
         friend Entity;
 
     public:
-        /**
-         * @brief Serialize component to JSON
-         */
-        virtual json serialize() = 0;
+        virtual json serialize();
 
-        /**
-         * @brief Serialize component from JSON
-         */
-        virtual void serialize(json& component) = 0;
+        virtual void serialize(json& component);
 
     protected:
-        /**
-         *
-         * @param owner Pointer to entity owner of component
-         */
         explicit Component(Entity* owner);
 
     protected:

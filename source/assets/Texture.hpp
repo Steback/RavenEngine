@@ -13,10 +13,6 @@ namespace re {
 
     class Device;
 
-    /**
-     * @brief Texture wrapper class.\n
-     * Inheritance of Image class
-     */
     class Texture : public Image {
         friend class AssetsManager;
 
@@ -46,9 +42,6 @@ namespace re {
 
         void createSampler(const Sampler& sampler);
 
-        /**
-         * @brief Load Texture from image file
-         */
         static std::unique_ptr<Texture> loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler);
 
         static std::unique_ptr<Texture> loadCubeMap(const std::shared_ptr<Device>& device, const std::string& fileName);

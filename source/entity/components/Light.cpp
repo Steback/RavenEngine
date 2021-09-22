@@ -3,16 +3,32 @@
 
 namespace re {
 
+    /**
+     *
+     * @param color Light color (RGB)
+     * @param ambient Ambient intensity
+     */
     Light::Light(const vec3& color, float ambient)
             : Component(nullptr), color(color), ambient(ambient) {
 
     }
 
+    /**
+     *
+     * @param color Light color (RGB)
+     * @param ambient Ambient intensity
+     * @param owner Valid pointer to Entity
+     */
     Light::Light(const vec3 &color, float ambient, Entity *owner)
             : Component(owner), color(color), ambient(ambient) {
 
     }
 
+    /**
+     *
+     * @param component Component data serialized in JSON
+     * @param owner Valid pointer to Entity
+     */
     Light::Light(json &component, Entity *owner) : Component(owner) {
         serialize(component);
     }

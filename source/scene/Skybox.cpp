@@ -10,6 +10,7 @@
 
 namespace re {
 
+    // TODO: Refactored Skybox class and Add doxygen comments
     Skybox::Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass) : device(std::move(device))  {
         uint32_t skyboxHash = std::hash<std::string>()("Skybox");
         mesh = AssetsManager::getInstance()->getModel(skyboxHash)->getNode(0).mesh;

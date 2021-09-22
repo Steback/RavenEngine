@@ -5,12 +5,13 @@
 #include "render/Window.hpp"
 #include "render/SwapChain.hpp"
 #include "files/FilesManager.hpp"
-#include "files/File.hpp"
 #include "utils/Utils.hpp"
 
 
 namespace re::ui {
 
+    // TODO: Change ImGui implementation to use Vulkan Memory Allocator
+    // TODO: Refactored ImGui class and add Doxygen commers
     ImGuiRender::ImGuiRender(const std::shared_ptr<Device> &device, const SwapChain &swapChain, const std::shared_ptr<Window> &window) {
         logicalDevice = device->getDevice();
 

@@ -21,53 +21,23 @@ namespace re {
     class AssetsManager;
     class Skybox;
 
-    /**
-     * @brief Scene class
-     */
     class Scene : NonCopyable {
         friend Entity;
         friend class RenderSystem;
 
     public:
-        /**
-         *
-         * @param fileName Scene file name
-         * @param assetsManager Valid pointer to AssetsManager
-         */
         Scene(std::string fileName);
 
         ~Scene() override;
 
-        /**
-         * @brief Add a new Entity to the scene
-         * @param name Entity name
-         * @return Pointer to Entity
-         */
         std::shared_ptr<Entity> addEntity(const std::string& name);
 
-        /**
-         * Add entry from JSON
-         * @param entity json object
-         * @return
-         */
         std::shared_ptr<Entity> addEntity(json& entity);
 
-        /**
-         * @brief Load scene from a JSON file
-         */
         void load();
 
-        /**
-         * @brief Save scene to a JSON file
-         * @param fileName
-         */
         void save();
 
-        /**
-         * @brief Update some entities components.
-         *
-         * Just Camera component so far
-         */
         void update();
 
         entt::registry& getRegistry();

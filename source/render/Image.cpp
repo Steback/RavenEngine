@@ -7,6 +7,13 @@ namespace re {
 
     Image::Image() = default;
 
+    /**
+     * @brief Create Image and allocate its memory. Not create Image view.
+     * @param device Raw Vulkan device
+     * @param allocator Raw VMA allocator
+     * @param imageInfo Vulkan Image create info
+     * @param usage VMA memory usage
+     */
     Image::Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage)
             : device(device), allocator(allocator) {
         format = imageInfo.format;
@@ -15,6 +22,14 @@ namespace re {
         createImage(imageInfo, usage);
     }
 
+    /**
+     * @brief Create image, image view and allocate memory
+     * @param device Raw Vulkan device
+     * @param allocator Raw VMA allocator
+     * @param imageInfo Vulkan Image create info
+     * @param usage VMA memory usage
+     * @param aspectFlags Image view aspect flags
+     */
     Image::Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage, VkImageAspectFlags aspectFlags)
             : device(device), allocator(allocator) {
         format = imageInfo.format;
@@ -29,6 +44,12 @@ namespace re {
         if (!swapChainImages) vmaDestroyImage(allocator, image, allocation);
     }
 
+    /**
+     * @brief Create image view
+     * @param aspectFlags Image view aspect flags
+     * @param type [Optinal] Image view type. By default is 2D.
+     * @param layerCount [Optional] Image layer count. By default is 1
+     */
     void Image::createView(VkImageAspectFlags aspectFlags, VkImageViewType type, uint32_t layerCount) {
         VkImageViewCreateInfo viewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
         viewInfo.image = image;
@@ -41,6 +62,15 @@ namespace re {
                     "Failed to create Image View");
     }
 
+    /**
+     * @brief Set Image layout
+     * @param cmdBuffer Valid command buffer in recording state
+     * @param oldImageLayout Old layout
+     * @param newImageLayout New layout
+     * @param subresourceRange Sub resource range
+     * @param srcStageMask [Optional] Pipeline source stage
+     * @param dstStageMask [Optional] Pipeline destination stage
+     */
     void Image::setLayout(VkCommandBuffer cmdBuffer, VkImageLayout oldImageLayout, VkImageLayout newImageLayout, VkImageSubresourceRange subresourceRange,
                           VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask) {
         // Create an image barrier object
@@ -154,6 +184,16 @@ namespace re {
                 1, &imageMemoryBarrier);
     }
 
+    /**
+     * @brief Set Image layout with default sub resource range
+     * @param cmdBuffer Valid command buffer in recording state
+     * @param oldImageLayout Old layout
+     * @param aspectMask Sub resource range aspect
+     * @param newImageLayout New layout
+     * @param subresourceRange Sub resource range
+     * @param srcStageMask [Optional] Pipeline source stage
+     * @param dstStageMask [Optional] Pipeline destination stage
+     */
     void Image::setLayout(VkCommandBuffer cmdBuffer, VkImageAspectFlags aspectMask, VkImageLayout oldImageLayout, VkImageLayout newImageLayout,
                           VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask) {
         VkImageSubresourceRange subresourceRange{};
@@ -164,22 +204,42 @@ namespace re {
         setLayout(cmdBuffer, oldImageLayout, newImageLayout, subresourceRange, srcStageMask, dstStageMask);
     }
 
+    /**
+     *
+     * @return Raw Vulkan image
+     */
     VkImage Image::getImage() const {
         return image;
     }
 
+    /**
+     *
+     * @return Raw vulkan image view
+     */
     VkImageView Image::getView() const {
         return view;
     }
 
+    /**
+     *
+     * @return Image format
+     */
     VkFormat Image::getFormat() const {
         return format;
     }
 
+    /**
+     *
+     * @return Current image 3D extent
+     */
     VkExtent3D Image::getExtent() const {
         return extent;
     }
 
+    /**
+     *
+     * @return Image mipmap levels
+     */
     uint32_t Image::getMipLevels() const {
         return mipLevels;
     }
