@@ -20,7 +20,7 @@ namespace re {
 
     template<typename T>
     void UniformBuffer::update(T *data) {
-        copyTo(data);
+        writeTo(data);
     }
 
 } // namespace re

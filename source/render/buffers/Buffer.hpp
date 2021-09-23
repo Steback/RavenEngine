@@ -17,10 +17,9 @@ namespace re {
 
         ~Buffer();
 
-        void map();
+        VkResult map(VkDeviceSize size_ = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-        template<typename T>
-        void copyTo(T* data) const;
+        void writeTo(void* data, VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
         void unmap();
 
@@ -28,7 +27,11 @@ namespace re {
 
         [[nodiscard]] VkDeviceSize getSize() const;
 
-        VkDescriptorBufferInfo getDescriptor();
+        void flush(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+
+        void invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+
+        VkDescriptorBufferInfo descriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
     private:
         VmaAllocator allocator{};
@@ -37,11 +40,6 @@ namespace re {
         VkDeviceSize size{};
         void* mapped{nullptr};
     };
-
-    template<typename T>
-    void Buffer::copyTo(T *data) const {
-        std::memcpy(mapped, data, size);
-    }
 
 } // namespace re
 

@@ -100,7 +100,7 @@ namespace re {
         writeDescriptorSets[0].descriptorCount = 1;
         writeDescriptorSets[0].dstSet = uboDescriptorSet;
         writeDescriptorSets[0].dstBinding = 0;
-        VkDescriptorBufferInfo transformDescriptor = uboTransformBuffer->getDescriptor();
+        VkDescriptorBufferInfo transformDescriptor = uboTransformBuffer->descriptorInfo();
         writeDescriptorSets[0].pBufferInfo = &transformDescriptor;
 
         writeDescriptorSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -108,7 +108,7 @@ namespace re {
         writeDescriptorSets[1].descriptorCount = 1;
         writeDescriptorSets[1].dstSet = uboDescriptorSet;
         writeDescriptorSets[1].dstBinding = 1;
-        VkDescriptorBufferInfo nodeDescriptor = uboNodeBuffer->getDescriptor();
+        VkDescriptorBufferInfo nodeDescriptor = uboNodeBuffer->descriptorInfo();
         writeDescriptorSets[1].pBufferInfo = &nodeDescriptor;
 
         writeDescriptorSets[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -116,7 +116,7 @@ namespace re {
         writeDescriptorSets[2].descriptorCount = 1;
         writeDescriptorSets[2].dstSet = uboDescriptorSet;
         writeDescriptorSets[2].dstBinding = 2;
-        VkDescriptorBufferInfo lightDescriptor = uboLightBuffer->getDescriptor();
+        VkDescriptorBufferInfo lightDescriptor = uboLightBuffer->descriptorInfo();
         writeDescriptorSets[2].pBufferInfo = &lightDescriptor;
 
         vkUpdateDescriptorSets(device->getDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);

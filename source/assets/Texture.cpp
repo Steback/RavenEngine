@@ -213,7 +213,7 @@ namespace re {
 
         Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
-        stagingBuffer.copyTo(pixels);
+        stagingBuffer.writeTo(pixels);
         stagingBuffer.unmap();
 
         stbi_image_free(pixels);
@@ -262,7 +262,7 @@ namespace re {
 
         Buffer stagingBuffer(device->getAllocator(), ktxTextureSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
-        stagingBuffer.copyTo(ktxTextureData);
+        stagingBuffer.writeTo(ktxTextureData);
         stagingBuffer.unmap();
 
         VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;

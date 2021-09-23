@@ -60,7 +60,7 @@ namespace re {
         writeDescriptors[0].descriptorCount = 1;
         writeDescriptors[0].dstSet = uboDescriptorSet;
         writeDescriptors[0].dstBinding = 0;
-        VkDescriptorBufferInfo descriptor = uboBuffer->getDescriptor();
+        VkDescriptorBufferInfo descriptor = uboBuffer->descriptorInfo();
         writeDescriptors[0].pBufferInfo = &descriptor;
 
         writeDescriptors[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
