@@ -33,7 +33,7 @@ namespace re {
 
         VkDescriptorBufferInfo descriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-    private:
+    protected:
         VmaAllocator allocator{};
         VkBuffer buffer{};
         VmaAllocation allocation{};

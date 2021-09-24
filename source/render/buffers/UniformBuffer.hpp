@@ -10,18 +10,24 @@ namespace re {
     // TODO: Add Doxygen comments
     class UniformBuffer : public Buffer {
     public:
-        UniformBuffer(VmaAllocator allocator, VkDeviceSize size, VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU);
+        UniformBuffer(VmaAllocator allocator, VkDeviceSize size, uint32_t instanceCount = 1, VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         ~UniformBuffer();
 
-        template<typename T>
-        void update(T* data);
-    };
+        void writeToIndex(void* data, int index);
 
-    template<typename T>
-    void UniformBuffer::update(T *data) {
-        writeTo(data);
-    }
+        void flushIndex(int index);
+
+        VkDescriptorBufferInfo descriptorInfoForIndex(int index);
+
+        void invalidateIndex(int index);
+
+    private:
+        static VkDeviceSize getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
+
+        uint32_t instanceCount;
+        VkDeviceSize alignmentSize{};
+    };
 
 } // namespace re
 

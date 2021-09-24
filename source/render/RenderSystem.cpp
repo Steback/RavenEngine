@@ -57,7 +57,7 @@ namespace re {
             uboLight.position = transform.position;
             uboLight.color = lightComponent.color;
             uboLight.ambient = lightComponent.ambient;
-            uboLightBuffer->update(&uboLight);
+            uboLightBuffer->writeTo(&uboLight);
         }
 
         std::vector<VkDescriptorSet> sets = {uboDescriptorSet};
@@ -140,8 +140,8 @@ namespace re {
 
     // TODO: Remove this
     void RenderSystem::updateBuffer() {
-        uboTransformBuffer->update(&uboTransform);
-        uboNodeBuffer->update(&uboNode);
+        uboTransformBuffer->writeTo(&uboTransform);
+        uboNodeBuffer->writeTo(&uboNode);
     }
 
 } // namespace re

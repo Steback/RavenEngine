@@ -43,7 +43,7 @@ namespace re {
 
         uboData.projection = proj;
         uboData.transform = transform;
-        uboBuffer->update(&uboData);
+        uboBuffer->writeTo(&uboData);
 
         mesh->bind(commandBuffer);
         mesh->draw(commandBuffer);
