@@ -7,16 +7,6 @@ namespace re {
      *
      * @param color Light color (RGB)
      * @param ambient Ambient intensity
-     */
-    Light::Light(const vec3& color, float ambient)
-            : Component(nullptr), color(color), ambient(ambient) {
-
-    }
-
-    /**
-     *
-     * @param color Light color (RGB)
-     * @param ambient Ambient intensity
      * @param owner Valid pointer to Entity
      */
     Light::Light(const vec3 &color, float ambient, Entity *owner)

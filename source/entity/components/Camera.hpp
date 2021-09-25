@@ -19,8 +19,6 @@ namespace re {
         };
 
     public:
-        explicit Camera(Type type);
-
         explicit Camera(Type type, Entity* owner);
 
         Camera(json& component, Entity* owner);

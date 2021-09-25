@@ -21,10 +21,6 @@ namespace re {
         };
 
     public:
-        Transform(const vec3& position, const vec3& scale, const vec3& angles);
-
-        Transform(const vec3& position, const vec3& scale, const quat& rotation);
-
         Transform(const vec3& position, const vec3& scale, const vec3& angles, Entity* owner);
 
         Transform(const vec3& position, const vec3& scale, const quat& rotation, Entity* owner);

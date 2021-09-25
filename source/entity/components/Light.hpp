@@ -17,8 +17,6 @@ namespace re {
             alignas(16) vec3 viewPosition{};
         };
 
-        Light(const vec3& color, float ambient);
-
         Light(const vec3& color, float ambient, Entity* owner);
 
         Light(json& component, Entity* owner);

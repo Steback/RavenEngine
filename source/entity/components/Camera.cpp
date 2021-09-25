@@ -9,10 +9,6 @@
 
 namespace re {
 
-    Camera::Camera(Type type) : Component(nullptr), type(type) {
-
-    }
-
     Camera::Camera(Type type, Entity* owner) : Component(owner), type(type) {
 
     }

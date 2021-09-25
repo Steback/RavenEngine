@@ -12,8 +12,6 @@ namespace re {
 
     class MeshRender : public Component {
     public:
-        explicit MeshRender(std::shared_ptr<Model> model);
-
         MeshRender(std::shared_ptr<Model> model, Entity* owner);
 
         json serialize() override;

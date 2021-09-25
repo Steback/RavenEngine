@@ -8,28 +8,6 @@ namespace re {
      * @param position (X-Y-Z)
      * @param scale By default are 1-1-1
      * @param angles Euler angles
-     */
-    Transform::Transform(const vec3 &position, const vec3 &scale, const vec3 &angles)
-            : Component(nullptr), position(position), scale(scale) {
-        rotation = Quaternion(angles);
-    }
-
-    /**
-     *
-     * @param position (X-Y-Z)
-     * @param scale By default are 1-1-1
-     * @param rotation Quaternion with direction
-     */
-    Transform::Transform(const vec3 &position, const vec3 &scale, const quat &rotation)
-            : Component(nullptr), position(position), scale(scale), rotation(rotation) {
-
-    }
-
-    /**
-     *
-     * @param position (X-Y-Z)
-     * @param scale By default are 1-1-1
-     * @param angles Euler angles
      * @param owner Valid pointer to Entity
      */
     Transform::Transform(const vec3 &position, const vec3 &scale, const vec3 &angles, Entity *owner)
