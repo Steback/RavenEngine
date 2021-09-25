@@ -57,6 +57,7 @@ namespace re {
             uboLight.position = transform.position;
             uboLight.color = lightComponent.color;
             uboLight.ambient = lightComponent.ambient;
+            uboLight.viewPosition = camera->getComponent<Transform>().position;
             uboLightBuffer->writeTo(&uboLight);
         }
 

@@ -17,6 +17,7 @@ layout (set = 0, binding = 2) uniform UboLight {
     vec3 position;
     vec3 color;
     float ambient;
+    vec3 viewPosition;
 } uboLight;
 
 layout (push_constant) uniform Material {
@@ -33,10 +34,19 @@ void main() {
         baseColor = material.baseColorFactor;
     }
 
+    // TODO: Fix bug in light direction
     vec3 ambient = uboLight.ambient * uboLight.color;
+
     vec3 norm = normalize(inNormal);
     vec3 lightDir = normalize(uboLight.position - inWorlPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * uboLight.color;
-    outColor = baseColor * vec4(ambient + diffuse, 1.0);
+
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(uboLight.viewPosition - inWorlPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
+    vec3 specular = specularStrength * spec * uboLight.color;
+
+    outColor = baseColor * vec4(ambient + diffuse + specular, 1.0);
 }

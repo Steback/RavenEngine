@@ -14,6 +14,7 @@ namespace re {
             alignas(16) vec3 position{0.0f};
             alignas(16) vec3 color{1.0f};
             float ambient = 0.2f;
+            alignas(16) vec3 viewPosition{};
         };
 
         Light(const vec3& color, float ambient);
