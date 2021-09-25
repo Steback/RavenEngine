@@ -12,6 +12,7 @@ layout(location = 3) out vec2 fragUV1;
 
 layout(set = 0, binding = 0) uniform UboTransform {
     mat4 mvp;
+    mat4 invTransform;
 } uboTransform;
 
 layout(set = 0, binding = 1) uniform UboNode {
@@ -23,7 +24,7 @@ void main() {
     vec4 locPos = uboTransform.mvp * uboNode.matrix * vec4(position, 1.0);
     gl_Position = locPos;
     fragWorlPos = locPos.xyz / locPos.w;
-    fragNormal = normal;
+    fragNormal = mat3(transpose(uboTransform.invTransform)) * normal;
     fragUV0 = uv0;
     fragUV1 = uv0;
 }

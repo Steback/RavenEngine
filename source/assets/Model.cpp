@@ -33,7 +33,7 @@ namespace re {
      * @return Matrix4 of Node local space.
      */
     Matrix4 Model::Node::getLocalMatrix() const {
-        Matrix3 rotationMatrix = rotation.unit().getRotationMatrix();
+        Matrix3 rotationMatrix = rotation.unit().rotationMatrix();
 
         return Matrix4(
                 { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },

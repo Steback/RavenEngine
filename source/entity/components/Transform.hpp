@@ -5,6 +5,7 @@
 #include "Component.hpp"
 
 #include "math/Matrix4.hpp"
+#include "math/Matrix3.hpp"
 #include "math/Vector3.hpp"
 #include "math/Quaternion.hpp"
 
@@ -16,6 +17,7 @@ namespace re {
         // TODO: Change this for a dynamic uniform object
         struct Ubo {
             mat4 mvp;
+            mat4 invTransform;
         };
 
     public:
@@ -29,7 +31,9 @@ namespace re {
 
         Transform(json& component, Entity* owner);
 
-        [[nodiscard]] Matrix4 getWorldMatrix() const;
+        [[nodiscard]] Matrix4 worldMatrix() const;
+
+        Matrix3 normalMatrix() const;
 
         json serialize() override;
 

@@ -33,7 +33,7 @@ void main() {
         baseColor = material.baseColorFactor;
     }
 
-    vec3 ambient = uboLight.ambient* uboLight.color;
+    vec3 ambient = uboLight.ambient * uboLight.color;
     vec3 norm = normalize(inNormal);
     vec3 lightDir = normalize(uboLight.position - inWorlPos);
     float diff = max(dot(norm, lightDir), 0.0);

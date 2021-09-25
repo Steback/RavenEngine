@@ -89,6 +89,10 @@ namespace re {
         return v * n;
     }
 
+    inline Vector3 operator/(float n, const Vector3& v) {
+        return {n / v.x, n / v.y, n / v.z};
+    }
+
     using vec3 = Vector3;
 
 } // namespace re

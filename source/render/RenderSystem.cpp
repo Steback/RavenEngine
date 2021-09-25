@@ -71,8 +71,9 @@ namespace re {
             auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            mat4 transformMatrix = transform.getWorldMatrix();
+            mat4 transformMatrix = transform.worldMatrix();
             uboTransform.mvp = viewProj * transformMatrix;
+            uboTransform.invTransform = transformMatrix.inverse();
 
             meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
             updateBuffer();

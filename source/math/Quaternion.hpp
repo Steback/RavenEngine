@@ -69,7 +69,7 @@ namespace re {
 
         [[nodiscard]] Vector3 getVectorPart() const;
 
-        [[nodiscard]] Matrix3 getRotationMatrix() const;
+        [[nodiscard]] Matrix3 rotationMatrix() const;
 
         void setRotationMatrix(const Matrix3& m);
 

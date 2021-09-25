@@ -131,7 +131,7 @@ namespace re {
         return {x, y, z};
     }
 
-    Matrix3 Quaternion::getRotationMatrix() const {
+    Matrix3 Quaternion::rotationMatrix() const {
         mat3 result(1.0f);
         float qxx = x * x;
         float qyy = y * y;

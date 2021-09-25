@@ -1,7 +1,5 @@
 #include "Transform.hpp"
 
-#include "math/Matrix3.hpp"
-
 
 namespace re {
 
@@ -59,14 +57,24 @@ namespace re {
      *
      * @return Transform world matrix
      */
-    Matrix4 Transform::getWorldMatrix() const {
-        Matrix3 rotationMatrix = rotation.getRotationMatrix();
-
+    Matrix4 Transform::worldMatrix() const {
+        Matrix3 rotationMatrix = rotation.rotationMatrix();
         return {
-                { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },
-                { scale.y * rotationMatrix[0][1], scale.y * rotationMatrix[1][1], scale.y * rotationMatrix[2][1], 0.0f },
-                { scale.z * rotationMatrix[0][2], scale.z * rotationMatrix[1][2], scale.z * rotationMatrix[2][2], 0.0f },
-                { position.x, position.y, position.z, 1.0f }
+            { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },
+            { scale.y * rotationMatrix[0][1], scale.y * rotationMatrix[1][1], scale.y * rotationMatrix[2][1], 0.0f },
+            { scale.z * rotationMatrix[0][2], scale.z * rotationMatrix[1][2], scale.z * rotationMatrix[2][2], 0.0f },
+            { position.x, position.y, position.z, 1.0f }
+        };
+    }
+
+    // TODO: Fix normal transform matrix
+    Matrix3 Transform::normalMatrix() const {
+        Matrix3 rotationMatrix = rotation.norm() == 1.0f ? rotation.rotationMatrix() : rotation.unit().rotationMatrix();
+        vec3 invScale = 1.0f / scale;
+        return {
+            { invScale.x * rotationMatrix[0][0], invScale.x * rotationMatrix[1][0], invScale.x * rotationMatrix[2][0] },
+            { invScale.y * rotationMatrix[0][1], invScale.y * rotationMatrix[1][1], invScale.y * rotationMatrix[2][1] },
+            { invScale.z * rotationMatrix[0][2], invScale.z * rotationMatrix[1][2], invScale.z * rotationMatrix[2][2] },
         };
     }
 
