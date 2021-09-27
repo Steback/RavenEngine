@@ -3,7 +3,7 @@
 #include "spdlog/spdlog.h"
 
 #include "Material.hpp"
-#include "utils/Macros.hpp"
+#include "AssetsManager.hpp"
 #include "render/Device.hpp"
 #include "render/buffers/Buffer.hpp"
 
@@ -30,13 +30,25 @@ namespace re {
     }
 
     /**
-     *
-     * @param device Pointer to Device
-     * @param data Mesh Data(Vertices and Indices)
-     * @param material Valid pointer to material
+     * @brief Construct Mesh from GLTF2 model
+     * @param name Asset name
+     * @param device Valid pointer to Device
+     * @param model TinyGLTF model
+     * @param node TinyGLTF node
      */
-    Mesh::Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material)
-            : device(std::move(device)), material(std::move(material)) {
+    Mesh::Mesh(std::string name, std::shared_ptr<Device> device, const tinygltf::Model &model, const tinygltf::Node &node)
+            : Asset(std::move(name)), device(std::move(device)) {
+#ifdef RE_DEBUG
+        logs::error(fmt::format("Load Mesh: {}", this->name));
+#endif
+        const tinygltf::Mesh& mesh = model.meshes[node.mesh];
+
+        Mesh::Data data = Mesh::loadMesh(model, mesh);
+
+        for (auto& primitive : mesh.primitives) {
+            const tinygltf::Material& gltfMaterial = model.materials[primitive.material];
+            material = AssetsManager::getInstance()->addMaterial(model, gltfMaterial);
+        }
         createVertexBuffer(data.vertices);
         createIndexBuffer(data.indices);
     }
@@ -47,7 +59,7 @@ namespace re {
      * @brief Prepare Mesh to be used in Draw
      * @param commandBuffer Valid Command buffer in recording state
      */
-    void Mesh::bind(VkCommandBuffer commandBuffer) {
+    void Mesh::bind(VkCommandBuffer commandBuffer) const {
         VkBuffer buffers[] = { vertexBuffer->getBuffer() };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
@@ -263,7 +275,6 @@ namespace re {
         Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
         stagingBuffer.writeTo((void*)vertices.data());
-        stagingBuffer.unmap();
 
         vertexBuffer = std::make_unique<Buffer>(device->getAllocator(), size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
 
@@ -281,7 +292,6 @@ namespace re {
         Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
         stagingBuffer.writeTo((void*)indices.data());
-        stagingBuffer.unmap();
 
         indexBuffer = std::make_unique<Buffer>(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
 

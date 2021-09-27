@@ -8,7 +8,7 @@ namespace re {
      * @param model Valid pointer to Model
      * @param owner Valid pointer to Entity
      */
-    MeshRender::MeshRender(std::shared_ptr<Model> model, Entity *owner) : Component(owner), model(std::move(model)) {
+    MeshRender::MeshRender(Model* model, Entity* owner) : Component(owner), model(model) {
 
     }
 

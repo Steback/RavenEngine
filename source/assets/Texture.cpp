@@ -43,28 +43,18 @@ namespace re {
         return VK_FILTER_LINEAR;
     }
 
-    /**
-     * @brief Construct Texture. Just create the Vulkan Image and allocate memory. Not create Image View and Sampler
-     * @param device Pointer to Device
-     * @param createInfo Vulkan Image Create Info
-     * @param usage VMA(Vulkan Memory Allocator) memory usage
-     */
-    Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage)
-            : Image(device->getDevice(), device->getAllocator(), createInfo, usage) {
+    Texture::Texture(std::string name, const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler, bool cubeMap)
+            : Asset(std::move(name)) {
+        this->device = device->getDevice();
+        this->allocator = device->getAllocator();
 
-    }
+        if (!cubeMap) {
+            loadFromFile(fileName, device, sampler);
+        } else {
+            loadCubeMap(fileName, device);
+        }
 
-    /**
-     * @brief Construct Texture. Create Image, Image View, allocate memory and create Sampler.
-     * @param device Pointer to Device
-     * @param createInfo Vulkan Image Create Info
-     * @param usage VMA(Vulkan Memory Allocator) memory usage
-     * @param aspectFlagBits Vulkan Image View aspect flags
-     * @param sampler Texture Sampler data
-     */
-    Texture::Texture(const std::shared_ptr<Device>& device, VkImageCreateInfo createInfo, VmaMemoryUsage usage, VkImageAspectFlagBits aspectFlagBits, const Sampler& sampler)
-            : Image(device->getDevice(), device->getAllocator(), createInfo, usage, aspectFlagBits) {
-        createSampler(sampler);
+        updateDescriptor();
     }
 
     Texture::~Texture() {
@@ -195,12 +185,10 @@ namespace re {
 
     /**
      * @brief Load Texture form image file
-     * @param device Pointer to Device
      * @param fileName Image file name
-     * @param sampler Texture Sampler data
-     * @return Pointer to Texture
+     * @param device Pointer to Device
      */
-    std::unique_ptr<Texture> Texture::loadFromFile(const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler) {
+    void Texture::loadFromFile(const std::string& fileName, const std::shared_ptr<Device>& device, const Sampler& sampler) {
         int channels, imageWidth, imageHeight;
         stbi_uc* pixels = stbi_load(files::getFile("textures/" + fileName).getPath().c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
 
@@ -211,10 +199,9 @@ namespace re {
         auto mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height))));
         VkDeviceSize size = width * height * static_cast<int>(STBI_rgb_alpha);
 
-        Buffer stagingBuffer(device->getAllocator(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+        Buffer stagingBuffer(allocator, size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
         stagingBuffer.writeTo(pixels);
-        stagingBuffer.unmap();
 
         stbi_image_free(pixels);
 
@@ -230,29 +217,25 @@ namespace re {
         imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, imageInfo, VMA_MEMORY_USAGE_CPU_COPY, VK_IMAGE_ASPECT_COLOR_BIT, sampler);
+        createImage(imageInfo, VMA_MEMORY_USAGE_GPU_ONLY);
+        device->transitionImageLayout(this->image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        device->copyBufferToImage(stagingBuffer, *this);
 
-        device->transitionImageLayout(texture->getImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
-        device->copyBufferToImage(stagingBuffer, *texture);
-
-        texture->generateMipmaps(device);
-        texture->updateDescriptor();
-
-        return texture;
+        generateMipmaps(device);
+        createView(VK_IMAGE_ASPECT_COLOR_BIT);
+        createSampler(sampler);
     }
 
     /**
      * @brief Load Texture cube map form .ktx file
-     * @param device Pointer to Device
      * @param fileName File name
-     * @return Pointer to Texture
+     * @param device Pointer to Device
      */
-    std::unique_ptr<Texture> Texture::loadCubeMap(const std::shared_ptr<Device> &device, const std::string &fileName) {
+    void Texture::loadCubeMap(const std::string& fileName, const std::shared_ptr<Device>& device) {
         ktxTexture* ktxTexture;
         ktxResult result = ktxTexture_CreateFromNamedFile(files::getFile(fileName).getPath().c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktxTexture);
 
-        if (result != KTX_SUCCESS)
-            throwEx("Failed to open cubemap file: " + fileName);
+        if (result != KTX_SUCCESS) throwEx("Failed to open cubemap file: " + fileName);
 
         uint32_t width = ktxTexture->baseWidth;
         uint32_t height = ktxTexture->baseHeight;
@@ -263,7 +246,6 @@ namespace re {
         Buffer stagingBuffer(device->getAllocator(), ktxTextureSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
         stagingBuffer.map();
         stagingBuffer.writeTo(ktxTextureData);
-        stagingBuffer.unmap();
 
         VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
         VkImageCreateInfo imageInfo{VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
@@ -278,11 +260,10 @@ namespace re {
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
-        std::unique_ptr<Texture> texture = std::make_unique<Texture>(device, imageInfo, VMA_MEMORY_USAGE_CPU_COPY);
+        createImage(imageInfo, VMA_MEMORY_USAGE_GPU_ONLY);
 
         // Setup uboBuffer copy regions for each face including all of its miplevels
         std::vector<VkBufferImageCopy> bufferCopyRegions;
-        uint32_t offset = 0;
 
         for (uint32_t face = 0; face < 6; face++) {
             for (uint32_t level = 0; level < mipLevels; level++) {
@@ -312,32 +293,30 @@ namespace re {
         subresourceRange.layerCount = 6;
 
         VkCommandBuffer copyCmd = device->beginSingleTimeCommands();
-        texture->setLayout(copyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, subresourceRange);
+        setLayout(copyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, subresourceRange);
 
         vkCmdCopyBufferToImage(
                 copyCmd,
                 stagingBuffer.getBuffer(),
-                texture->image,
+                image,
                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 static_cast<uint32_t>(bufferCopyRegions.size()),
                 bufferCopyRegions.data()
         );
 
-        texture->setLayout(copyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, subresourceRange);
+        setLayout(copyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, subresourceRange);
 
         device->endSingleTimeCommands(copyCmd);
 
-        Sampler sampler;
-        sampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-        sampler.addressModeW = sampler.addressModeU;
-        sampler.addressModeV = sampler.addressModeU;
-        texture->createSampler(sampler);
+        createView(VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE, 6);
 
-        texture->createView(VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE, 6);
+        Sampler textureSampler{};
+        textureSampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        textureSampler.addressModeW = textureSampler.addressModeU;
+        textureSampler.addressModeV = textureSampler.addressModeU;
+        createSampler(textureSampler);
 
         ktxTexture_Destroy(ktxTexture);
-
-        return texture;
     }
 
 } // namespace re

@@ -63,10 +63,10 @@ namespace re {
         VkFormat format{};
         VkExtent3D extent{};
         uint32_t mipLevels{1};
-
-    private:
         VmaAllocator allocator{};
         VmaAllocation allocation{};
+
+    private:
         bool swapChainImages{false};
     };
 

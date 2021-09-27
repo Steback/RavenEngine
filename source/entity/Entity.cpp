@@ -99,8 +99,10 @@ namespace re {
             addComponent<Light>(entity["light"]);
 
         // TODO: Use promises to load mesh in other thread.
-        if (!entity["meshRender"].empty())
-            addComponent<MeshRender>(AssetsManager::getInstance()->loadModel(entity["meshRender"]["name"]));
+        if (!entity["meshRender"].empty()) {
+            auto modelName = entity["meshRender"]["name"].get<std::string>();
+            addComponent<MeshRender>(AssetsManager::getInstance()->add<Model>(modelName, modelName));
+        }
 
     }
 

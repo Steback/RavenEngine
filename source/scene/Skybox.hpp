@@ -13,6 +13,7 @@
 namespace re {
 
     class GraphicsPipeline;
+    class Model;
     class Mesh;
     class Texture;
     class UniformBuffer;
@@ -27,7 +28,7 @@ namespace re {
         };
 
     public:
-        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass);
+        Skybox(std::shared_ptr<Device> device, VkRenderPass renderPass, Model* model_, Texture* texture_);
 
         ~Skybox() override;
 
@@ -43,8 +44,8 @@ namespace re {
         std::unique_ptr<GraphicsPipeline> pipeline;
         VkDescriptorSet uboDescriptorSet{};
         VkDescriptorSet textureDescriptorSet{};
-        std::shared_ptr<Mesh> mesh;
-        std::shared_ptr<Texture> texture;
+        const Mesh* mesh;
+        const Texture* texture;
         std::unique_ptr<UniformBuffer> uboBuffer;
         UboData uboData{};
     };

@@ -46,7 +46,7 @@ namespace re {
 
     public:
         vec4 baseColorFactor{1.0f};
-        std::unordered_map<TextureType, std::shared_ptr<Texture>> textures;
+        std::unordered_map<TextureType, Texture*> textures;
         TexCoordSets texCoordSets;
         VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
     };

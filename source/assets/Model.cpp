@@ -1,30 +1,13 @@
 #include "Model.hpp"
 
-#include <unordered_map>
-
 #include "AssetsManager.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "math/Matrix3.hpp"
 #include "utils/Utils.hpp"
+#include "files/FilesManager.hpp"
+#include "logs/Logs.hpp"
 
-
-namespace std {
-
-    template <>
-    struct hash<re::Mesh::Vertex> {
-        size_t operator()(re::Mesh::Vertex const &vertex) const {
-            size_t seed = 0;
-            hash<float> hasher;
-            re::hashCombine(seed, hasher(vertex.position.x), hasher(vertex.position.y), hasher(vertex.position.z));
-            re::hashCombine(seed, hasher(vertex.normal.x), hasher(vertex.normal.y), hasher(vertex.normal.z));
-            re::hashCombine(seed, hasher(vertex.uv0.x), hasher(vertex.uv0.y));
-            re::hashCombine(seed, hasher(vertex.uv1.x), hasher(vertex.uv1.y));
-            return seed;
-        }
-    };
-
-}  // namespace std
 
 namespace re {
 
@@ -46,16 +29,31 @@ namespace re {
     /**
      * @brief Construct Model from GLTF2 file
      * @param name Model name
-     * @param model TinyGLTF model
+     * @param fileName Model file name
      */
-    Model::Model(std::string name, const tinygltf::Model &model) : name(std::move(name)) {
-        const tinygltf::Scene& scene = model.scenes[0];
+    Model::Model(std::string name, const std::string& fileName) : Asset(std::move(name)) {
+#ifdef RE_DEBUG
+        logs::error(fmt::format("Load model: {}", fileName));
+#endif
+        File file = files::getFile(fileName);
+        tinygltf::Model gltfModel;
+        tinygltf::TinyGLTF gltfContext;
 
-        nodes.resize(model.nodes.size());
+        bool fileLoaded;
+        if (file.getExtension() == ".glb")
+            fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, nullptr, nullptr, file.getPath());
+        else
+            fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, nullptr, nullptr, file.getPath());
 
-        for (int index : scene.nodes) {
-            const tinygltf::Node node = model.nodes[index];
-            loadNode(model, -1, node, index);
+        if (fileLoaded) {
+            const tinygltf::Scene& scene = gltfModel.scenes[0];
+
+            nodes.resize(gltfModel.nodes.size());
+
+            for (int index : scene.nodes) {
+                const tinygltf::Node node = gltfModel.nodes[index];
+                loadNode(gltfModel, -1, node, index);
+            }
         }
     }
 
@@ -144,7 +142,7 @@ namespace re {
         }
 
         if (node.mesh > -1) {
-            newNode.mesh = AssetsManager::getInstance()->addMesh(model, node);
+            newNode.mesh = AssetsManager::getInstance()->add<Mesh>(node.name, AssetsManager::getInstance()->getDevice(), model, node);
         }
 
         if (parentIndex > -1) {
@@ -158,10 +156,6 @@ namespace re {
         for (auto& childrenIndex : node.children) {
             loadNode(model, static_cast<int32_t>(newNode.index), model.nodes[childrenIndex], childrenIndex);
         }
-    }
-
-    std::string Model::getName() const {
-        return name;
     }
 
 } // namespace re

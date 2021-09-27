@@ -10,6 +10,7 @@
 #include "stb_image.h"
 
 #include "Mesh.hpp"
+#include "logs/Logs.hpp"
 
 
 namespace re {
@@ -19,6 +20,7 @@ namespace re {
     class Texture;
     class Material;
     class Skybox;
+    class Asset;
 
     enum DescriptorSetType {
         UBO = 1,
@@ -42,24 +44,6 @@ namespace re {
 
         VkDescriptorSetLayout getDescriptorSetLayout(DescriptorSetType type);
 
-        std::shared_ptr<Model> loadModel(const std::string& fileName, const std::string& name = "");
-
-        std::shared_ptr<Model> getModel(uint32_t name);
-
-        std::shared_ptr<Model> getModel(const std::string& name);
-
-        std::shared_ptr<Mesh> addMesh(const tinygltf::Model& model, const tinygltf::Node& node);
-
-        std::shared_ptr<Mesh> getMesh(uint32_t id);
-
-        std::shared_ptr<Mesh> getMesh(const std::string& name);
-
-        std::shared_ptr<Texture> addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture);
-
-        std::shared_ptr<Texture> getTexture(uint32_t id);
-
-        std::shared_ptr<Texture> getTexture(const std::string& name);
-
         std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
 
         std::shared_ptr<Material> getMaterial(uint32_t id);
@@ -67,6 +51,17 @@ namespace re {
         std::shared_ptr<Material> getMaterial(const std::string& name);
 
         std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
+
+        template<typename T, typename ...Args>
+        T* add(std::string name, Args &&... args);
+
+        template<typename T>
+        T* get(const std::string& name);
+
+        template<typename T>
+        T* get(uint32_t id);
+
+        std::shared_ptr<Device> getDevice();
 
     private:
         AssetsManager() = default;
@@ -80,11 +75,62 @@ namespace re {
         VkDescriptorPool descriptorPool{};
         std::shared_ptr<Device> device;
         std::unordered_map<DescriptorSetType, VkDescriptorSetLayout> layouts;
-        std::unordered_map<uint32_t, std::shared_ptr<Model>> models;
-        std::unordered_map<uint32_t, std::shared_ptr<Mesh>> meshes;
         std::unordered_map<uint32_t, std::shared_ptr<Texture>> textures;
         std::unordered_map<uint32_t, std::shared_ptr<Material>> materials;
+        std::unordered_map<uint32_t, Asset*> assets;
     };
+
+    /**
+     * @brief Add a new Assets to AssetsManager. If the Assets already was added, return it.
+     * @tparam T Asset type
+     * @param name Asset name to hash and save
+     * @param args Constructor parameters of T
+     * @return Raw pointer to asset
+     */
+    template<typename T, typename... Args>
+    T *AssetsManager::add(std::string name, Args &&... args) {
+        uint32_t hashName = std::hash<std::string>()(name);
+        if (assets.find(hashName) != assets.end()) return reinterpret_cast<T*>(assets[hashName]);
+
+        T* asset = new T(name, std::forward<Args>(args)...);
+        assets[hashName] = asset;
+
+        return asset;
+    }
+
+    /**
+     *
+     * @tparam T Asset type
+     * @param name Asset name
+     * @return Raw pointer to asset
+     */
+    template<typename T>
+    T *AssetsManager::get(const std::string& name) {
+        uint32_t hashName = std::hash<std::string>()(name);
+        if (assets.find(hashName) == assets.end()) {
+            logs::error(fmt::format("Asset not found {}", name));
+            return nullptr;
+        }
+
+        return reinterpret_cast<T*>(assets[hashName]);
+    }
+
+    /**
+     *
+     * @tparam T Asset type
+     * @param id Asset hashed name
+     * @return Raw pointer to asset
+     */
+    template<typename T>
+    T *AssetsManager::get(uint32_t id) {
+        if (assets.find(id) == assets.end()) {
+            logs::error(fmt::format("Asset not found {}", id));
+            return nullptr;
+        }
+
+        return reinterpret_cast<T*>(assets[id]);
+    }
+
 
 } // namespace re
 

@@ -1,13 +1,9 @@
 #include "AssetsManager.hpp"
 
-#include "spdlog/spdlog.h"
-
 #include "Model.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "render/Device.hpp"
-#include "files/FilesManager.hpp"
-#include "files/File.hpp"
 #include "utils/Utils.hpp"
 #include "render/buffers/Buffer.hpp"
 #include "scene/Skybox.hpp"
@@ -17,12 +13,13 @@ namespace re {
 
     AssetsManager* AssetsManager::singleton;
 
+    // TODO: Keep raw pointer to Assets?, find a way to use Smart pointers.
     /**
      *
      * @param device Pointer to Device object
      */
     AssetsManager::AssetsManager(std::shared_ptr<Device> device) : device(std::move(device)) {
-        textures[std::hash<std::string>()("empty")] = Texture::loadFromFile(this->device, "empty.png", Texture::Sampler{});
+        add<Texture>("empty", this->device, "empty.png", Texture::Sampler{});
     }
 
     AssetsManager::~AssetsManager() {
@@ -30,6 +27,9 @@ namespace re {
             vkDestroyDescriptorSetLayout(device->getDevice(), layout, nullptr);
 
         vkDestroyDescriptorPool(device->getDevice(), descriptorPool, nullptr);
+
+        for (auto& [id, asset] : assets)
+            delete asset;
     }
 
     /**
@@ -96,125 +96,6 @@ namespace re {
     }
 
     /**
-     * @brief Load a 3D Model from to a GLTF2 format file
-     * @param fileName Name of GLTF2 file
-     * @param name [Optional] Specific name to save model
-     * @return Pointer to Model object
-     */
-    std::shared_ptr<Model> AssetsManager::loadModel(const std::string& fileName, const std::string& name) {
-        File file = files::getFile(fileName);
-        std::string modelName = name.empty() ? file.getName(true) : name;
-        uint32_t nameHash = std::hash<std::string>()(modelName);
-
-        if (models.find(nameHash) != models.end()) return models[nameHash];
-
-        std::string error;
-        std::string warning;
-
-        tinygltf::Model gltfModel;
-        tinygltf::TinyGLTF gltfContext;
-
-        bool fileLoaded;
-        if (file.getExtension() == ".glb")
-            fileLoaded = gltfContext.LoadBinaryFromFile(&gltfModel, &error, &warning, file.getPath());
-        else
-            fileLoaded = gltfContext.LoadASCIIFromFile(&gltfModel, &error, &warning, file.getPath());
-
-        if (fileLoaded)
-            return models[nameHash] = std::make_shared<Model>(fileName, gltfModel);
-        else
-            return nullptr;
-    }
-
-    std::shared_ptr<Model> AssetsManager::getModel(uint32_t name) {
-        return models[name];
-    }
-
-    std::shared_ptr<Model> AssetsManager::getModel(const std::string &name) {
-        return models[std::hash<std::string>()(name)];
-    }
-
-    /**
-     * @brief Load Mesh from GLTF2 Mesh
-     * @param model TinyGLTF Model
-     * @param node  TinyGLTF node
-     * @return Pointer to Mesh
-     */
-    std::shared_ptr<Mesh> AssetsManager::addMesh(const tinygltf::Model &model, const tinygltf::Node &node) {
-        uint32_t meshID = std::hash<std::string>()(node.name);
-        const tinygltf::Mesh& mesh = model.meshes[node.mesh];
-
-        Mesh::Data data = Mesh::loadMesh(model, mesh);
-
-        for (auto& primitive : mesh.primitives) {
-            const tinygltf::Material& material = model.materials[primitive.material];
-            return meshes[meshID] = std::make_shared<Mesh>(device, data, addMaterial(model, material));
-        }
-
-        return nullptr;
-    }
-
-    /**
-     *
-     * @param id Hashed name of Mesh
-     * @return Pointer to Mesh
-     */
-    std::shared_ptr<Mesh> AssetsManager::getMesh(uint32_t id) {
-        return meshes[id];
-    }
-
-    /**
-     *
-     * @param name Name of Mesh
-     * @return Pointer to Mesh
-     */
-    std::shared_ptr<Mesh> AssetsManager::getMesh(const std::string &name) {
-        return meshes[std::hash<std::string>()(name)];
-    }
-
-    /**
-     * @brief Add Texture form GLTF2 file
-     * @param texture TinyGLTF Texture
-     * @return Pointer to Texture
-     */
-    std::shared_ptr<Texture> AssetsManager::addTexture(const tinygltf::Model& model, const tinygltf::Texture &texture) {
-        tinygltf::Image image = model.images[texture.source];
-        uint32_t textureID = std::hash<std::string>()(image.name);
-
-        if (textures.find(textureID) != textures.end()) return textures[textureID];
-
-        Texture::Sampler sampler{};
-        if (texture.sampler > -1) {
-            tinygltf::Sampler smpl = model.samplers[texture.sampler];
-            sampler.minFilter = Texture::Sampler::getVkFilterMode(smpl.minFilter);
-            sampler.magFilter = Texture::Sampler::getVkFilterMode(smpl.magFilter);
-            sampler.addressModeU = Texture::Sampler::getVkWrapMode(smpl.wrapS);
-            sampler.addressModeV = Texture::Sampler::getVkWrapMode(smpl.wrapT);
-            sampler.addressModeW = sampler.addressModeV;
-        }
-
-        return textures[textureID] = Texture::loadFromFile(device, image.uri, sampler);
-    }
-
-    /**
-     *
-     * @param id Hashed name of Texture
-     * @return Pointer to Texture
-     */
-    std::shared_ptr<Texture> AssetsManager::getTexture(uint32_t id) {
-        return textures[id];
-    }
-
-    /**
-     *
-     * @param name Name of Texture
-     * @return Pointer to Texture
-     */
-    std::shared_ptr<Texture> AssetsManager::getTexture(const std::string &name) {
-        return textures[std::hash<std::string>()(name)];
-    }
-
-    /**
      * @brief Add Material from GLTF2 file
      * @param gltfModel TinyGLTF Model
      * @param gltfMaterial TinyGLTF Material
@@ -250,11 +131,15 @@ namespace re {
      * @return Pointer to Skybox
      */
     std::unique_ptr<Skybox> AssetsManager::loadSkybox(const std::string &name, VkRenderPass renderPass) {
-        auto model = loadModel("models/cube.gltf", "Skybox");
-        auto texture = textures[std::hash<std::string>()("Skybox")] = Texture::loadCubeMap(device, name);
-        texture->updateDescriptor();
+        auto* model = add<Model>("SkyboxMesh", "models/cube.gltf");
+        auto* texture = add<Texture>("SkyboxTexture", device, name, Texture::Sampler{}, true);
 
-        return std::make_unique<Skybox>(device, renderPass);
+        return std::make_unique<Skybox>(device, renderPass, model, texture);
+    }
+
+    // TODO: Should this will removed?
+    std::shared_ptr<Device> AssetsManager::getDevice() {
+        return device;
     }
 
     void AssetsManager::setupDescriptorSetsLayout() {
@@ -305,7 +190,7 @@ namespace re {
             checkResult(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
                         "Failed to allocate material descriptor sets");
 
-            auto empty = textures[std::hash<std::string>()("empty")]->descriptor;
+            VkDescriptorImageInfo empty = get<Texture>(std::hash<std::string>()("empty"))->descriptor;
             std::vector<VkDescriptorImageInfo> imageDescriptors = {
                     empty,
             };

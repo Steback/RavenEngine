@@ -16,9 +16,6 @@ namespace re {
      */
     Image::Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage)
             : device(device), allocator(allocator) {
-        format = imageInfo.format;
-        extent = imageInfo.extent;
-        mipLevels = imageInfo.mipLevels;
         createImage(imageInfo, usage);
     }
 
@@ -32,9 +29,6 @@ namespace re {
      */
     Image::Image(VkDevice device, VmaAllocator allocator, const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage, VkImageAspectFlags aspectFlags)
             : device(device), allocator(allocator) {
-        format = imageInfo.format;
-        extent = imageInfo.extent;
-        mipLevels = imageInfo.mipLevels;
         createImage(imageInfo, usage);
         createView(aspectFlags);
     }
@@ -245,6 +239,10 @@ namespace re {
     }
 
     void Image::createImage(const VkImageCreateInfo &imageInfo, VmaMemoryUsage usage) {
+        format = imageInfo.format;
+        extent = imageInfo.extent;
+        mipLevels = imageInfo.mipLevels;
+
         VmaAllocationCreateInfo allocationInfo{};
         allocationInfo.usage = usage;
 

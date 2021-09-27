@@ -8,10 +8,10 @@
 #include "vk_mem_alloc.h"
 #include "tiny_gltf.h"
 
+#include "Asset.hpp"
 #include "math/Vector2.hpp"
 #include "math/Vector3.hpp"
 #include "math/Vector4.hpp"
-#include "utils/NonCopyable.hpp"
 
 
 namespace re {
@@ -20,7 +20,7 @@ namespace re {
     class Buffer;
     class Material;
 
-    class Mesh : NonCopyable {
+    class Mesh : public Asset {
         friend class Model;
 
     public:
@@ -42,12 +42,11 @@ namespace re {
             std::vector<uint32_t> indices;
         };
 
-    public:
-        Mesh(std::shared_ptr<Device> device, const Data& data, std::shared_ptr<Material> material);
+        Mesh(std::string name, std::shared_ptr<Device> device, const tinygltf::Model &model, const tinygltf::Node &node);
 
         ~Mesh() override;
 
-        void bind(VkCommandBuffer commandBuffer);
+        void bind(VkCommandBuffer commandBuffer) const;
 
         void draw(VkCommandBuffer commandBuffer) const;
 

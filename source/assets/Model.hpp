@@ -9,6 +9,7 @@
 #include "tiny_gltf.h"
 #include "vulkan/vulkan.h"
 
+#include "Asset.hpp"
 #include "math/Matrix4.hpp"
 #include "math/Vector3.hpp"
 #include "math/Quaternion.hpp"
@@ -20,14 +21,14 @@ namespace re {
     class Mesh;
     class AssetsManager;
 
-    class Model {
+    class Model : public Asset {
     public:
         struct Node {
             int32_t parent{-1};
             uint32_t index;
             std::string name;
             std::vector<uint32_t> children;
-            std::shared_ptr<Mesh> mesh;
+            Mesh* mesh;
             Matrix4 matrix;
             Vector3 translation;
             Vector3 scale{1.0f};
@@ -41,9 +42,9 @@ namespace re {
         };
 
     public:
-        Model(std::string name, const tinygltf::Model &model);
+        Model(std::string name, const std::string& fileName);
 
-        ~Model();
+        ~Model() override;
 
         [[nodiscard]] Matrix4 getNodeMatrix(size_t index) const;
 
@@ -51,13 +52,10 @@ namespace re {
 
         Node& getNode(uint32_t index);
 
-        [[nodiscard]] std::string getName() const;
-
     private:
         void loadNode(const tinygltf::Model& model, int32_t parentIndex, const tinygltf::Node& node, uint32_t nodeIndex);
 
     private:
-        std::string name;
         std::vector<Node> nodes;
     };
 

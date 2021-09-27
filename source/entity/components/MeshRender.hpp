@@ -12,14 +12,14 @@ namespace re {
 
     class MeshRender : public Component {
     public:
-        MeshRender(std::shared_ptr<Model> model, Entity* owner);
+        MeshRender(Model* model, Entity* owner);
 
         json serialize() override;
 
         void serialize(json &component) override;
 
     public:
-        std::shared_ptr<Model> model;
+        Model* model;
     };
 
 } // namespace re

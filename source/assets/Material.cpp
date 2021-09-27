@@ -1,6 +1,7 @@
 #include "Material.hpp"
 
 #include "AssetsManager.hpp"
+#include "Texture.hpp"
 
 
 namespace re {
@@ -12,7 +13,20 @@ namespace re {
      */
     Material::Material(const tinygltf::Model& model, const tinygltf::Material& material) {
         if (material.values.find("baseColorTexture") != material.values.end()) {
-            textures[TextureType::BASE] = AssetsManager::getInstance()->addTexture(model, model.textures[material.pbrMetallicRoughness.baseColorTexture.index]);
+            tinygltf::Texture texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
+            tinygltf::Image image = model.images[texture.source];
+
+            Texture::Sampler sampler{};
+            if (texture.sampler > -1) {
+                tinygltf::Sampler smpl = model.samplers[texture.sampler];
+                sampler.minFilter = Texture::Sampler::getVkFilterMode(smpl.minFilter);
+                sampler.magFilter = Texture::Sampler::getVkFilterMode(smpl.magFilter);
+                sampler.addressModeU = Texture::Sampler::getVkWrapMode(smpl.wrapS);
+                sampler.addressModeV = Texture::Sampler::getVkWrapMode(smpl.wrapT);
+                sampler.addressModeW = sampler.addressModeV;
+            }
+
+            textures[TextureType::BASE] = AssetsManager::getInstance()->add<Texture>(image.name, AssetsManager::getInstance()->getDevice(), image.uri, sampler);
             texCoordSets.baseColor = material.pbrMetallicRoughness.baseColorTexture.texCoord;
         }
 
