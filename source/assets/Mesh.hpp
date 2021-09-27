@@ -56,7 +56,7 @@ namespace re {
 
         [[nodiscard]] bool isHasIndexBuffer() const;
 
-        [[nodiscard]] std::shared_ptr<Material> getMaterial() const;
+        [[nodiscard]] const Material* getMaterial() const;
 
         static Data loadMesh(const tinygltf::Model& model, const tinygltf::Mesh& mesh);
 
@@ -72,7 +72,7 @@ namespace re {
         uint32_t vertexCount{};
         uint32_t indexCount{};
         bool hasIndexBuffer{false};
-        std::shared_ptr<Material> material;
+        Material* material;
     };
 
 } // namespace re

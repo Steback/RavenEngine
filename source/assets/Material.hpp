@@ -7,6 +7,7 @@
 #include "vulkan/vulkan.h"
 #include "tiny_gltf.h"
 
+#include "Asset.hpp"
 #include "math/Vector3.hpp"
 #include "math/Vector4.hpp"
 
@@ -14,10 +15,8 @@
 namespace re {
 
     class Texture;
-    class AssetsManager;
 
-    class Material {
-        friend AssetsManager;
+    class Material : public Asset {
 
     public:
         enum AlphaMode {
@@ -40,9 +39,9 @@ namespace re {
         };
 
     public:
-        Material(const tinygltf::Model& model, const tinygltf::Material& material);
+        Material(std::string name, const tinygltf::Model& model, const tinygltf::Material& material);
 
-        ~Material();
+        ~Material() override;
 
     public:
         vec4 baseColorFactor{1.0f};

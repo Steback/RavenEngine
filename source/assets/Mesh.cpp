@@ -37,7 +37,7 @@ namespace re {
      * @param node TinyGLTF node
      */
     Mesh::Mesh(std::string name, std::shared_ptr<Device> device, const tinygltf::Model &model, const tinygltf::Node &node)
-            : Asset(std::move(name)), device(std::move(device)) {
+            : Asset(std::move(name), Type::MESH), device(std::move(device)) {
 #ifdef RE_DEBUG
         logs::error(fmt::format("Load Mesh: {}", this->name));
 #endif
@@ -47,7 +47,7 @@ namespace re {
 
         for (auto& primitive : mesh.primitives) {
             const tinygltf::Material& gltfMaterial = model.materials[primitive.material];
-            material = AssetsManager::getInstance()->addMaterial(model, gltfMaterial);
+            material = AssetsManager::getInstance()->add<Material>(gltfMaterial.name, model, gltfMaterial);
         }
         createVertexBuffer(data.vertices);
         createIndexBuffer(data.indices);
@@ -108,7 +108,7 @@ namespace re {
      * @brief Get current material used by Mesh
      * @return Pointer to Material
      */
-    std::shared_ptr<Material> Mesh::getMaterial() const {
+    const Material* Mesh::getMaterial() const {
         return material;
     }
 

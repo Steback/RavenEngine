@@ -51,9 +51,11 @@ namespace re {
         uint32_t imageSamplerCount = 0;
         uint32_t materialCount = 0;
 
-        for (auto& material : materials) {
-            imageSamplerCount += 1;
-            materialCount++;
+        for (auto& asset : assets) {
+            if (asset.second->type == Asset::MATERIAL) {
+                imageSamplerCount += 1;
+                materialCount++;
+            }
         }
 
         std::vector<VkDescriptorPoolSize> poolSizes = {
@@ -93,34 +95,6 @@ namespace re {
      */
     VkDescriptorSetLayout AssetsManager::getDescriptorSetLayout(DescriptorSetType type) {
         return layouts[type];
-    }
-
-    /**
-     * @brief Add Material from GLTF2 file
-     * @param gltfModel TinyGLTF Model
-     * @param gltfMaterial TinyGLTF Material
-     * @return Pointer to Material
-     */
-    std::shared_ptr<Material> AssetsManager::addMaterial(const tinygltf::Model &gltfModel, const tinygltf::Material &gltfMaterial) {
-        return materials[std::hash<std::string>()(gltfMaterial.name)] = std::make_shared<Material>(gltfModel, gltfMaterial);
-    }
-
-    /**
-     *
-     * @param id Hashed name of Material
-     * @return Pointer to Material
-     */
-    std::shared_ptr<Material> AssetsManager::getMaterial(uint32_t id) {
-        return materials[id];
-    }
-
-    /**
-     *
-     * @param name Name of Material
-     * @return Pointer to Material
-     */
-    std::shared_ptr<Material> AssetsManager::getMaterial(const std::string &name) {
-        return materials[std::hash<std::string>()(name)];
     }
 
     // TODO: Change how to create a Skybox
@@ -180,36 +154,39 @@ namespace re {
     }
 
     void AssetsManager::setupMaterialDescriptorsSets() {
-        for (auto& [id, material] : materials) {
-            VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
-            descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-            descriptorSetAllocInfo.descriptorPool = descriptorPool;
-            descriptorSetAllocInfo.pSetLayouts = &layouts[MATERIAL];
-            descriptorSetAllocInfo.descriptorSetCount = 1;
+        for (auto& [id, asset] : assets) {
+            if (asset->type == Asset::MATERIAL) {
+                auto* material = reinterpret_cast<Material*>(asset);
+                VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
+                descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+                descriptorSetAllocInfo.descriptorPool = descriptorPool;
+                descriptorSetAllocInfo.pSetLayouts = &layouts[MATERIAL];
+                descriptorSetAllocInfo.descriptorSetCount = 1;
 
-            checkResult(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
-                        "Failed to allocate material descriptor sets");
+                checkResult(vkAllocateDescriptorSets(device->getDevice(), &descriptorSetAllocInfo, &material->descriptorSet),
+                            "Failed to allocate material descriptor sets");
 
-            VkDescriptorImageInfo empty = get<Texture>(std::hash<std::string>()("empty"))->descriptor;
-            std::vector<VkDescriptorImageInfo> imageDescriptors = {
-                    empty,
-            };
+                VkDescriptorImageInfo empty = get<Texture>(std::hash<std::string>()("empty"))->descriptor;
+                std::vector<VkDescriptorImageInfo> imageDescriptors = {
+                        empty,
+                };
 
-            if (material->textures[Material::BASE]) {
-                imageDescriptors[0] = material->textures[Material::BASE]->descriptor;
+                if (material->textures[Material::BASE]) {
+                    imageDescriptors[0] = material->textures[Material::BASE]->descriptor;
+                }
+
+                std::array<VkWriteDescriptorSet, 1> writeDescriptorSets{};
+                for (size_t i = 0; i < imageDescriptors.size(); i++) {
+                    writeDescriptorSets[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    writeDescriptorSets[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                    writeDescriptorSets[i].descriptorCount = 1;
+                    writeDescriptorSets[i].dstSet = material->descriptorSet;
+                    writeDescriptorSets[i].dstBinding = static_cast<uint32_t>(i);
+                    writeDescriptorSets[i].pImageInfo = &imageDescriptors[i];
+                }
+
+                vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
             }
-
-            std::array<VkWriteDescriptorSet, 1> writeDescriptorSets{};
-            for (size_t i = 0; i < imageDescriptors.size(); i++) {
-                writeDescriptorSets[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-                writeDescriptorSets[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-                writeDescriptorSets[i].descriptorCount = 1;
-                writeDescriptorSets[i].dstSet = material->descriptorSet;
-                writeDescriptorSets[i].dstBinding = static_cast<uint32_t>(i);
-                writeDescriptorSets[i].pImageInfo = &imageDescriptors[i];
-            }
-
-            vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }
     }
 

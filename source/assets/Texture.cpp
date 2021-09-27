@@ -44,7 +44,7 @@ namespace re {
     }
 
     Texture::Texture(std::string name, const std::shared_ptr<Device>& device, const std::string& fileName, const Sampler& sampler, bool cubeMap)
-            : Asset(std::move(name)) {
+            : Asset(std::move(name), Type::TEXTURE) {
         this->device = device->getDevice();
         this->allocator = device->getAllocator();
 

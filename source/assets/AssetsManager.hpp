@@ -44,12 +44,6 @@ namespace re {
 
         VkDescriptorSetLayout getDescriptorSetLayout(DescriptorSetType type);
 
-        std::shared_ptr<Material> addMaterial(const tinygltf::Model& gltfModel, const tinygltf::Material &gltfMaterial);
-
-        std::shared_ptr<Material> getMaterial(uint32_t id);
-
-        std::shared_ptr<Material> getMaterial(const std::string& name);
-
         std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
 
         template<typename T, typename ...Args>
@@ -75,8 +69,6 @@ namespace re {
         VkDescriptorPool descriptorPool{};
         std::shared_ptr<Device> device;
         std::unordered_map<DescriptorSetType, VkDescriptorSetLayout> layouts;
-        std::unordered_map<uint32_t, std::shared_ptr<Texture>> textures;
-        std::unordered_map<uint32_t, std::shared_ptr<Material>> materials;
         std::unordered_map<uint32_t, Asset*> assets;
     };
 

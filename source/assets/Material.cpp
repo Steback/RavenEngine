@@ -8,10 +8,12 @@ namespace re {
 
     /**
      * @brief Construct Material from a GLTF2 file
+     * @param name Asset name
      * @param model TinyGLTF model
      * @param material TinyGLTF material
      */
-    Material::Material(const tinygltf::Model& model, const tinygltf::Material& material) {
+    Material::Material(std::string name, const tinygltf::Model& model, const tinygltf::Material& material)
+            : Asset(std::move(name), Type::MATERIAL) {
         if (material.values.find("baseColorTexture") != material.values.end()) {
             tinygltf::Texture texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
             tinygltf::Image image = model.images[texture.source];

@@ -3,7 +3,7 @@
 
 namespace re {
 
-    Asset::Asset(std::string name) : name(std::move(name)) {
+    Asset::Asset(std::string name, Type type) : name(std::move(name)), type(type) {
 
     }
 

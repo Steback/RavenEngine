@@ -31,7 +31,7 @@ namespace re {
      * @param name Model name
      * @param fileName Model file name
      */
-    Model::Model(std::string name, const std::string& fileName) : Asset(std::move(name)) {
+    Model::Model(std::string name, const std::string& fileName) : Asset(std::move(name), Type::MODEL) {
 #ifdef RE_DEBUG
         logs::error(fmt::format("Load model: {}", fileName));
 #endif
