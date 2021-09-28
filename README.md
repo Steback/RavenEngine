@@ -19,6 +19,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [Shaderc](https://github.com/google/shaderc) | 2021.1 | 
 | [CLI11](https://github.com/CLIUtils/CLI11) | 2.0.0 | 
 | [stb](https://github.com/nothings/stb) | x.x.x | 
+| [Cereal](https://github.com/USCiLab/cereal) | 1.3.0 | 
 
 ## Build
 ### Requirements
