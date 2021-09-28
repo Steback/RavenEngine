@@ -33,7 +33,7 @@ namespace re {
      */
     Model::Model(std::string name, const std::string& fileName) : Asset(std::move(name), Type::MODEL) {
 #ifdef RE_DEBUG
-        logs::error(fmt::format("Load model: {}", fileName));
+        logs::log(fmt::format("Load model: {}", fileName));
 #endif
         File file = files::getFile(fileName);
         tinygltf::Model gltfModel;

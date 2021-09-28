@@ -12,8 +12,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageTypeFlagsEXT ,
         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
         void *) {
-    re::logs::error(pCallbackData->pMessage);
-
+    re::logs::log(pCallbackData->pMessage, re::logs::ERROR);
     return VK_FALSE;
 }
 

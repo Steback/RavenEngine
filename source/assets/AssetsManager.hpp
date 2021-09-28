@@ -100,7 +100,7 @@ namespace re {
     T *AssetsManager::get(const std::string& name) {
         uint32_t hashName = std::hash<std::string>()(name);
         if (assets.find(hashName) == assets.end()) {
-            logs::error(fmt::format("Asset not found {}", name));
+            logs::log(fmt::format("Asset not found {}", name));
             return nullptr;
         }
 
@@ -116,7 +116,7 @@ namespace re {
     template<typename T>
     T *AssetsManager::get(uint32_t id) {
         if (assets.find(id) == assets.end()) {
-            logs::error(fmt::format("Asset not found {}", id));
+            logs::log(fmt::format("Asset not found {}", id));
             return nullptr;
         }
 

@@ -10,12 +10,8 @@
 
 namespace re::logs {
 
-    inline void error(const std::string& message) {
-#ifdef RE_DEBUG
-        spdlog::error(message);
-#endif
-        LogsManager::getInstance()->getFile("error.log")->error(message);
-    }
+
+    void log(const std::string& message, Type type = INFO, const std::string& file = DEFAULT_LOGS_FILE_NAME);
 
     inline void addFile(const std::string& name) {
         LogsManager::getInstance()->addFile(name.c_str());

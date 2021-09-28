@@ -39,7 +39,7 @@ namespace re {
     Mesh::Mesh(std::string name, std::shared_ptr<Device> device, const tinygltf::Model &model, const tinygltf::Node &node)
             : Asset(std::move(name), Type::MESH), device(std::move(device)) {
 #ifdef RE_DEBUG
-        logs::error(fmt::format("Load Mesh: {}", this->name));
+        logs::log(fmt::format("Load Mesh: {}", this->name));
 #endif
         const tinygltf::Mesh& mesh = model.meshes[node.mesh];
 
@@ -210,7 +210,7 @@ namespace re {
 //                                break;
 //                            }
 //                            default: {
-//                                spdlog::error("Joint component type {} not supported!", jointComponentType);
+//                                spdlog::log("Joint component type {} not supported!", jointComponentType);
 //                                break;
 //                            }
 //                        }

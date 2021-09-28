@@ -11,7 +11,7 @@ int main(int argc, char** arg) {
         CLI11_PARSE(app, argc, arg);
         cube.run();
     } catch (const std::exception& e) {
-        re::logs::error(e.what());
+        re::logs::log(e.what());
     }
 
     return 0;

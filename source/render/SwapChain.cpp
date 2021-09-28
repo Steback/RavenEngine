@@ -135,7 +135,7 @@ namespace re {
     /**
      * @brief Acquire nex image to begin frame render
      * @param imageIndex Reference to image index to set the current index
-     * @return Vulkan result with success value or error code if failed
+     * @return Vulkan result with success value or log code if failed
      */
     VkResult SwapChain::acquireNextImage(uint32_t &imageIndex) {
         vkWaitForFences(logicalDevice, 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
@@ -154,7 +154,7 @@ namespace re {
      * @brief Submit command buffers to draw frame to present queue
      * @param commandBuffer Valid command buffer
      * @param imageIndex Current image index
-     * @return Vulkan result with success value or error code if failed
+     * @return Vulkan result with success value or log code if failed
      */
     VkResult SwapChain::submitCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
         if (imagesInFlight[imageIndex] != VK_NULL_HANDLE)

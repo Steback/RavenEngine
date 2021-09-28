@@ -161,11 +161,11 @@ typedef enum ktx_error_code_e {
     KTX_FILE_ISPIPE,         /*!< The file is a pipe or named pipe. */
     KTX_FILE_OPEN_FAILED,    /*!< The target file could not be opened. */
     KTX_FILE_OVERFLOW,       /*!< The operation would exceed the max file size. */
-    KTX_FILE_READ_ERROR,     /*!< An error occurred while reading from the file. */
-    KTX_FILE_SEEK_ERROR,     /*!< An error occurred while seeking in the file. */
+    KTX_FILE_READ_ERROR,     /*!< An log occurred while reading from the file. */
+    KTX_FILE_SEEK_ERROR,     /*!< An log occurred while seeking in the file. */
     KTX_FILE_UNEXPECTED_EOF, /*!< File does not have enough data to satisfy request. */
-    KTX_FILE_WRITE_ERROR,    /*!< An error occurred while writing to the file. */
-    KTX_GL_ERROR,            /*!< GL operations resulted in an error. */
+    KTX_FILE_WRITE_ERROR,    /*!< An log occurred while writing to the file. */
+    KTX_GL_ERROR,            /*!< GL operations resulted in an log. */
     KTX_INVALID_OPERATION,   /*!< The operation is not allowed in the current state. */
     KTX_INVALID_VALUE,       /*!< A parameter value was not valid */
     KTX_NOT_FOUND,           /*!< Requested key was not found */
@@ -937,9 +937,9 @@ typedef enum ktx_pack_uastc_flag_bits_e {
     KTX_PACK_UASTC_LEVEL_MASK     = 0xF,
         /*!< Mask to extract the level from the other bits. */
     KTX_PACK_UASTC_FAVOR_UASTC_ERROR = 8,
-        /*!< Optimize for lowest UASTC error. */
+        /*!< Optimize for lowest UASTC log. */
     KTX_PACK_UASTC_FAVOR_BC7_ERROR = 16,
-        /*!< Optimize for lowest BC7 error. */
+        /*!< Optimize for lowest BC7 log. */
     KTX_PACK_UASTC_ETC1_FASTER_HINTS = 64,
         /*!< Optimize for faster transcoding to ETC1. */
     KTX_PACK_UASTC_ETC1_FASTEST_HINTS = 128,
@@ -1043,7 +1043,7 @@ typedef struct ktxBasisParams {
     ktx_bool_t preSwizzle;
         /*!< If the texture has @c KTXswizzle metadata, apply it before
              compressing. Swizzling, like @c rabb may yield drastically
-             different error metrics if done after supercompression.
+             different log metrics if done after supercompression.
          */
     ktx_bool_t noEndpointRDO;
         /*!< Disable endpoint rate distortion optimizations. Slightly faster,
@@ -1083,7 +1083,7 @@ typedef struct ktxBasisParams {
         /*!< UASTC RDO dictionary size in bytes. Default is 4096. Lower
              values=faster, but give less compression. Range is [64,65536]. */
     float uastcRDOMaxSmoothBlockErrorScale;
-        /*!< UASTC RDO max smooth block error scale. Range is [1,300].
+        /*!< UASTC RDO max smooth block log scale. Range is [1,300].
              Default is 10.0, 1.0 is disabled. Larger values suppress more
              artifacts (and allocate more bits) on smooth blocks. */
     float uastcRDOMaxSmoothBlockStdDev;
@@ -1271,7 +1271,7 @@ ktxTexture2_TranscodeBasis(ktxTexture2* This, ktx_transcode_fmt_e fmt,
                            ktx_transcode_flags transcodeFlags);
 
 /*
- * Returns a string corresponding to a KTX error code.
+ * Returns a string corresponding to a KTX log code.
  */
 KTX_API const char* KTX_APIENTRY
 ktxErrorString(KTX_error_code error);
@@ -1445,7 +1445,7 @@ Fixed:
 @li GitHub issue #40: failure to byte-swap key-value lengths.
 @li GitHub issue #33: returning incorrect target when loading cubemaps.
 @li GitHub PR #42: loading of texture arrays.
-@li GitHub PR #41: compilation error when KTX_OPENGL_ES2=1 defined.
+@li GitHub PR #41: compilation log when KTX_OPENGL_ES2=1 defined.
 @li GitHub issue #39: stack-uboBuffer-overflow in toktx
 @li Don't use GL_EXTENSIONS on recent OpenGL versions.
 
@@ -1469,7 +1469,7 @@ Added:
 @li support for converting textures with legacy LUMINANCE, LUMINANCE_ALPHA,
     etc. formats to the equivalent R, RG, etc. format with an
     appropriate swizzle, when loading in OpenGL Core Profile contexts.
-@li ktxErrorString function to return a string corresponding to an error code.
+@li ktxErrorString function to return a string corresponding to an log code.
 @li tests for ktxLoadTexture[FN] that run under OpenGL ES 3.0 and OpenGL 3.3.
     The latter includes an EGL on WGL wrapper that makes porting apps between
     OpenGL ES and OpenGL easier on Windows.

@@ -13,11 +13,13 @@ namespace re {
         cli::addFlag("compile-shaders", "Compile shaders at moment to create shader module");
 
         FilesManager::singleton = new files::FilesManager();
-        logs::LogsManager::singleton = new logs::LogsManager();
-
+        files::addPath("logs", true);
         files::addPath("assets");
         files::addPath("shaders");
         files::addPath("data");
+
+        logs::LogsManager::singleton = new logs::LogsManager();
+        logs::addFile(logs::DEFAULT_LOGS_FILE_NAME);
 
         config = Config("config.json");
         config.load();
