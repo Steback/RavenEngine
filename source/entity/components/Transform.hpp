@@ -29,7 +29,7 @@ namespace re {
 
         [[nodiscard]] Matrix4 worldMatrix() const;
 
-        Matrix3 normalMatrix() const;
+        [[nodiscard]] Matrix3 normalMatrix() const;
 
         json serialize() override;
 

@@ -1,5 +1,7 @@
 #include "Transform.hpp"
 
+#include "nameof.hpp"
+
 
 namespace re {
 
@@ -58,34 +60,29 @@ namespace re {
 
     json Transform::serialize() {
         return {
-            {"position", {
-                {"x", position.x},
-                {"y", position.y},
-                {"z", position.z}
+            {std::string(NAMEOF(position)), {
+                position.x,
+                position.y,
+                position.z
             }},
-            {"rotation", {
-                {"w", rotation.w},
-                {"x", rotation.x},
-                {"y", rotation.y},
-                {"z", rotation.z}
+            {std::string(NAMEOF(rotation)), {
+                rotation.w,
+                rotation.x,
+                rotation.y,
+                rotation.z
             }},
-            {"scale", {
-                {"x", scale.x},
-                {"y", scale.y},
-                {"z", scale.z}
+            {std::string(NAMEOF(scale)), {
+                scale.x,
+                scale.y,
+                scale.z
             }}
         };
     }
 
     void Transform::serialize(json &component) {
-        auto pos = component["position"];
-        position = vec3(pos["x"].get<float>(), pos["y"].get<float>(), pos["z"].get<float>());
-
-        auto rot = component["rotation"];
-        rotation = quat(rot["w"].get<float>(), rot["x"].get<float>(), rot["y"].get<float>(), rot["z"].get<float>());
-
-        auto sle = component["scale"];
-        scale = vec3(sle["x"].get<float>(), sle["y"].get<float>(), sle["z"].get<float>());
+        position = vec3(component[std::string(NAMEOF(position))].get<std::array<float, 3>>().data());
+        rotation = quat(component[std::string(NAMEOF(rotation))].get<std::array<float, 4>>().data());
+        scale = vec3(component[std::string(NAMEOF(scale))].get<std::array<float, 3>>().data());
     }
 
     /**
