@@ -1,5 +1,7 @@
 #include "Light.hpp"
 
+#include "nameof.hpp"
+
 
 namespace re {
 
@@ -27,19 +29,18 @@ namespace re {
 
     json Light::serialize() {
         return {
-            {"color", {
-                {"r", color.x},
-                {"g", color.y},
-                {"b", color.z}
+            {std::string(NAMEOF(color)), {
+                color.x,
+                color.y,
+                color.z
             }},
-            {"ambient", ambient}
+            {std::string(NAMEOF(ambient)), ambient}
         };
     }
 
     void Light::serialize(json &component) {
-        auto col = component["color"];
-        color = {col["r"].get<float>(), col["g"].get<float>(), col["b"].get<float>()};
-        ambient = component["ambient"].get<float>();
+        color = Vector3(component[std::string(NAMEOF(color))].get<std::array<float, 3>>().data());
+        ambient = component[std::string(NAMEOF(ambient))].get<float>();
     }
 
 } // namespace re

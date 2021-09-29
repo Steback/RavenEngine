@@ -27,11 +27,11 @@
         {
             "Light": {
                 "ambient": 0.2,
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                }
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
             },
             "Transform": {
                 "position": [
