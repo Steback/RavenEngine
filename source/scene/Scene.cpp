@@ -41,6 +41,16 @@ namespace re {
 
         for (auto& entityJson : scene[std::string(NAMEOF(entities))])
             auto entity = addEntity(entityJson);
+
+        // TODO: Temporally solution. Need to find a better approach
+        while (true) {
+            auto view = registry.view<MeshRender>();
+            bool modelsLoaded = std::all_of(view.begin(), view.end(), [=, this](id_t id){
+                auto& meshRender = view.get<MeshRender>(id);
+                return meshRender.enable;
+            });
+            if (modelsLoaded) break;
+        }
     }
 
     void Scene::save() {
