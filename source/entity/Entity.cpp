@@ -1,5 +1,7 @@
 #include "Entity.hpp"
 
+#include "nameof.hpp"
+
 #include "assets/AssetsManager.hpp"
 #include "components/Transform.hpp"
 #include "components/MeshRender.hpp"
@@ -61,22 +63,22 @@ namespace re {
      */
     json Entity::serialize() {
         json entity = {};
-        entity["name"] = name;
+        entity[std::string(NAMEOF(name))] = name;
 
         // TODO: Find a way to it this dynamically
         if (hasComponent<Transform>())
-            entity["transform"] = getComponent<Transform>().serialize();
+            entity[std::string(NAMEOF_SHORT_TYPE(Transform))] = getComponent<Transform>().serialize();
 
         if (hasComponent<MeshRender>()) {
-            entity["meshRender"] = getComponent<MeshRender>().serialize();
+            entity[std::string(NAMEOF_SHORT_TYPE(MeshRender))] = getComponent<MeshRender>().serialize();
         }
 
         if (hasComponent<Camera>()) {
-            entity["camera"] = getComponent<Camera>().serialize();
+            entity[std::string(NAMEOF_SHORT_TYPE(Camera))] = getComponent<Camera>().serialize();
         }
 
         if (hasComponent<Light>()) {
-            entity["light"] = getComponent<Light>().serialize();
+            entity[std::string(NAMEOF_SHORT_TYPE(Light))] = getComponent<Light>().serialize();
         }
 
         return entity;
@@ -87,24 +89,26 @@ namespace re {
      * @param entity JSON Serialized data to set Entity
      */
     void Entity::serialize(json &entity) {
-        name = entity["name"];
+        name = entity[std::string(NAMEOF(name))];
 
-        if (!entity["transform"].empty())
-            addComponent<Transform>(entity["transform"]);
+        std::string nameComponent = std::string(NAMEOF_SHORT_TYPE(Transform));
+        if (!entity[nameComponent].empty())
+            addComponent<Transform>(entity[nameComponent]);
 
-        if (!entity["camera"].empty())
-            addComponent<Camera>(entity["camera"]);
+        nameComponent = std::string(NAMEOF_SHORT_TYPE(Camera));
+        if (!entity[nameComponent].empty())
+            addComponent<Camera>(entity[nameComponent]);
 
-        if (!entity["light"].empty())
-            addComponent<Light>(entity["light"]);
+        nameComponent = std::string(NAMEOF_SHORT_TYPE(Light));
+        if (!entity[nameComponent].empty())
+            addComponent<Light>(entity[nameComponent]);
 
+        nameComponent = std::string(NAMEOF_SHORT_TYPE(MeshRender));
         // TODO: Use promises to load mesh in other thread.
-        if (!entity["meshRender"].empty()) {
-            auto modelName = entity["meshRender"]["name"].get<std::string>();
+        if (!entity[nameComponent].empty()) {
+            auto modelName = entity[nameComponent]["name"].get<std::string>();
             addComponent<MeshRender>(AssetsManager::getInstance()->add<Model>(modelName, modelName));
         }
-
     }
 
 } // namespace re
-

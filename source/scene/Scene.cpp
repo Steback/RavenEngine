@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include "external/Json.hpp"
+#include "nameof.hpp"
 
 #include "Skybox.hpp"
 #include "entity/Entity.hpp"
@@ -38,14 +39,14 @@ namespace re {
         json scene;
         file.read(scene);
 
-        for (auto& entityJson : scene["entities"])
+        for (auto& entityJson : scene[std::string(NAMEOF(entities))])
             auto entity = addEntity(entityJson);
     }
 
     void Scene::save() {
         json scene;
 
-        auto& sceneEntities = scene["entities"] = {};
+        auto& sceneEntities = scene[std::string(NAMEOF(entities))] = {};
         for (auto& entity : entities)
             sceneEntities.push_back(entity->serialize());
 
