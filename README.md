@@ -19,6 +19,7 @@ The dependencies are installed using [Conan](https://conan.io/)
 | [Shaderc](https://github.com/google/shaderc) | 2021.1 | 
 | [CLI11](https://github.com/CLIUtils/CLI11) | 2.0.0 | 
 | [stb](https://github.com/nothings/stb) | x.x.x | 
+| [nameof](https://github.com/Neargye/nameof) | 0.10.1 | 
 
 ## Build
 ### Requirements

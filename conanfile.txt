@@ -12,6 +12,7 @@ imgui/1.84.1
 shaderc/2021.1
 cli11/2.0.0
 stb/cci.20210713
+nameof/0.10.1
 
 [generators]
 cmake
