@@ -2,7 +2,7 @@
 #define RAVENENGINE_SCENE_HPP
 
 
-#include <unordered_map>
+#include <vector>
 #include <memory>
 #include <string>
 
@@ -26,7 +26,7 @@ namespace re {
         friend class RenderSystem;
 
     public:
-        Scene(std::string fileName);
+        explicit Scene(std::string fileName);
 
         ~Scene() override;
 
@@ -55,7 +55,7 @@ namespace re {
     private:
         std::string fileName;
         entt::registry registry;
-        std::unordered_map<id_t, std::shared_ptr<Entity>> entities;
+        std::vector<std::shared_ptr<Entity>> entities;
         std::unique_ptr<Skybox> skybox;
         bool wasLoaded{};
     };

@@ -21,17 +21,19 @@ namespace re {
     Scene::~Scene() = default;
 
     std::shared_ptr<Entity> Scene::addEntity(const std::string &name) {
-        id_t id = registry.create();
-        return entities[id] = std::make_shared<Entity>(name, id, this);
+        std::shared_ptr<Entity> entity = std::make_shared<Entity>(name, registry.create(), this);
+        entities.push_back(entity);
+        return entity;
     }
 
-    std::shared_ptr<Entity> Scene::addEntity(json &entity) {
-        id_t id = registry.create();
-        return entities[id] = std::make_shared<Entity>(entity, id, this);
+    std::shared_ptr<Entity> Scene::addEntity(json &jsonEntity) {
+        std::shared_ptr<Entity> entity = std::make_shared<Entity>(jsonEntity, registry.create(), this);
+        entities.push_back(entity);
+        return entity;
     }
 
     void Scene::load() {
-        File file = files::getFile(fileName.c_str());
+        File file = files::getFile(fileName);
 
         json scene;
         file.read(scene);
@@ -43,9 +45,9 @@ namespace re {
     void Scene::save() {
         json scene;
 
-        scene["entities"] = {};
-        for (auto& [id, entity] : entities)
-            scene["entities"].push_back(entity->serialize());
+        auto& sceneEntities = scene["entities"] = {};
+        for (auto& entity : entities)
+            sceneEntities.push_back(entity->serialize());
 
         File file(files::getPath("data") / fileName);
         file.write(scene);
@@ -56,11 +58,11 @@ namespace re {
     }
 
     std::shared_ptr<Entity> Scene::getEntity(id_t id) {
-        return entities[id];
+        return entities[static_cast<uint32_t>(id)];
     }
 
     std::shared_ptr<Entity> Scene::getEntity(const std::string &name) {
-        for (auto& [id, entity] : entities) {
+        for (auto& entity : entities) {
             if (name == entity->getName()) return entity;
         }
 
