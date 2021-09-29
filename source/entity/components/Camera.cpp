@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "nameof.hpp"
+
 #include "Transform.hpp"
 #include "math/Matrix3.hpp"
 #include "entity/Entity.hpp"
@@ -86,12 +88,12 @@ namespace re {
 
     json Camera::serialize() {
         return {
-            {"type", type}
+            {std::string(NAMEOF(type)), type}
         };
     }
 
     void Camera::serialize(json &component) {
-        type = component["type"].get<Type>();
+        type = component[std::string(NAMEOF(type))].get<Type>();
     }
 
 } // namespace re
