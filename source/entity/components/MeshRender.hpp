@@ -12,14 +12,19 @@ namespace re {
 
     class MeshRender : public Component {
     public:
-        MeshRender(Model* model, Entity* owner);
+        MeshRender(const std::string& name, Entity* owner);
+
+        MeshRender(json& component, Entity* owner);
 
         json serialize() override;
 
         void serialize(json &component) override;
 
+        void setModel(const std::string& name);
+
     public:
-        Model* model;
+        Model* model{};
+        bool enable{};
     };
 
 } // namespace re

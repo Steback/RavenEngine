@@ -69,15 +69,18 @@ namespace re {
 
         for (auto& id : scene->getRegistry().view<Transform, MeshRender>()) {
             auto entity = scene->getEntity(id);
-            auto& transform = entity->getComponent<Transform>();
             auto& meshRender = entity->getComponent<MeshRender>();
 
-            mat4 transformMatrix = transform.worldMatrix();
-            uboTransform.mvp = viewProj * transformMatrix;
-            uboTransform.invTransform = transformMatrix.inverse();
+            if (meshRender.enable) {
+                auto& transform = entity->getComponent<Transform>();
 
-            meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
-            updateBuffer();
+                mat4 transformMatrix = transform.worldMatrix();
+                uboTransform.mvp = viewProj * transformMatrix;
+                uboTransform.invTransform = transformMatrix.inverse();
+
+                meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
+                updateBuffer();
+            }
         }
     }
 

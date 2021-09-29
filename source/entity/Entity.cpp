@@ -69,17 +69,14 @@ namespace re {
         if (hasComponent<Transform>())
             entity[std::string(NAMEOF_SHORT_TYPE(Transform))] = getComponent<Transform>().serialize();
 
-        if (hasComponent<MeshRender>()) {
+        if (hasComponent<MeshRender>())
             entity[std::string(NAMEOF_SHORT_TYPE(MeshRender))] = getComponent<MeshRender>().serialize();
-        }
 
-        if (hasComponent<Camera>()) {
+        if (hasComponent<Camera>())
             entity[std::string(NAMEOF_SHORT_TYPE(Camera))] = getComponent<Camera>().serialize();
-        }
 
-        if (hasComponent<Light>()) {
+        if (hasComponent<Light>())
             entity[std::string(NAMEOF_SHORT_TYPE(Light))] = getComponent<Light>().serialize();
-        }
 
         return entity;
     }
@@ -95,6 +92,10 @@ namespace re {
         if (!entity[nameComponent].empty())
             addComponent<Transform>(entity[nameComponent]);
 
+        nameComponent = std::string(NAMEOF_SHORT_TYPE(MeshRender));
+        if (!entity[nameComponent].empty())
+            addComponent<MeshRender>(entity[nameComponent]);
+
         nameComponent = std::string(NAMEOF_SHORT_TYPE(Camera));
         if (!entity[nameComponent].empty())
             addComponent<Camera>(entity[nameComponent]);
@@ -102,13 +103,6 @@ namespace re {
         nameComponent = std::string(NAMEOF_SHORT_TYPE(Light));
         if (!entity[nameComponent].empty())
             addComponent<Light>(entity[nameComponent]);
-
-        nameComponent = std::string(NAMEOF_SHORT_TYPE(MeshRender));
-        // TODO: Use promises to load mesh in other thread.
-        if (!entity[nameComponent].empty()) {
-            auto modelName = entity[nameComponent]["name"].get<std::string>();
-            addComponent<MeshRender>(AssetsManager::getInstance()->add<Model>(modelName, modelName));
-        }
     }
 
 } // namespace re
