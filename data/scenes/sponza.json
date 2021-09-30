@@ -1,0 +1,81 @@
+{
+    "entities": [
+        {
+            "Camera": {
+                "type": 1
+            },
+            "Transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "name": "Camera"
+        },
+        {
+            "Light": {
+                "ambient": 0.2,
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "Transform": {
+                "position": [
+                    0.0,
+                    500.0,
+                    0.0
+                ],
+                "rotation": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "name": "Light"
+        },
+        {
+            "MeshRender": {
+                "name": "models/Sponza.gltf"
+            },
+            "Transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "name": "Sponza"
+        }
+    ]
+}
