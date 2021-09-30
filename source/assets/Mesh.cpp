@@ -21,12 +21,11 @@ namespace re {
             { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) },
             { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) },
             { 2, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv0) },
-            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv1) },
         };
     }
 
     bool Mesh::Vertex::operator==(const Mesh::Vertex &other) const {
-        return position == other.position && normal == other.normal && uv0 == other.uv0 && uv1 == other.uv1;
+        return position == other.position && normal == other.normal && uv0 == other.uv0;
     }
 
     /**
@@ -131,18 +130,10 @@ namespace re {
                 const float *bufferPos = nullptr;
                 const float *bufferNormals = nullptr;
                 const float *bufferTexCoordSet0 = nullptr;
-                const float *bufferTexCoordSet1 = nullptr;
-//                const void *bufferJoints = nullptr;
-//                const float *bufferWeights = nullptr;
 
                 int posByteStride;
                 int normByteStride;
                 int uv0ByteStride;
-                int uv1ByteStride;
-//                int jointByteStride;
-//                int weightByteStride;
-//
-//                int jointComponentType;
 
                 if (primitive.attributes.find("POSITION") != primitive.attributes.end()) {
                     const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("POSITION")->second];
@@ -166,63 +157,11 @@ namespace re {
                     uv0ByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
                 }
 
-                if (primitive.attributes.find("TEXCOORD_1") != primitive.attributes.end()) {
-                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("TEXCOORD_1")->second];
-                    const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
-                    bufferTexCoordSet1 = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
-                    uv1ByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
-                }
-
-//                if (primitive.attributes.find("JOINTS_0") != primitive.attributes.end()) {
-//                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("JOINTS_0")->second];
-//                    const tinygltf::BufferView &view = model.bufferViews[accessor.bufferView];
-//                    bufferJoints = &(model.buffers[view.uboBuffer].data[accessor.byteOffset + view.byteOffset]);
-//                    jointComponentType = accessor.componentType;
-//                    jointByteStride = accessor.ByteStride(view) ? (accessor.ByteStride(view) / tinygltf::GetComponentSizeInBytes(jointComponentType)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC4);
-//                }
-//
-//                if (primitive.attributes.find("WEIGHTS_0") != primitive.attributes.end()) {
-//                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("WEIGHTS_0")->second];
-//                    const tinygltf::BufferView &view = model.bufferViews[accessor.bufferView];
-//                    bufferWeights = reinterpret_cast<const float *>(&(model.buffers[view.uboBuffer].data[accessor.byteOffset + view.byteOffset]));
-//                    weightByteStride = accessor.ByteStride(view) ? (accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC4);
-//                }
-
-//                bool hasSkin = (bufferJoints && bufferWeights);
-
                 for (size_t v = 0; v < vertexCount; ++v) {
                     Mesh::Vertex vert{};
                     vert.position = vec3(&bufferPos[v * posByteStride]);
                     vert.normal = (vec3(bufferNormals ? vec3(&bufferNormals[v * normByteStride]) : vec3(0.0f))).normal();
                     vert.uv0 = bufferTexCoordSet0 ? vec2(&bufferTexCoordSet0[v * uv0ByteStride]) : vec2(0.0f);
-                    vert.uv1 = bufferTexCoordSet1 ? vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : vec2(0.0f);
-
-//                    if (hasSkin) {
-//                        switch (jointComponentType) {
-//                            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT: {
-//                                const auto *buf = static_cast<const uint16_t*>(bufferJoints);
-//                                vert.joint0 = vec4((const float*)&buf[v * jointByteStride]);
-//                                break;
-//                            }
-//                            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE: {
-//                                const auto *buf = static_cast<const uint8_t*>(bufferJoints);
-//                                vert.joint0 = vec4((const float*)&buf[v * jointByteStride]);
-//                                break;
-//                            }
-//                            default: {
-//                                spdlog::log("Joint component type {} not supported!", jointComponentType);
-//                                break;
-//                            }
-//                        }
-//                    } else {
-//                        vert.joint0 = vec4(0.0f);
-//                    }
-//
-//                    vert.weight0 = hasSkin ? vec4(&bufferWeights[v * weightByteStride]) : vec4(0.0f);
-//
-//                    // Fix for all zero weights
-//                    if (vert.weight0.length() == 0.0f)
-//                        vert.weight0 = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
                     vertices.push_back(vert);
                 }

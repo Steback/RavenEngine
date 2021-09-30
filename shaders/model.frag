@@ -8,8 +8,7 @@ layout(location = 0) out vec4 outColor;
 
 layout(location = 0) in vec3 inWorlPos;
 layout(location = 1) in vec3 inNormal;
-layout(location = 2) in vec2 inUV0;
-layout(location = 3) in vec2 inUV1;
+layout(location = 2) in vec2 inUV;
 
 layout (set = 1, binding = 0) uniform sampler2D colorMap;
 
@@ -29,7 +28,7 @@ void main() {
     vec4 baseColor;
 
     if (material.baseColorTextureSet > -1) {
-        baseColor = texture(colorMap, material.baseColorTextureSet == 0 ? inUV0 : inUV1) * material.baseColorFactor;
+        baseColor = texture(colorMap, inUV) * material.baseColorFactor;
     } else {
         baseColor = material.baseColorFactor;
     }

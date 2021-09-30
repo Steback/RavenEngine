@@ -28,7 +28,6 @@ namespace re {
             vec3 position{};
             vec3 normal{};
             vec2 uv0{};
-            vec2 uv1{};
 
             static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 
