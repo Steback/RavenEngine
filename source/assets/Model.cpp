@@ -87,24 +87,8 @@ namespace re {
         for (auto& node : nodes) {
             if (node.mesh) {
                 ubo.nodeMatrix = getNodeMatrix(node.index);
-
-                std::vector<VkDescriptorSet> sets = {node.mesh->getMaterial()->descriptorSet};
-                vkCmdBindDescriptorSets(commandBuffer,
-                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                        layout, 1, static_cast<uint32_t>(sets.size()), sets.data(),
-                                        0, nullptr);
-
-
-                Material& material = *node.mesh->material;
-                // Pass material parameters as push constants
-                Material::PushConstantBlock pushConstBlockMaterial{};
-                pushConstBlockMaterial.colorTextureSet = material.textures[Material::BASE] ? material.texCoordSets.baseColor : -1;
-                pushConstBlockMaterial.baseColorFactor = material.baseColorFactor;
-
-                vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(pushConstBlockMaterial), &pushConstBlockMaterial);
-
                 node.mesh->bind(commandBuffer);
-                node.mesh->draw(commandBuffer);
+                node.mesh->draw(commandBuffer, layout);
             }
         }
     }

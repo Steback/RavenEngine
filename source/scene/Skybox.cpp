@@ -44,8 +44,9 @@ namespace re {
         uboData.transform = transform;
         uboBuffer->writeTo(&uboData);
 
-        mesh->bind(commandBuffer);
-        mesh->draw(commandBuffer);
+        // TODO: Temporally unused
+//        mesh->bind(commandBuffer);
+//        mesh->draw(commandBuffer);
     }
 
     // TODO: Remove this descriptor pool and layout from here

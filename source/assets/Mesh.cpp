@@ -44,12 +44,9 @@ namespace re {
 
         Mesh::Data data = Mesh::loadMesh(model, mesh);
 
-        for (auto& primitive : mesh.primitives) {
-            const tinygltf::Material& gltfMaterial = model.materials[primitive.material];
-            material = AssetsManager::getInstance()->add<Material>(gltfMaterial.name, model, gltfMaterial);
-        }
         createVertexBuffer(data.vertices);
         createIndexBuffer(data.indices);
+        primitives = std::move(data.primitives);
     }
 
     Mesh::~Mesh() = default;
@@ -72,11 +69,20 @@ namespace re {
      * @brief Draw Mesh
      * @param commandBuffer Valid Command buffer in recording state
      */
-    void Mesh::draw(VkCommandBuffer commandBuffer) const {
-        if (hasIndexBuffer) {
-            vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
-        } else {
-            vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+    void Mesh::draw(VkCommandBuffer commandBuffer, VkPipelineLayout layout) const {
+        for (auto& primitive : primitives) {
+            if (primitive.indexCount > 0) {
+                vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &primitive.material->descriptorSet, 0, nullptr);
+
+                Material& material = *primitive.material;
+                // Pass material parameters as push constants
+                Material::PushConstantBlock pushConstBlockMaterial{};
+                pushConstBlockMaterial.colorTextureSet = material.textures[Material::BASE] ? material.texCoordSets.baseColor : -1;
+                pushConstBlockMaterial.baseColorFactor = material.baseColorFactor;
+                vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(pushConstBlockMaterial), &pushConstBlockMaterial);
+
+                vkCmdDrawIndexed(commandBuffer, primitive.indexCount, 1, primitive.firstIndex, 0, 0);
+            }
         }
     }
 
@@ -103,14 +109,6 @@ namespace re {
         return hasIndexBuffer;
     }
 
-    /**
-     * @brief Get current material used by Mesh
-     * @return Pointer to Material
-     */
-    const Material* Mesh::getMaterial() const {
-        return material;
-    }
-
     // TODO: Disable some GLTF vertex attributes(Not used for now)
     /**
      * @brief Load Mesh Data from GLTF2 file
@@ -121,12 +119,16 @@ namespace re {
     Mesh::Data Mesh::loadMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh) {
         std::vector<Mesh::Vertex> vertices;
         std::vector<uint32_t> indices;
+        std::vector<Primitive> primitives;
 
-        for (auto primitive : mesh.primitives) {
-            uint32_t vertexCount = 0;
+        for (auto gltfPrimitive : mesh.primitives) {
+            auto firstIndex = static_cast<uint32_t>(indices.size());
+            auto vertexStart = static_cast<uint32_t>(vertices.size());
+            uint32_t indexCount = 0;
 
             // Vertices
             {
+                uint32_t vertexCount = 0;
                 const float *bufferPos = nullptr;
                 const float *bufferNormals = nullptr;
                 const float *bufferTexCoordSet0 = nullptr;
@@ -135,23 +137,23 @@ namespace re {
                 int normByteStride;
                 int uv0ByteStride;
 
-                if (primitive.attributes.find("POSITION") != primitive.attributes.end()) {
-                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("POSITION")->second];
+                if (gltfPrimitive.attributes.find("POSITION") != gltfPrimitive.attributes.end()) {
+                    const tinygltf::Accessor& accessor = model.accessors[gltfPrimitive.attributes.find("POSITION")->second];
                     const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
                     bufferPos = reinterpret_cast<const float*>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
                     vertexCount = static_cast<uint32_t>(accessor.count);
                     posByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC3);
                 }
 
-                if (primitive.attributes.find("NORMAL") != primitive.attributes.end()) {
-                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("NORMAL")->second];
+                if (gltfPrimitive.attributes.find("NORMAL") != gltfPrimitive.attributes.end()) {
+                    const tinygltf::Accessor& accessor = model.accessors[gltfPrimitive.attributes.find("NORMAL")->second];
                     const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
                     bufferNormals = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
                     normByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC3);
                 }
 
-                if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
-                    const tinygltf::Accessor& accessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
+                if (gltfPrimitive.attributes.find("TEXCOORD_0") != gltfPrimitive.attributes.end()) {
+                    const tinygltf::Accessor& accessor = model.accessors[gltfPrimitive.attributes.find("TEXCOORD_0")->second];
                     const tinygltf::BufferView& view = model.bufferViews[accessor.bufferView];
                     bufferTexCoordSet0 = reinterpret_cast<const float *>(&(model.buffers[view.buffer].data[accessor.byteOffset + view.byteOffset]));
                     uv0ByteStride = accessor.ByteStride(view) ? (int)(accessor.ByteStride(view) / sizeof(float)) : tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
@@ -169,9 +171,11 @@ namespace re {
 
             // Indices
             {
-                const tinygltf::Accessor &accessor = model.accessors[primitive.indices > -1 ? primitive.indices : 0];
+                const tinygltf::Accessor &accessor = model.accessors[gltfPrimitive.indices > -1 ? gltfPrimitive.indices : 0];
                 const tinygltf::BufferView &bufferView = model.bufferViews[accessor.bufferView];
                 const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
+
+                indexCount += static_cast<uint32_t>(accessor.count);
 
                 const void *dataPtr = &(buffer.data[accessor.byteOffset + bufferView.byteOffset]);
 
@@ -202,9 +206,18 @@ namespace re {
                     }
                 }
             }
+
+            Primitive primitive{};
+            primitive.firstIndex = firstIndex;
+            primitive.indexCount = indexCount;
+
+            tinygltf::Material material = model.materials[gltfPrimitive.material];
+            primitive.material = AssetsManager::getInstance()->add<Material>(material.name, model, material);
+
+            primitives.push_back(primitive);
         }
 
-        return Data{vertices, indices};
+        return Data{vertices, indices, primitives};
     }
 
     void Mesh::createVertexBuffer(const std::vector<Vertex> &vertices) {
