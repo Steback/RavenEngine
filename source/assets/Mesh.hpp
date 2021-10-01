@@ -60,7 +60,7 @@ namespace re {
 
         [[nodiscard]] uint32_t getIndexCount() const;
 
-        static Data loadMesh(const tinygltf::Model& model, const tinygltf::Mesh& mesh);
+        static Data loadMesh(const tinygltf::Model& input, const tinygltf::Mesh& mesh);
 
     private:
         void createVertexBuffer(const std::vector<Vertex>& vertices);
