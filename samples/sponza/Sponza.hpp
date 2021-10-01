@@ -19,6 +19,7 @@ public:
 
 private:
     std::shared_ptr<re::Entity> entity;
+    std::shared_ptr<re::Entity> camera;
     re::vec3 eulerAngles;
 };
 
