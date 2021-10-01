@@ -24,6 +24,7 @@ namespace re {
         config = Config("config.json");
         config.load();
 
+        Time::singleton = new Time();
         input::InputSystem::singleton = new input::InputSystem();
         renderer = std::make_unique<Renderer>(appName, config);
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
@@ -34,6 +35,7 @@ namespace re {
         delete jobs::JobSystem::singleton;
         delete AssetsManager::singleton;
         delete input::InputSystem::singleton;
+        delete Time::singleton;
         delete logs::LogsManager::singleton;
         delete FilesManager::singleton;
         delete cli::CliOptions::singleton;
@@ -54,6 +56,8 @@ namespace re {
     }
 
     void Base::update() {
+        Time::getInstance()->update();
+
         if (renderSystem) renderSystem->update(renderer->getAspectRatio());
 
         scene->update();

@@ -24,7 +24,7 @@ void Sponza::onUpdate() {
     if (re::input::getKey(re::input::KEY_LEFT)) rotate.x -= 1.0f;
 
     if (rotate * rotate > std::numeric_limits<float>::epsilon())
-        rotation += lockSpeed * deltaTime * rotate.normal();
+        rotation += lockSpeed * re::time::deltaTime() * rotate.normal();
 
     rotation.x = std::clamp(rotation.x, -1.5f, 1.5f);
     rotation.y = re::mod(rotation.y, re::twoPi());
@@ -43,7 +43,7 @@ void Sponza::onUpdate() {
 //    if (input.getKey(KeyMappings::moveDown)) moveDir -= upDir;
 
     if (moveDir * moveDir > std::numeric_limits<float>::epsilon())
-        translation += moveSpeed * deltaTime * moveDir.normal();
+        translation += moveSpeed * re::time::deltaTime() * moveDir.normal();
 
     transform.position = translation;
     transform.rotation = re::quat(rotation);

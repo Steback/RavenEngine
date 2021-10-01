@@ -20,6 +20,7 @@
 #include "config/CliOptions.hpp"
 #include "jobSystem/JobSystem.hpp"
 #include "input/Input.hpp"
+#include "time/Time.hpp"
 
 
 namespace re {
