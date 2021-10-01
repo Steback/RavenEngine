@@ -154,7 +154,7 @@ namespace re {
 
             static InputSystem* getInstance();
 
-            bool getKey(int key);
+            bool getKey(int key, bool once = true);
 
             void setKey(int key, KeyState state);
 
