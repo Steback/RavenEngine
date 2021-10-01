@@ -60,8 +60,6 @@ namespace re {
 
         [[nodiscard]] uint32_t getIndexCount() const;
 
-        [[nodiscard]] bool isHasIndexBuffer() const;
-
         static Data loadMesh(const tinygltf::Model& model, const tinygltf::Mesh& mesh);
 
     private:
@@ -76,7 +74,6 @@ namespace re {
         std::vector<Primitive> primitives;
         uint32_t vertexCount{};
         uint32_t indexCount{};
-        bool hasIndexBuffer{false};
     };
 
 } // namespace re

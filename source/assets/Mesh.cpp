@@ -41,7 +41,6 @@ namespace re {
         logs::log(fmt::format("Load Mesh: {}", this->name));
 #endif
         const tinygltf::Mesh& mesh = model.meshes[node.mesh];
-
         Mesh::Data data = Mesh::loadMesh(model, mesh);
 
         createVertexBuffer(data.vertices);
@@ -59,10 +58,7 @@ namespace re {
         VkBuffer buffers[] = { vertexBuffer->getBuffer() };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
-
-        if (hasIndexBuffer) {
-            vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
-        }
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
     }
 
     /**
@@ -100,13 +96,6 @@ namespace re {
      */
     uint32_t Mesh::getIndexCount() const {
         return indexCount;
-    }
-
-    /**
-     * @brief Check if Mesh have Index buffer
-     */
-    bool Mesh::isHasIndexBuffer() const {
-        return hasIndexBuffer;
     }
 
     // TODO: Disable some GLTF vertex attributes(Not used for now)
@@ -235,9 +224,6 @@ namespace re {
 
     void Mesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
         indexCount = indices.size();
-        hasIndexBuffer = indexCount > 0;
-
-        if (!hasIndexBuffer) return;
 
         VkDeviceSize size = sizeof(indices[0]) * indexCount;
 
