@@ -19,6 +19,7 @@ public:
 
 private:
     std::shared_ptr<re::Entity> entity;
+    re::vec3 eulerAngles;
 };
 
 
