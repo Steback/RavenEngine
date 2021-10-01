@@ -1,6 +1,7 @@
 #include "Window.hpp"
 
 #include "utils/Utils.hpp"
+#include "input/InputSystem.hpp"
 
 
 namespace re {
@@ -21,6 +22,7 @@ namespace re {
 
         glfwSetWindowUserPointer(window, this);
         glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+        glfwSetKeyCallback(window, input::InputSystem::keyCallback);
     }
 
     Window::~Window() {

@@ -19,6 +19,7 @@
 #include "scene/Scene.hpp"
 #include "config/CliOptions.hpp"
 #include "jobSystem/JobSystem.hpp"
+#include "input/Input.hpp"
 
 
 namespace re {

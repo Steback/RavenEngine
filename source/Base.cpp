@@ -24,6 +24,7 @@ namespace re {
         config = Config("config.json");
         config.load();
 
+        input::InputSystem::singleton = new input::InputSystem();
         renderer = std::make_unique<Renderer>(appName, config);
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
         jobs::JobSystem::singleton = new jobs::JobSystem();
@@ -32,6 +33,7 @@ namespace re {
     Base::~Base() {
         delete jobs::JobSystem::singleton;
         delete AssetsManager::singleton;
+        delete input::InputSystem::singleton;
         delete logs::LogsManager::singleton;
         delete FilesManager::singleton;
         delete cli::CliOptions::singleton;
