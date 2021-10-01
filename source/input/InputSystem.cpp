@@ -21,14 +21,8 @@ namespace re::input {
      * @param key Key code to query
      * @param once [Optional] reset the key value once was query if was pressed. By default is true.
      */
-    bool InputSystem::getKey(int key, bool once) {
-        if (once) {
-            bool state = keys[key];
-            keys[key] = KeyState::RELEASE;
-            return state;
-        } else {
-            return keys[key];
-        }
+    bool InputSystem::getKey(int key) {
+        return keys[key];
     }
 
     /**

@@ -6,8 +6,14 @@
 
 namespace re::input {
 
-    inline bool getKey(int key, bool once = true) {
-        return InputSystem::getInstance()->getKey(key, once);
+    inline bool getKey(int key, bool once = false) {
+        if (once) {
+            bool value = InputSystem::getInstance()->getKey(key);
+            InputSystem::getInstance()->setKey(key, KeyState::RELEASE);
+            return value;
+        } else {
+            return InputSystem::getInstance()->getKey(key);
+        }
     }
 
     inline void setKey(int key, KeyState state) {
