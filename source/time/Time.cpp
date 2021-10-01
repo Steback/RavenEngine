@@ -3,6 +3,8 @@
 
 namespace re {
 
+    Time* Time::singleton;
+
     Time::Time() {
         deltaTime = 0;
         currentTime = std::chrono::high_resolution_clock::now();

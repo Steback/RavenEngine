@@ -13,6 +13,8 @@ Sponza::Sponza(CLI::App &app) : re::Base("Sponza", app) {
 Sponza::~Sponza() = default;
 
 void Sponza::onUpdate() {
+    if (!camera) return;
+
     auto& transform = camera->getComponent<re::Transform>();
     re::vec3 rotation = transform.getEulerAngles();
     re::vec3 translation = transform.position;
