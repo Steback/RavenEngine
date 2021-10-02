@@ -44,12 +44,12 @@ namespace re {
 
     public:
         Type type{};
+        float fov{radians(45.0f)};
+        float zNear{0.1f}, zFar{100};
 
     private:
         Matrix4 projection{1.0f};
         Matrix4 view{1.0f};
-        float fov{radians(45.0f)};
-        float zNear{0.1f}, zFar{100};
     };
 
 

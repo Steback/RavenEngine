@@ -28,7 +28,7 @@ void Sponza::onUpdate() {
         vec3 direction;
         direction.x = std::cos(yaw) * std::cos(pitch);
         direction.y = std::sin(pitch);
-        direction.x = std::sin(yaw) * std::cos(pitch);
+        direction.z = std::sin(yaw) * std::cos(pitch);
         transform.rotation += lockSpeed * time::deltaTime() * quat(direction);
         transform.rotation.normalise();
     }
@@ -40,36 +40,44 @@ void Sponza::onDrawImGui() {
     {
         if (!entity) return;
 
-        auto& transform = entity->getComponent<Transform>();
-        ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
-        ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
-        ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
-        transform.rotation = quat(radians(eulerAngles));
-
+        {
+            auto& transform = entity->getComponent<Transform>();
+            ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
+            ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
+            ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
+            transform.rotation = quat(radians(eulerAngles));
+        }
         ImGui::Separator();
+        {
+            auto& cameraTransform = camera->getComponent<Transform>();
+            ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
 
-        auto& cameraTransform = camera->getComponent<Transform>();
-        ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
+            vec3 cameraAngles = degrees(cameraTransform.getEulerAngles());
+            ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
 
-        vec3 cameraAngles = degrees(cameraTransform.getEulerAngles());
-        ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
+            auto& cameraComponent = camera->getComponent<Camera>();
+            float fov = degrees(cameraComponent.fov);
+            ImGui::InputFloat(fmt::format("{} FOV", camera->getName()).c_str(), &fov);
+            cameraComponent.fov = radians(fov);
 
-        auto& cameraComponent = camera->getComponent<Camera>();
-
+            ImGui::InputFloat(fmt::format("{} Near Plane", camera->getName()).c_str(), &cameraComponent.zNear);
+            ImGui::InputFloat(fmt::format("{} Far Plane", camera->getName()).c_str(), &cameraComponent.zFar);
+        }
         ImGui::Separator();
+        {
+            vec2 cursorPosition = input::getCursorPosition();
+            ImGui::Text("%s", fmt::format("Cursor position X: {} - Y: {}", cursorPosition.x, cursorPosition.y).c_str());
 
-        vec2 cursorPosition = input::getCursorPosition();
-        ImGui::Text("%s", fmt::format("Cursor position X: {} - Y: {}", cursorPosition.x, cursorPosition.y).c_str());
-
-        vec2 cursorOffset = input::getCursorOffset();
-        ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
-
+            vec2 cursorOffset = input::getCursorOffset();
+            ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
+        }
         ImGui::Separator();
-
-        if (ImGui::Button("Save")) {
-            jobs::submit([scene = scene]() {
-                scene->save();
-            });
+        {
+            if (ImGui::Button("Save")) {
+                jobs::submit([scene = scene]() {
+                    scene->save();
+                });
+            }
         }
     }
     ImGui::End();
