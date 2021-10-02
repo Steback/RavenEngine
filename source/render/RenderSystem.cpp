@@ -91,7 +91,7 @@ namespace re {
     void RenderSystem::update(float aspect) {
         if (camera) {
             auto& cameraComponent = camera->getComponent<Camera>();
-            cameraComponent.setPerspectiveProjection(radians(50.f), aspect, 0.1f, 10.f);
+            cameraComponent.setPerspectiveProjection(aspect);
         }
     }
 

@@ -2,7 +2,10 @@
     "entities": [
         {
             "Camera": {
-                "type": 1
+                "fov": 0.7853981852531433,
+                "type": 1,
+                "zFar": 100.0,
+                "zNear": 0.1
             },
             "Transform": {
                 "position": [

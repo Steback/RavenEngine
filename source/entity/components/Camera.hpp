@@ -3,6 +3,7 @@
 
 
 #include "Component.hpp"
+#include "math/Common.hpp"
 #include "math/Vector3.hpp"
 #include "math/Matrix4.hpp"
 #include "math/Quaternion.hpp"
@@ -19,13 +20,13 @@ namespace re {
         };
 
     public:
-        explicit Camera(Type type, Entity* owner);
+        explicit Camera(Type type, float fov, float zNear, float zFar, Entity* owner);
 
         Camera(json& component, Entity* owner);
 
-        void setOrthographicProjection(float left, float right, float top, float bottom, float near, float far);
+        void setOrthographicProjection(float left, float right, float top, float bottom);
 
-        void setPerspectiveProjection(float fovy, float aspect, float near, float far);
+        void setPerspectiveProjection(float aspect);
 
         void setViewDirection(const vec3 &position, const quat &rotation);
 
@@ -47,6 +48,8 @@ namespace re {
     private:
         Matrix4 projection{1.0f};
         Matrix4 view{1.0f};
+        float fov{radians(45.0f)};
+        float zNear{0.1f}, zFar{100};
     };
 
 
