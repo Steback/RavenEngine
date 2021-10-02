@@ -16,9 +16,20 @@ void Sponza::onUpdate() {
     if (!camera) return;
 
     auto& transform = camera->getComponent<re::Transform>();
-    re::vec3 rotation = transform.getEulerAngles();
-    re::vec3 translation = transform.position;
 
+    re::vec2 cursorOffset = re::input::getCursorOffset();
+    if (re::input::getKey(re::input::KEY_LEFT_SHIFT) && re::input::getKey(re::input::KEY_LEFT_ALT) && re::input::getMouseButton(re::input::MouseButton::LEFT)) {
+
+    } else if (re::input::getKey(re::input::KEY_LEFT_ALT) && re::input::getMouseButton(re::input::MouseButton::LEFT)) {
+        float yaw = cursorOffset.x;
+        float pitch = cursorOffset.y;
+        re::vec3 direction;
+        direction.x = std::cos(yaw) * std::cos(pitch);
+        direction.y = std::sin(pitch);
+        direction.x = std::sin(yaw) * std::cos(pitch);
+        transform.rotation += lockSpeed * re::time::deltaTime() * re::quat(direction);
+        transform.rotation.normalise();
+    }
 }
 
 void Sponza::onDrawImGui() {
@@ -39,8 +50,7 @@ void Sponza::onDrawImGui() {
         ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
 
         re::vec3 cameraAngles = re::degrees(cameraTransform.getEulerAngles());
-        ImGui::InputFloat3(fmt::format("{} Rotation", camera->getName()).c_str(), cameraAngles.ptr());
-        cameraTransform.rotation = re::quat(re::radians(re::radians(cameraAngles)));
+        ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
 
         auto& cameraComponent = camera->getComponent<re::Camera>();
 
@@ -51,6 +61,8 @@ void Sponza::onDrawImGui() {
 
         re::vec2 cursorOffset = re::input::getCursorOffset();
         ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
+
+        ImGui::Separator();
 
         if (ImGui::Button("Save")) {
             re::jobs::submit([scene = scene]() {
