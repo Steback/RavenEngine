@@ -30,17 +30,46 @@ namespace re::input {
      * @param key Key code to query
      * @param state New state to set
      */
-    void InputSystem::setKey(int key, KeyState state) {
+    void InputSystem::setKey(int key, State state) {
         keys[key] = state;
     }
 
+    /**
+     * @note Just LEFT, RIGHT and MIDDLE button work for now
+     * @param button Button key to query
+     * @return Current state of button
+     */
+    bool InputSystem::getMouseButton(MouseButton button) {
+        return mouseButtons[button];
+    }
+
+    /**
+     * @note Just LEFT, RIGHT and MIDDLE button work for now
+     * @param button Button key to query
+     * @param state New state to set
+     */
+    void InputSystem::setMouseButton(MouseButton button, State state) {
+        mouseButtons[button] = state;
+    }
+
     void InputSystem::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        if (action == GLFW_PRESS) {
-            getInstance()->setKey(key, KeyState::PRESS);
-        } else if (action == GLFW_RELEASE) {
-            getInstance()->setKey(key, KeyState::RELEASE);
+        if (action == State::PRESS) {
+            getInstance()->setKey(key, State::PRESS);
+        } else if (action == State::RELEASE) {
+            getInstance()->setKey(key, State::RELEASE);
         }
 
+    }
+
+    void InputSystem::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+        // TODO: Temporally just 3 mouse buttons
+        if (button > 2) return;
+
+        if (action == State::PRESS) {
+            getInstance()->mouseButtons[button] = State::PRESS;
+        } else if (action == State::RELEASE) {
+            getInstance()->mouseButtons[button] = State::RELEASE;
+        }
     }
 
 } // namespace re::input

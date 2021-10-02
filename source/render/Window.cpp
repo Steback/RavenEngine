@@ -23,6 +23,7 @@ namespace re {
         glfwSetWindowUserPointer(window, this);
         glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
         glfwSetKeyCallback(window, input::InputSystem::keyCallback);
+        glfwSetMouseButtonCallback(window, input::InputSystem::mouseButtonCallback);
     }
 
     Window::~Window() {

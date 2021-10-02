@@ -138,9 +138,20 @@ namespace re {
             KEY_LAST = GLFW_KEY_LAST,
         };
 
-        enum KeyState {
+        enum State {
             PRESS = GLFW_PRESS,
             RELEASE = GLFW_RELEASE,
+        };
+
+        enum MouseButton {
+            LEFT = GLFW_MOUSE_BUTTON_LEFT,
+            RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
+            MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE
+        };
+
+        struct Mouse {
+            MouseButton button;
+            State state;
         };
 
         class InputSystem {
@@ -156,13 +167,20 @@ namespace re {
 
             bool getKey(int key);
 
-            void setKey(int key, KeyState state);
+            void setKey(int key, State state);
+
+            bool getMouseButton(MouseButton button);
+
+            void setMouseButton(MouseButton button, State state);
 
         private:
             static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+            static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
             static InputSystem* singleton;
             std::array<bool, 512> keys{};
+            std::array<bool, 3> mouseButtons{};
         };
 
     } // namespace input
