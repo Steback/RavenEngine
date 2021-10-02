@@ -39,7 +39,7 @@ namespace re::input {
      * @param button Button key to query
      * @return Current state of button
      */
-    bool InputSystem::getMouseButton(MouseButton button) {
+    bool InputSystem::getMouseButton(Mouse button) {
         return mouseButtons[button];
     }
 
@@ -48,7 +48,7 @@ namespace re::input {
      * @param button Button key to query
      * @param state New state to set
      */
-    void InputSystem::setMouseButton(MouseButton button, State state) {
+    void InputSystem::setMouseButton(Mouse button, State state) {
         mouseButtons[button] = state;
     }
 

@@ -145,15 +145,10 @@ namespace re {
             RELEASE = GLFW_RELEASE,
         };
 
-        enum MouseButton {
-            LEFT = GLFW_MOUSE_BUTTON_LEFT,
-            RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
-            MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE
-        };
-
-        struct Mouse {
-            MouseButton button;
-            State state;
+        enum Mouse {
+            MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT,
+            MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
+            MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE
         };
 
         class InputSystem {
@@ -171,9 +166,9 @@ namespace re {
 
             void setKey(Key key, State state);
 
-            bool getMouseButton(MouseButton button);
+            bool getMouseButton(Mouse button);
 
-            void setMouseButton(MouseButton button, State state);
+            void setMouseButton(Mouse button, State state);
 
             Vector2 getCursorPosition();
 

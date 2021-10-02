@@ -20,7 +20,7 @@ namespace re::input {
         InputSystem::getInstance()->setKey(key, state);
     }
 
-    inline bool getMouseButton(MouseButton button, bool once = false) {
+    inline bool getMouseButton(Mouse button, bool once = false) {
         if (once) {
             bool value = InputSystem::getInstance()->getMouseButton(button);
             InputSystem::getInstance()->setMouseButton(button, State::RELEASE);
@@ -30,7 +30,7 @@ namespace re::input {
         }
     }
 
-    inline void setMouseButton(MouseButton button, State state) {
+    inline void setMouseButton(Mouse button, State state) {
         InputSystem::getInstance()->setMouseButton(button, state);
     }
 

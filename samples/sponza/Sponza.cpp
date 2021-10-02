@@ -20,9 +20,9 @@ void Sponza::onUpdate() {
     auto& transform = camera->getComponent<Transform>();
 
     vec2 cursorOffset = input::getCursorOffset();
-    if (input::getKey(input::KEY_LEFT_SHIFT) && input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MouseButton::LEFT)) {
+    if (input::getKey(input::KEY_LEFT_SHIFT) && input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MOUSE_BUTTON_LEFT)) {
 
-    } else if (input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MouseButton::LEFT)) {
+    } else if (input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MOUSE_BUTTON_LEFT)) {
         float yaw = cursorOffset.x;
         float pitch = cursorOffset.y;
         vec3 direction;
