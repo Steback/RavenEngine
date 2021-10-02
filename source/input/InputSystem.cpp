@@ -52,6 +52,14 @@ namespace re::input {
         mouseButtons[button] = state;
     }
 
+    Vector2 InputSystem::getCursorPosition() {
+        return cursorPosition;
+    }
+
+    Vector2 InputSystem::getCursorOffset() {
+        return offsetCursorPosition;
+    }
+
     void InputSystem::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (action == State::PRESS) {
             getInstance()->keys[key] = State::PRESS;
@@ -69,6 +77,12 @@ namespace re::input {
         } else if (action == State::RELEASE) {
             getInstance()->mouseButtons[button] = State::RELEASE;
         }
+    }
+
+    void InputSystem::cursorPositionCallback(GLFWwindow *window, double x, double y) {
+        vec2 position = {static_cast<float>(x), static_cast<float>(y)};
+        getInstance()->offsetCursorPosition = getInstance()->cursorPosition - position;
+        getInstance()->cursorPosition = position;
     }
 
 } // namespace re::input

@@ -6,6 +6,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include "math/Vector2.hpp"
+
 
 namespace re {
 
@@ -173,14 +175,22 @@ namespace re {
 
             void setMouseButton(MouseButton button, State state);
 
+            Vector2 getCursorPosition();
+
+            Vector2 getCursorOffset();
+
         private:
             static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
             static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
+            static void cursorPositionCallback(GLFWwindow* window, double x, double y);
+
             static InputSystem* singleton;
             std::array<bool, 512> keys{};
             std::array<bool, 3> mouseButtons{};
+            vec2 cursorPosition;
+            vec2 offsetCursorPosition;
         };
 
     } // namespace input

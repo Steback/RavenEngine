@@ -23,15 +23,23 @@ namespace re::input {
     inline bool getMouseButton(MouseButton button, bool once = false) {
         if (once) {
             bool value = InputSystem::getInstance()->getMouseButton(button);
-            InputSystem::getInstance()->setMouseButton(key, State::RELEASE);
+            InputSystem::getInstance()->setMouseButton(button, State::RELEASE);
             return value;
         } else {
             return InputSystem::getInstance()->getMouseButton(button);
         }
     }
 
-    inline voud setMouseButton(MouseButton button, State state) {
+    inline void setMouseButton(MouseButton button, State state) {
         InputSystem::getInstance()->setMouseButton(button, state);
+    }
+
+    inline Vector2 getCursorPosition() {
+        return InputSystem::getInstance()->getCursorPosition();
+    }
+
+    inline Vector2 getCursorOffset() {
+        return InputSystem::getInstance()->getCursorOffset();
     }
 
 } // namespace re::input
