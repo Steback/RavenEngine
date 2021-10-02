@@ -49,38 +49,37 @@ void Sponza::onUpdate() {
 
     transform.position = translation;
     transform.rotation = re::quat(rotation);
-
 }
 
 void Sponza::onDrawImGui() {
     ImGui::SetNextWindowSize({-1, -1});
     ImGui::Begin("Debug Window");
     {
-        if (entity) {
-            auto& transform = entity->getComponent<re::Transform>();
-            ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
-            ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
-            ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
-            transform.rotation = re::quat(re::radians(eulerAngles));
+        if (entity) return;
 
-            ImGui::Separator();
+        auto& transform = entity->getComponent<re::Transform>();
+        ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
+        ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
+        ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
+        transform.rotation = re::quat(re::radians(eulerAngles));
 
-            auto& cameraTransform = camera->getComponent<re::Transform>();
-            ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
+        ImGui::Separator();
 
-            re::vec3 cameraAngles = re::degrees(cameraTransform.getEulerAngles());
-            ImGui::InputFloat3(fmt::format("{} Rotation", camera->getName()).c_str(), cameraAngles.ptr());
-            cameraTransform.rotation = re::quat(re::radians(re::radians(cameraAngles)));
+        auto& cameraTransform = camera->getComponent<re::Transform>();
+        ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
 
-            auto& cameraComponent = camera->getComponent<re::Camera>();
+        re::vec3 cameraAngles = re::degrees(cameraTransform.getEulerAngles());
+        ImGui::InputFloat3(fmt::format("{} Rotation", camera->getName()).c_str(), cameraAngles.ptr());
+        cameraTransform.rotation = re::quat(re::radians(re::radians(cameraAngles)));
 
-            ImGui::Separator();
+        auto& cameraComponent = camera->getComponent<re::Camera>();
 
-            if (ImGui::Button("Save")) {
-                re::jobs::submit([scene = scene]() {
-                    scene->save();
-                });
-            }
+        ImGui::Separator();
+
+        if (ImGui::Button("Save")) {
+            re::jobs::submit([scene = scene]() {
+                scene->save();
+            });
         }
     }
     ImGui::End();
