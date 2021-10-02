@@ -5,8 +5,10 @@
 #include "entity/Entity.hpp"
 #include "entity/components/Transform.hpp"
 
+using namespace re;
 
-Sponza::Sponza(CLI::App &app) : re::Base("Sponza", app) {
+
+Sponza::Sponza(CLI::App &app) : Base("Sponza", app) {
     loadScene("scenes/sponza.json");
 }
 
@@ -15,19 +17,19 @@ Sponza::~Sponza() = default;
 void Sponza::onUpdate() {
     if (!camera) return;
 
-    auto& transform = camera->getComponent<re::Transform>();
+    auto& transform = camera->getComponent<Transform>();
 
-    re::vec2 cursorOffset = re::input::getCursorOffset();
-    if (re::input::getKey(re::input::KEY_LEFT_SHIFT) && re::input::getKey(re::input::KEY_LEFT_ALT) && re::input::getMouseButton(re::input::MouseButton::LEFT)) {
+    vec2 cursorOffset = input::getCursorOffset();
+    if (input::getKey(input::KEY_LEFT_SHIFT) && input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MouseButton::LEFT)) {
 
-    } else if (re::input::getKey(re::input::KEY_LEFT_ALT) && re::input::getMouseButton(re::input::MouseButton::LEFT)) {
+    } else if (input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MouseButton::LEFT)) {
         float yaw = cursorOffset.x;
         float pitch = cursorOffset.y;
-        re::vec3 direction;
+        vec3 direction;
         direction.x = std::cos(yaw) * std::cos(pitch);
         direction.y = std::sin(pitch);
         direction.x = std::sin(yaw) * std::cos(pitch);
-        transform.rotation += lockSpeed * re::time::deltaTime() * re::quat(direction);
+        transform.rotation += lockSpeed * time::deltaTime() * quat(direction);
         transform.rotation.normalise();
     }
 }
@@ -38,34 +40,34 @@ void Sponza::onDrawImGui() {
     {
         if (!entity) return;
 
-        auto& transform = entity->getComponent<re::Transform>();
+        auto& transform = entity->getComponent<Transform>();
         ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
         ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
         ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
-        transform.rotation = re::quat(re::radians(eulerAngles));
+        transform.rotation = quat(radians(eulerAngles));
 
         ImGui::Separator();
 
-        auto& cameraTransform = camera->getComponent<re::Transform>();
+        auto& cameraTransform = camera->getComponent<Transform>();
         ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
 
-        re::vec3 cameraAngles = re::degrees(cameraTransform.getEulerAngles());
+        vec3 cameraAngles = degrees(cameraTransform.getEulerAngles());
         ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
 
-        auto& cameraComponent = camera->getComponent<re::Camera>();
+        auto& cameraComponent = camera->getComponent<Camera>();
 
         ImGui::Separator();
 
-        re::vec2 cursorPosition = re::input::getCursorPosition();
+        vec2 cursorPosition = input::getCursorPosition();
         ImGui::Text("%s", fmt::format("Cursor position X: {} - Y: {}", cursorPosition.x, cursorPosition.y).c_str());
 
-        re::vec2 cursorOffset = re::input::getCursorOffset();
+        vec2 cursorOffset = input::getCursorOffset();
         ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
 
         ImGui::Separator();
 
         if (ImGui::Button("Save")) {
-            re::jobs::submit([scene = scene]() {
+            jobs::submit([scene = scene]() {
                 scene->save();
             });
         }
@@ -76,5 +78,5 @@ void Sponza::onDrawImGui() {
 void Sponza::onLoadScene() {
     entity = scene->getEntity("Sponza");
     camera = scene->getEntity("Camera");
-    eulerAngles = re::degrees(entity->getComponent<re::Transform>().getEulerAngles());
+    eulerAngles = degrees(entity->getComponent<Transform>().getEulerAngles());
 }
