@@ -21,7 +21,7 @@ namespace re::input {
      * @param key Key code to query
      * @param once [Optional] reset the key value once was query if was pressed. By default is true.
      */
-    bool InputSystem::getKey(int key) {
+    bool InputSystem::getKey(Key key) {
         return keys[key];
     }
 
@@ -30,7 +30,7 @@ namespace re::input {
      * @param key Key code to query
      * @param state New state to set
      */
-    void InputSystem::setKey(int key, State state) {
+    void InputSystem::setKey(Key key, State state) {
         keys[key] = state;
     }
 
@@ -54,11 +54,10 @@ namespace re::input {
 
     void InputSystem::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (action == State::PRESS) {
-            getInstance()->setKey(key, State::PRESS);
+            getInstance()->keys[key] = State::PRESS;
         } else if (action == State::RELEASE) {
-            getInstance()->setKey(key, State::RELEASE);
+            getInstance()->keys[key] = State::RELEASE;
         }
-
     }
 
     void InputSystem::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {

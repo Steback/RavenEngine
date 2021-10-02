@@ -165,9 +165,9 @@ namespace re {
 
             static InputSystem* getInstance();
 
-            bool getKey(int key);
+            bool getKey(Key key);
 
-            void setKey(int key, State state);
+            void setKey(Key key, State state);
 
             bool getMouseButton(MouseButton button);
 
