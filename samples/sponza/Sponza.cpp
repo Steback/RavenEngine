@@ -19,43 +19,13 @@ void Sponza::onUpdate() {
     re::vec3 rotation = transform.getEulerAngles();
     re::vec3 translation = transform.position;
 
-    re::vec3 rotate;
-    if (re::input::getKey(re::input::KEY_UP)) rotate.y += 1.0f;
-    if (re::input::getKey(re::input::KEY_DOWN)) rotate.y -= 1.0f;
-    if (re::input::getKey(re::input::KEY_RIGHT)) rotate.x += 1.0f;
-    if (re::input::getKey(re::input::KEY_LEFT)) rotate.x -= 1.0f;
-
-    if (rotate * rotate > std::numeric_limits<float>::epsilon())
-        rotation += lockSpeed * re::time::deltaTime() * rotate.normal();
-
-    rotation.x = std::clamp(rotation.x, -1.5f, 1.5f);
-    rotation.y = re::mod(rotation.y, re::twoPi());
-
-    float yaw = rotation.y;
-    const re::vec3 forwardDir{std::sin(yaw), 0.f, std::cos(yaw)};
-    const re::vec3 rightDir{forwardDir.z, 0.f, -forwardDir.x};
-    const re::vec3 upDir{0.f, -1.f, 0.f};
-
-    re::vec3 moveDir{0.f};
-    if (re::input::getKey(re::input::KEY_W)) moveDir += forwardDir;
-    if (re::input::getKey(re::input::KEY_S)) moveDir -= forwardDir;
-    if (re::input::getKey(re::input::KEY_D)) moveDir += rightDir;
-    if (re::input::getKey(re::input::KEY_A)) moveDir -= rightDir;
-//    if (input.getKey(KeyMappings::moveUp)) moveDir += upDir;
-//    if (input.getKey(KeyMappings::moveDown)) moveDir -= upDir;
-
-    if (moveDir * moveDir > std::numeric_limits<float>::epsilon())
-        translation += moveSpeed * re::time::deltaTime() * moveDir.normal();
-
-    transform.position = translation;
-    transform.rotation = re::quat(rotation);
 }
 
 void Sponza::onDrawImGui() {
     ImGui::SetNextWindowSize({-1, -1});
     ImGui::Begin("Debug Window");
     {
-        if (entity) return;
+        if (!entity) return;
 
         auto& transform = entity->getComponent<re::Transform>();
         ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
@@ -75,6 +45,12 @@ void Sponza::onDrawImGui() {
         auto& cameraComponent = camera->getComponent<re::Camera>();
 
         ImGui::Separator();
+
+        re::vec2 cursorPosition = re::input::getCursorPosition();
+        ImGui::Text("%s", fmt::format("Cursor position X: {} - Y: {}", cursorPosition.x, cursorPosition.y).c_str());
+
+        re::vec2 cursorOffset = re::input::getCursorOffset();
+        ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
 
         if (ImGui::Button("Save")) {
             re::jobs::submit([scene = scene]() {
