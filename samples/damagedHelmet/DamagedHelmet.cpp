@@ -1,6 +1,6 @@
 #include "DamagedHelmet.hpp"
 
-#include "math/Common.hpp"
+#include "math/Math.hpp"
 #include "entity/Entity.hpp"
 #include "entity/components/Transform.hpp"
 #include "entity/components/MeshRender.hpp"

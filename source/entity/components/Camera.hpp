@@ -3,7 +3,7 @@
 
 
 #include "Component.hpp"
-#include "math/Common.hpp"
+#include "math/Math.hpp"
 #include "math/Vector3.hpp"
 #include "math/Matrix4.hpp"
 #include "math/Quaternion.hpp"
@@ -44,7 +44,7 @@ namespace re {
 
     public:
         Type type{};
-        float fov{radians(45.0f)};
+        float fov{Math::deg2rad(45.0f)};
         float zNear{0.1f}, zFar{100};
 
     private:

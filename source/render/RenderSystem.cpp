@@ -6,7 +6,7 @@
 #include "pipelines/GraphicsPipeline.hpp"
 #include "scene/Scene.hpp"
 #include "scene/Skybox.hpp"
-#include "math/Common.hpp"
+#include "math/Math.hpp"
 #include "assets/AssetsManager.hpp"
 #include "assets/Material.hpp"
 #include "entity/Entity.hpp"

@@ -1,6 +1,6 @@
 #include "Sponza.hpp"
 
-#include "math/Common.hpp"
+#include "math/Math.hpp"
 #include "math/Vector3.hpp"
 #include "entity/Entity.hpp"
 #include "entity/components/Transform.hpp"
@@ -45,20 +45,20 @@ void Sponza::onDrawImGui() {
             ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
             ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
             ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
-            transform.rotation = quat(radians(eulerAngles));
+            transform.rotation = quat(Math::deg2rad(eulerAngles));
         }
         ImGui::Separator();
         {
             auto& cameraTransform = camera->getComponent<Transform>();
             ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
 
-            vec3 cameraAngles = degrees(cameraTransform.getEulerAngles());
+            vec3 cameraAngles = Math::rad2deg(cameraTransform.getEulerAngles());
             ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
 
             auto& cameraComponent = camera->getComponent<Camera>();
-            float fov = degrees(cameraComponent.fov);
+            float fov = Math::rad2deg(cameraComponent.fov);
             ImGui::InputFloat(fmt::format("{} FOV", camera->getName()).c_str(), &fov);
-            cameraComponent.fov = radians(fov);
+            cameraComponent.fov = Math::deg2rad(fov);
 
             ImGui::InputFloat(fmt::format("{} Near Plane", camera->getName()).c_str(), &cameraComponent.zNear);
             ImGui::InputFloat(fmt::format("{} Far Plane", camera->getName()).c_str(), &cameraComponent.zFar);
@@ -86,5 +86,5 @@ void Sponza::onDrawImGui() {
 void Sponza::onLoadScene() {
     entity = scene->getEntity("Sponza");
     camera = scene->getEntity("Camera");
-    eulerAngles = degrees(entity->getComponent<Transform>().getEulerAngles());
+    eulerAngles = Math::rad2deg(entity->getComponent<Transform>().getEulerAngles());
 }

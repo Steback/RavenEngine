@@ -3,7 +3,7 @@
 #include <cmath>
 #include <functional>
 
-#include "Common.hpp"
+#include "Math.hpp"
 #include "Vector2.hpp"
 #include "Vector3.hpp"
 #include "Matrix3.hpp"
@@ -22,8 +22,8 @@ namespace re {
     }
 
     Quaternion::Quaternion(const Vector3 &eulerAngles) {
-        vec3 c = cos(eulerAngles * 0.5f);
-        vec3 s = sin(eulerAngles * 0.5f);
+        vec3 c = Math::cos(eulerAngles * 0.5f);
+        vec3 s = Math::sin(eulerAngles * 0.5f);
 
         w = c.x * c.y * c.z + s.x * s.y * s.z;
         x = s.x * c.y * c.z - c.x * s.y * s.z;
