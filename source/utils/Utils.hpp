@@ -9,6 +9,8 @@
 #include "vulkan/vulkan_core.h"
 #include "fmt/format.h"
 
+#include "Typedefs.hpp"
+
 
 namespace re {
 
@@ -19,11 +21,11 @@ namespace re {
         (hashCombine(seed, rest), ...);
     };
 
-    inline void throwEx(const std::string& message) {
+    _ALWAYS_INLINE_ void throwEx(const std::string& message) {
         throw std::runtime_error(message);
     }
 
-     inline void checkResult(VkResult result, const std::string& message) {
+     _ALWAYS_INLINE_ void checkResult(VkResult result, const std::string& message) {
          if (result != VK_SUCCESS) throwEx(message);
      }
 

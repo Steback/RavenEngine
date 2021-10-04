@@ -26,5 +26,51 @@
 #endif
 #endif
 
+#ifdef _WIN32
+#undef min // override standard definition
+#undef max // override standard definition
+#undef ERROR // override (really stupid) wingdi.h standard definition
+#undef DELETE // override (another really stupid) winnt.h standard definition
+#undef MessageBox // override winuser.h standard definition
+#undef MIN // override standard definition
+#undef MAX // override standard definition
+#undef CLAMP // override standard definition
+#undef Error
+#undef OK
+#undef CONNECT_DEFERRED // override from Windows SDK, clashes with Object enum
+#endif
+
+// Generic ABS function, for math uses please use Math::abs.
+#ifndef ABS
+#define ABS(v) (((v) < 0) ? (-(v)) : (v))
+#endif
+
+#ifndef SGN
+#define SGN(v) (((v) == 0) ? (0.0) : (((v) < 0) ? (-1.0) : (+1.0)))
+#endif
+
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef CLAMP
+#define CLAMP(a, min, max) (((a) < (min)) ? (min) : (((a) > (max)) ? max : a))
+#endif
+
+// Generic swap template.
+#ifndef SWAP
+#define SWAP(x, y) __swap_tmpl((x), (y))
+template <class T>
+inline void __swap_tmpl(T &x, T &y) {
+    T aux = x;
+    x = y;
+    y = aux;
+}
+#endif // SWAP
+
 
 #endif //RAVENENGINE_TYPEDEFS_HPP
