@@ -7,7 +7,7 @@
 #include "vulkan/vulkan.h"
 
 #include "utils/NonCopyable.hpp"
-#include "utils/Macros.hpp"
+#include "utils/Typedefs.hpp"
 
 
 namespace re {
