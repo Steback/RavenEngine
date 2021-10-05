@@ -473,12 +473,12 @@ namespace re {
             return capabilities.currentExtent;
         } else {
             VkExtent2D actualExtent = windowExtent;
-            actualExtent.width = MAX(
+            actualExtent.width = std::max(
                     capabilities.minImageExtent.width,
-                    MIN(capabilities.maxImageExtent.width, actualExtent.width));
-            actualExtent.height = MAX(
+                    std::min(capabilities.maxImageExtent.width, actualExtent.width));
+            actualExtent.height = std::max(
                     capabilities.minImageExtent.height,
-                    MIN(capabilities.maxImageExtent.height, actualExtent.height));
+                    std::min(capabilities.maxImageExtent.height, actualExtent.height));
 
             return actualExtent;
         }
