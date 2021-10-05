@@ -21,11 +21,11 @@ namespace re {
         (hashCombine(seed, rest), ...);
     };
 
-    _ALWAYS_INLINE_ void throwEx(const std::string& message) {
+    inline void throwEx(const std::string& message) {
         throw std::runtime_error(message);
     }
 
-     _ALWAYS_INLINE_ void checkResult(VkResult result, const std::string& message) {
+     inline void checkResult(VkResult result, const std::string& message) {
          if (result != VK_SUCCESS) throwEx(message);
      }
 
