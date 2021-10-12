@@ -80,7 +80,7 @@ namespace re {
     }
 
     Vector3 Matrix3::operator*(const Vector3 &v) const {
-        return {values[0] * v, values[1] * v, values[2] * v};
+        return {values[0].dot(v), values[1].dot(v), values[2].dot(v)};
     }
 
     Matrix3 Matrix3::operator*(const Matrix3 &m) const {
@@ -119,7 +119,6 @@ namespace re {
                 SrcA02 * SrcB20 + SrcA12 * SrcB21 + SrcA22 * SrcB22
             }
         };
-
     }
 
     Matrix3 Matrix3::operator/(float n) const {

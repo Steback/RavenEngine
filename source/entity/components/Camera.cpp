@@ -57,9 +57,9 @@ namespace re {
         view[0][2] = w.x;
         view[1][2] = w.y;
         view[2][2] = w.z;
-        view[3][0] = -(u * position);
-        view[3][1] = -(v * position);
-        view[3][2] = -(w * position);
+        view[3][0] = -(u.dot(position));
+        view[3][1] = -(v.dot(position));
+        view[3][2] = -(w.dot(position));
     }
 
     // TODO: Implement look at Camera

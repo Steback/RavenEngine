@@ -9,88 +9,183 @@ namespace re {
 
     class Vector3 {
     public:
-        Vector3();
+        inline Vector3();
 
-        explicit Vector3(float n);
+        inline explicit Vector3(float n);
 
-        Vector3(float x,float y, float z);
+        inline Vector3(float x, float y, float z);
 
-        explicit Vector3(const float* p);
+        explicit Vector3(const float* v);
 
-        explicit Vector3(const double * p);
+        explicit Vector3(const double * v);
 
-        Vector3(const Vector3& v);
+        inline Vector3(const Vector3& v);
 
-        Vector3& operator=(const Vector3& v);
-
-        float& operator[](unsigned int index);
-
-        const float& operator[](unsigned int index) const;
-
-        bool operator==(const Vector3& v) const;
-
-        bool operator!=(const Vector3& v) const;
-
-        Vector3 operator-() const;
-
-        Vector3 operator+(float n) const;
-
-        Vector3 operator+(const Vector3& v) const;
-
-        Vector3 operator-(float n) const;
-
-        Vector3 operator-(const Vector3& v) const;
-
-        Vector3 operator*(float n) const;
-
-        float operator*(const Vector3& v) const;
-
-        Vector3 operator/(float n) const;
-
-        Vector3& operator+=(float n);
-
-        Vector3& operator+=(const Vector3& v);
-
-        Vector3& operator-=(float n);
-
-        Vector3& operator-=(const Vector3& v);
-
-        Vector3& operator*=(float n);
-
-        Vector3& operator/=(float n);
-
-        [[nodiscard]] float lengthSqrt() const;
+        [[nodiscard]] inline float lengthSqrt() const;
 
         [[nodiscard]] float length() const;
 
-        [[nodiscard]] Vector3 normal() const;
+        [[nodiscard]] bool isUnit() const;
 
-        Vector3& normalize();
+        void normalize();
 
-        float* ptr();
+        [[nodiscard]] Vector3 normalized() const;
+
+        [[nodiscard]] inline float dot(const Vector3& v) const;
+
+        [[nodiscard]] inline Vector3 cross(const Vector3& v) const;
+
+        inline void inverse();
+
+        [[nodiscard]] inline Vector3 inversed() const;
 
         [[nodiscard]] std::string str() const;
 
-        [[nodiscard]] Vector3 cross(const Vector3& v) const;
+        inline Vector3& operator=(const Vector3& v);
+
+        inline float& operator[](size_t i);
+
+        inline const float& operator[](size_t i) const;
+
+        inline Vector3 operator-() const;
+
+        inline void operator+=(const Vector3& v);
+
+        inline void operator-=(const Vector3& v);
+
+        inline void operator*=(float n);
+
+        inline void operator*=(const Vector3& v);
+
+        inline void operator/=(float n);
+
+        inline Vector3 operator+(const Vector3& v) const;
+
+        inline Vector3 operator-(const Vector3& v) const;
+
+        inline Vector3 operator*(float n) const;
+
+        inline Vector3 operator*(const Vector3& v) const;
+
+        inline Vector3 operator/(float n) const;
+
+        inline bool operator==(const Vector3& v) const;
+
+        inline bool operator!=(const Vector3& v) const;
 
     public:
-        float x{}, y{}, z{};
+        union {
+            struct {
+                float x, y, z;
+            };
+            float values[3]{};
+        };
     };
 
-    inline Vector3 operator+(float n, const Vector3& v) {
-        return v + n;
+    Vector3::Vector3() = default;
+
+    Vector3::Vector3(float n) : x(n), y(n), z(n) {
+
     }
 
-    inline Vector3 operator-(float n, const Vector3& v) {
-        return v - n;
+    Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {
+
+    }
+
+    Vector3::Vector3(const Vector3 &v) : x(v.x), y(v.y), z(v.z) {
+
+    }
+
+    float Vector3::lengthSqrt() const {
+        return dot(*this);
+    }
+
+    float Vector3::dot(const Vector3 &v) const {
+        return x * v.x + y * v.y + z * v.z;
+    }
+
+    Vector3 Vector3::cross(const Vector3 &v) const {
+        return {
+            y * v.z - z * v.y,
+            z * v.x - x * v.z,
+            x * v.y - y * v.x
+        };
+    }
+
+    void Vector3::inverse() {
+        *this = inversed();
+    }
+
+    Vector3 Vector3::inversed() const {
+        return {1.0f / x, 1.0f / y, 1.0f / z};
+    }
+
+    Vector3 &Vector3::operator=(const Vector3 &v) {
+        x = v.x; y = v.y, z = v.z;
+    }
+
+    float &Vector3::operator[](size_t i) {
+        return values[i];
+    }
+
+    const float &Vector3::operator[](size_t i) const {
+        return values[i];
+    }
+
+    Vector3 Vector3::operator-() const {
+        return {-x, -y, -z};
+    }
+
+    void Vector3::operator+=(const Vector3 &v) {
+        *this = *this + v;
+    }
+
+    void Vector3::operator-=(const Vector3 &v) {
+        *this = *this - v;
+    }
+
+    void Vector3::operator*=(float n) {
+        *this = *this * n;
+    }
+
+    void Vector3::operator*=(const Vector3 &v) {
+        *this = *this * v;
+    }
+
+    void Vector3::operator/=(float n) {
+        *this = *this / n;
+    }
+
+    Vector3 Vector3::operator+(const Vector3 &v) const {
+        return {x + v.x, y + v.y, z + v.z};
+    }
+
+    Vector3 Vector3::operator-(const Vector3 &v) const {
+        return {x - v.x, y - v.y, z - v.z};
+    }
+
+    Vector3 Vector3::operator*(float n) const {
+        return {x * n, y * n, z * n};
+    }
+
+    Vector3 Vector3::operator*(const Vector3 &v) const {
+        return {x * v.x, y * v.y, z * v.z};
+    }
+
+    Vector3 Vector3::operator/(float n) const {
+        return {x / n, y / n, z / n};
+    }
+
+    bool Vector3::operator==(const Vector3 &v) const {
+        return x == v.x && y == v.y && z == v.z;
+    }
+
+    bool Vector3::operator!=(const Vector3 &v) const {
+        return x != v.x && y != v.y && z != v.z;
     }
 
     inline Vector3 operator*(float n, const Vector3& v) {
         return v * n;
-    }
-
-    inline Vector3 operator/(float n, const Vector3& v) {
-        return {n / v.x, n / v.y, n / v.z};
     }
 
     using vec3 = Vector3;

@@ -42,15 +42,15 @@ void Sponza::onDrawImGui() {
 
         {
             auto& transform = entity->getComponent<Transform>();
-            ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.ptr());
-            ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.ptr());
-            ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.ptr());
+            ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.values);
+            ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.values);
+            ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.values);
             transform.rotation = quat(Math::deg2rad(eulerAngles));
         }
         ImGui::Separator();
         {
             auto& cameraTransform = camera->getComponent<Transform>();
-            ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.ptr());
+            ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.values);
 
             vec3 cameraAngles = Math::rad2deg(cameraTransform.getEulerAngles());
             ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());

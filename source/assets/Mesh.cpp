@@ -144,7 +144,7 @@ namespace re {
                 for (size_t v = 0; v < vertexCount; ++v) {
                     Mesh::Vertex vert{};
                     vert.position = vec3(&bufferPos[v * 3]);
-                    vert.normal = (vec3(bufferNormals ? vec3(&bufferNormals[v * 3]) : vec3(0.0f))).normal();
+                    vert.normal = (vec3(bufferNormals ? vec3(&bufferNormals[v * 3]) : vec3(0.0f))).normalized();
                     vert.uv0 = bufferTexCoordSet0 ? vec2(&bufferTexCoordSet0[v * 2]) : vec2(0.0f);
 
                     vertices.push_back(vert);

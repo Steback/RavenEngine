@@ -50,7 +50,7 @@ namespace re {
     // TODO: Fix normal transform matrix
     Matrix3 Transform::normalMatrix() const {
         Matrix3 rotationMatrix = rotation.norm() == 1.0f ? rotation.rotationMatrix() : rotation.unit().rotationMatrix();
-        vec3 invScale = 1.0f / scale;
+        vec3 invScale = scale.inversed();
         return {
             { invScale.x * rotationMatrix[0][0], invScale.x * rotationMatrix[1][0], invScale.x * rotationMatrix[2][0] },
             { invScale.y * rotationMatrix[0][1], invScale.y * rotationMatrix[1][1], invScale.y * rotationMatrix[2][1] },
