@@ -85,7 +85,7 @@ namespace re {
     }
 
     Vector4 Matrix4::operator*(const Vector4 &v) const {
-        return {values[0] * v, values[1] * v, values[2] * v, values[3] * v};
+        return {values[0].dot(v), values[1].dot(v), values[2].dot(v), values[3].dot(v)};
     }
 
     Matrix4 Matrix4::operator*(const Matrix4 &m) const {

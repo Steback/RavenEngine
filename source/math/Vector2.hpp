@@ -15,7 +15,7 @@ namespace re {
 
         inline Vector2(float x, float y);
 
-        inline explicit Vector2(const float* v);
+        explicit Vector2(const float* v);
 
         explicit Vector2(const double* v);
 

@@ -1,129 +1,43 @@
 #include "Vector4.hpp"
 
-#include <cmath>
+#include "Math.hpp"
 
 
 namespace re {
 
-    Vector4::Vector4() = default;
-
-    Vector4::Vector4(float n) : x(n), y(n), z(n), w(n) {
-
+    Vector4::Vector4(const float *v) {
+        x = v[0];
+        y = v[1];
+        z = v[2];
+        w = v[3];
     }
 
-    Vector4::Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {
-
-    }
-
-    Vector4::Vector4(const float *p) : x(p[0]), y(p[1]), z(p[2]), w(p[3]) {
-
-    }
-
-    Vector4::Vector4(const double *p) {
-        x = static_cast<float>(p[0]);
-        y = static_cast<float>(p[1]);
-        z = static_cast<float>(p[2]);
-        w = static_cast<float>(p[3]);
-    }
-
-    Vector4::Vector4(const Vector4 &v) = default;
-
-    Vector4 &Vector4::operator=(const Vector4 &v) = default;
-
-    float &Vector4::operator[](unsigned int index) {
-        return (&x)[index];
-    }
-
-    const float &Vector4::operator[](unsigned int index) const {
-        return (&x)[index];
-    }
-
-    bool Vector4::operator==(const Vector4 &v) const {
-        return x == v.x && y == v.y && z == v.z && w == v.w;
-    }
-
-    bool Vector4::operator!=(const Vector4 &v) const {
-        return x != v.x && y != v.y && z != v.z && w != v.w;
-    }
-
-    Vector4 Vector4::operator-() const {
-        return {-x, -y, -z, -w};
-    }
-
-    Vector4 Vector4::operator+(float n) const {
-        return {x + n, y + n, z + n, w + n};
-    }
-
-    Vector4 Vector4::operator+(const Vector4 &v) const {
-        return {x + v.x, y + v.y, z + v.z, w + v.w};
-    }
-
-    Vector4 Vector4::operator-(float n) const {
-        return {x - n, y - n, z - n, w - n};
-    }
-
-    Vector4 Vector4::operator-(const Vector4 &v) const {
-        return {x - v.x, y - v.y, z - v.z, w - v.w};
-    }
-
-    Vector4 Vector4::operator*(float n) const {
-        return {x * n, y * n, z * n, w * n};
-    }
-
-    float Vector4::operator*(const Vector4 &v) const {
-        return x * v.x + y * v.y + z * v.z + w * v.w;
-    }
-
-    Vector4 Vector4::operator/(float n) const {
-        return {x / n, y / n, z / n, w / n};
-    }
-
-    Vector4 &Vector4::operator+=(float n) {
-        return *this = *this + n;
-    }
-
-    Vector4 &Vector4::operator+=(const Vector4 &v) {
-        return *this = *this + v;
-    }
-
-    Vector4 &Vector4::operator-=(float n) {
-        return *this = *this - n;
-    }
-
-    Vector4 &Vector4::operator-=(const Vector4 &v) {
-        return *this = *this - v;
-    }
-
-    Vector4 &Vector4::operator*=(float n) {
-        return *this = *this * n;
-    }
-
-    Vector4 &Vector4::operator/=(float n) {
-        return *this = *this / n;
-    }
-
-    float Vector4::lengthSqrt() const {
-        return x * x + y * y + z * z + w * w;
+    Vector4::Vector4(const double *v) {
+        x = static_cast<float>(v[0]);
+        y = static_cast<float>(v[1]);
+        z = static_cast<float>(v[2]);
+        w = static_cast<float >(v[3]);
     }
 
     float Vector4::length() const {
-        return std::sqrt(lengthSqrt());
+        return Math::sqrt(lengthSqrt());
     }
 
-    Vector4 Vector4::normal() const {
+    bool Vector4::isUnit() const {
+        // TODO: Implement Vector4::isUnit
+        return false;
+    }
+
+    void Vector4::normalize() {
+        *this = normalized();
+    }
+
+    Vector4 Vector4::normalized() const {
         return *this / length();
     }
 
-    Vector4 &Vector4::normalize() {
-        return *this = normal();
-    }
-
-    float *Vector4::ptr() {
-        return (&x);
-    }
-
     std::string Vector4::str() const {
-        return "| " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " " + std::to_string(w) + " |";
+        return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ", " + std::to_string(w) + ")";
     }
 
 } // namespace re
