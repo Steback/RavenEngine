@@ -53,21 +53,21 @@ namespace re {
 
         inline void operator-=(const Vector3& v);
 
-        inline void operator*=(float n);
+        inline void operator*=(float s);
 
         inline void operator*=(const Vector3& v);
 
-        inline void operator/=(float n);
+        inline void operator/=(float s);
 
         inline Vector3 operator+(const Vector3& v) const;
 
         inline Vector3 operator-(const Vector3& v) const;
 
-        inline Vector3 operator*(float n) const;
+        inline Vector3 operator*(float s) const;
 
         inline Vector3 operator*(const Vector3& v) const;
 
-        inline Vector3 operator/(float n) const;
+        inline Vector3 operator/(float s) const;
 
         inline bool operator==(const Vector3& v) const;
 
@@ -144,16 +144,16 @@ namespace re {
         *this = *this - v;
     }
 
-    void Vector3::operator*=(float n) {
-        *this = *this * n;
+    void Vector3::operator*=(float s) {
+        *this = *this * s;
     }
 
     void Vector3::operator*=(const Vector3 &v) {
         *this = *this * v;
     }
 
-    void Vector3::operator/=(float n) {
-        *this = *this / n;
+    void Vector3::operator/=(float s) {
+        *this = *this / s;
     }
 
     Vector3 Vector3::operator+(const Vector3 &v) const {
@@ -164,16 +164,16 @@ namespace re {
         return {x - v.x, y - v.y, z - v.z};
     }
 
-    Vector3 Vector3::operator*(float n) const {
-        return {x * n, y * n, z * n};
+    Vector3 Vector3::operator*(float s) const {
+        return {x * s, y * s, z * s};
     }
 
     Vector3 Vector3::operator*(const Vector3 &v) const {
         return {x * v.x, y * v.y, z * v.z};
     }
 
-    Vector3 Vector3::operator/(float n) const {
-        return {x / n, y / n, z / n};
+    Vector3 Vector3::operator/(float s) const {
+        return {x / s, y / s, z / s};
     }
 
     bool Vector3::operator==(const Vector3 &v) const {

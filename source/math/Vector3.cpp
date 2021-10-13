@@ -1,7 +1,5 @@
 #include "Vector3.hpp"
 
-#include <cstring>
-
 #include "Math.hpp"
 
 
