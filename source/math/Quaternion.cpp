@@ -1,256 +1,293 @@
 #include "Quaternion.hpp"
 
-#include <cmath>
-#include <functional>
-
 #include "Math.hpp"
-#include "Vector2.hpp"
-#include "Vector3.hpp"
-#include "Matrix3.hpp"
 
 
 namespace re {
 
-    Quaternion::Quaternion() = default;
-
-    Quaternion::Quaternion(float s, float i, float j, float k) : w(s), x(i), y(j), z(k) {
-
+    Quaternion::Quaternion(const float *v) {
+        w = v[0];
+        x = v[1];
+        y = v[2];
+        z = v[3];
     }
 
-    Quaternion::Quaternion(float s, const Vector3 &v) : w(s), x(v.x), y(v.y), z(v.z) {
-
+    Quaternion::Quaternion(const double *v) {
+        w = static_cast<float >(v[0]);
+        x = static_cast<float>(v[1]);
+        y = static_cast<float>(v[2]);
+        z = static_cast<float >(v[3]);
     }
 
-    Quaternion::Quaternion(const Vector3 &eulerAngles) {
-        vec3 c = Math::cos(eulerAngles * 0.5f);
-        vec3 s = Math::sin(eulerAngles * 0.5f);
-
-        w = c.x * c.y * c.z + s.x * s.y * s.z;
-        x = s.x * c.y * c.z - c.x * s.y * s.z;
-        y = c.x * s.y * c.z + s.x * c.y * s.z;
-        z = c.x * c.y * s.z - s.x * s.y * c.z;
+    float Quaternion::length() const {
+        return Math::sqrt(lengthSqrt());
     }
 
-    Quaternion::Quaternion(const float *p) : w(p[0]), x(p[1]), y(p[2]), z(p[3]) {
-
+    bool Quaternion::isUnit() const {
+        // TODO: Implement Quaternion::isUnit
+        return false;
     }
 
-    Quaternion::Quaternion(const double *p) {
-        w = static_cast<float>(p[0]);
-        x = static_cast<float>(p[1]);
-        y = static_cast<float>(p[2]);
-        z = static_cast<float>(p[3]);
+    void Quaternion::normalize() {
+        *this = normalized();
     }
 
-    Quaternion::Quaternion(const Quaternion &q) = default;
-
-    Quaternion &Quaternion::operator=(const Quaternion &q) = default;
-
-    float &Quaternion::operator[](size_t i) {
-        return (&w)[i];
+    Quaternion Quaternion::normalized() const {
+        return *this / length();
     }
 
-    const float &Quaternion::operator[](size_t i) const {
-        return (&w)[i];
+    void Quaternion::inverse() {
+        *this = inversed();
     }
 
-    bool Quaternion::operator==(const Quaternion &q) const {
-        return w == q.w && x == q.x && y == q.y && z == q.z;
+    Quaternion Quaternion::inversed() const {
+        return conjugate() / length();
     }
 
-    bool Quaternion::operator!=(const Quaternion &q) const {
-        return w != q.w && x != q.x && y != q.y && z != q.z;
-    }
-
-    Quaternion Quaternion::operator-() const {
-        return {-w, -x, -y, -z};
-    }
-
-    Quaternion Quaternion::operator+(float n) const {
-        return {w + n, x + n, y + n, z + n};
-    }
-
-    Quaternion Quaternion::operator+(const Quaternion &q) const {
-        return {w + q.w, x + q.x, y + q.y, z + q.z};
-    }
-
-    Quaternion Quaternion::operator-(float n) const {
-        return {w - n, x - n, y - n, z - n};
-    }
-
-    Quaternion Quaternion::operator-(const Quaternion &q) const {
-        return {w - q.w, x - q.x, y - q.y, z - q.z};
-    }
-
-    Quaternion Quaternion::operator*(float n) const {
-        return {w * n, x * n, y * n, z * n};
-    }
-
-    Quaternion Quaternion::operator*(const Quaternion &q) const {
-        return {
-                w * q.w - x * q.x - y * q.y - z * q.z,
-                w * q.x + x * q.w + y * q.z - z * q.y,
-                w * q.y - x * q.z + y * q.w + z * q.x,
-                w * q.z + x * q.y - y * q.x + x * q.w
-        };
-    }
-
-    Quaternion Quaternion::operator/(float n) const {
-        return {w / n, x / n, y / n, z / n};
-    }
-
-    Quaternion &Quaternion::operator+=(float n) {
-        return *this = *this + n;
-    }
-
-    Quaternion &Quaternion::operator+=(const Quaternion &q) {
-        return *this = *this + q;
-    }
-
-    Quaternion &Quaternion::operator-=(float n) {
-        return *this = *this - n;
-    }
-
-    Quaternion &Quaternion::operator-=(const Quaternion &q) {
-        return *this = *this - q;
-    }
-
-    Quaternion &Quaternion::operator*=(float n) {
-        return *this = *this * n;
-    }
-
-    Quaternion &Quaternion::operator*=(const Quaternion &q) {
-        return *this = *this * q;
-    }
-
-    Quaternion &Quaternion::operator/=(float n) {
-        return *this = *this / n;
-    }
-
-    Vector3 Quaternion::getVectorPart() const {
-        return {x, y, z};
-    }
-
-    Matrix3 Quaternion::rotationMatrix() const {
+    Matrix3 Quaternion::getMatrix() const {
         mat3 result(1.0f);
-        float qxx = x * x;
-        float qyy = y * y;
-        float qzz = z * z;
-        float qxz = x * z;
-        float qxy = x * y;
-        float qyz = y * z;
-        float qwx = w * x;
-        float qwy = w * y;
-        float qwz = w * z;
+        const float xx = x * x;
+        const float yy = y * y;
+        const float zz = z * z;
+        const float xz = x * z;
+        const float xy = x * y;
+        const float yz = y * z;
+        const float wx = w * x;
+        const float wy = w * y;
+        const float wz = w * z;
 
-        result[0][0] = 1.0f - 2.0f * (qyy +  qzz);
-        result[0][1] = 2.0f * (qxy + qwz);
-        result[0][2] = 2.0f * (qxz - qwy);
+        result[0][0] = 1.0f - 2.0f * (yy + zz);
+        result[0][1] = 2.0f * (xy + wz);
+        result[0][2] = 2.0f * (xz - wy);
 
-        result[1][0] = 2.0f * (qxy - qwz);
-        result[1][1] = 1.0f - 2.0f * (qxx +  qzz);
-        result[1][2] = 2.0f * (qyz + qwx);
+        result[1][0] = 2.0f * (xy - wz);
+        result[1][1] = 1.0f - 2.0f * (xx + zz);
+        result[1][2] = 2.0f * (yz + wx);
 
-        result[2][0] = 2.0f * (qxz + qwy);
-        result[2][1] = 2.0f * (qyz - qwx);
-        result[2][2] = 1.0f - 2.0f * (qxx +  qyy);
-
+        result[2][0] = 2.0f * (xz + wy);
+        result[2][1] = 2.0f * (yz - wx);
+        result[2][2] = 1.0f - 2.0f * (xx + yy);
         return result;
     }
 
-    void Quaternion::setRotationMatrix(const Matrix3 &m) {
-        float m00 = m[0][0];
-        float m11 = m[1][1];
-        float m22 = m[2][2];
-        float sum = m00 + m11 + m22;
-
-        if (sum > 0.0f) {
-            w = std::sqrt(sum + 1.0f) * 0.5f;
-
-            float f = 0.25f / w;
-
-            x = (m[2][1] - m[1][2]) * f;
-            y = (m[0][2] - m[2][0]) * f;
-            z = (m[1][0] - m[0][1]) * f;
-        } else if ((m00 > m11) && (m00 > m22)) {
-            x = std::sqrt(m00 - m11 - m22 + 1.0f) * 0.5f;
-
-            float f = 0.25f / x;
-
-            w = (m[2][1] - m[1][2]) * f;
-            y = (m[1][0] + m[0][1]) * f;
-            z = (m[0][2] + m[2][0]) * f;
-        } else if (m11 > m22) {
-            y = std::sqrt(m11 - m00 - m22 + 1.0f) * 0.5f;
-
-            float f = 0.25f / y;
-
-            w = (m[0][2] - m[2][0]) * f;
-            x = (m[1][0] + m[0][1]) * f;
-            z = (m[2][1] + m[1][2]) * f;
-        } else {
-            z = std::sqrt(m22 - m00 - m11 + 1.0f) * 0.5f;
-
-            float f = 0.25f / z;
-
-            w = (m[1][0] - m[0][1]) * f;
-            x = (m[0][2] + m[2][0]) * f;
-            x = (m[2][1] + m[1][2]) * f;
-        }
+    Quaternion Quaternion::eulerAngles2QuatXZY(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 - s1 * s2 * s3;
+        const float x = c1 * s2 * s3 + s1 * c2 * c3;
+        const float y = c1 * c2 * s3 + s1 * s2 * c3;
+        const float z = c1 * s2 * c3 - s1 * c2 * s3;
+        return {w, x, y, z};
     }
 
-    Vector3 Quaternion::getEulerAngles() const {
-        return {pitch(), yaw(), roll()};
+    Quaternion Quaternion::eulerAngles2QuatXYZ(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 + s1 * s2 * s3;
+        const float x = s1 * c2 * c3 - c1 * s2 * s3;
+        const float y = c1 * s2 * c3 + s1 * c2 * s3;
+        const float z = c1 * c2 * s3 - s1 * s2 * c3;
+        return {w, x, y, z};
     }
 
-    Quaternion Quaternion::conjugate() const {
-        return {w, -x, -y, -z};
+    Quaternion Quaternion::eulerAngles2QuatYXZ(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 - s1 * s2 * s3;
+        const float x = c1 * s2 * c3 - s1 * c2 * s3;
+        const float y = c1 * s2 * s3 + s1 * c2 * s3;
+        const float z = c1 * c2 * s3 + s1 * s2 * c3;
+        return {w, x, y, z};
     }
 
-    float Quaternion::norm() const {
-        return std::sqrt(w * w + x * x + y * y + z * z);
+    Quaternion Quaternion::eulerAngles2QuatYZX(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 + s1 * s2 * s3;
+        const float x = c1 * c2 * s3 - s1 * s2 * c3;
+        const float y = s1 * c2 * c3 - c1 * s2 * s3;
+        const float z = c1 * s2 * c3 + s1 * c2 * s3;
+        return {w, x, y, z};
     }
 
-    void Quaternion::normalise() {
-        *this /= norm();
+    Quaternion Quaternion::eulerAngles2QuatZYX(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 - s1 * s2 * s3;
+        const float x = c1 * c2 * s3 + s1 * s2 * c3;
+        const float y = c1 * s2 * c3 - s1 * c2 * s3;
+        const float z = c1 * s2 * s3 + s1 * c2 * c3;
+        return {w, x, y, z};
     }
 
-    Quaternion Quaternion::inverse() const {
-        return conjugate() / norm();
+    Quaternion Quaternion::eulerAngles2QuatZXY(const Vector3 &angles) {
+        const float c1 = Math::cos(0.5f * angles.x);
+        const float s1 = Math::sin(0.5f * angles.x);
+        const float c2 = Math::cos(0.5f * angles.y);
+        const float s2 = Math::sin(0.5f * angles.y);
+        const float c3 = Math::cos(0.5f * angles.z);
+        const float s3 = Math::sin(0.5f * angles.z);
+        const float w = c1 * c2 * c3 - s1 * s2 * s3;
+        const float x = c1 * c2 * s3 + s1 * s2 * c3;
+        const float y = c1 * s2 * c3 - s1 * c2 * s3;
+        const float z = c1 * s2 * s3 + s1 * c2 * c3;
+        return {w, x, y, z};
     }
 
-    Quaternion Quaternion::unit() const {
-        return *this / norm();
+    Vector3 Quaternion::quat2EulerAnglesXZY(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m11 = ww + xx - yy - zz;
+        const float m12 = xy2 + wz2;
+        const float m13 = xz2 - wy2;
+        const float m22 = ww - xx + yy + zz;
+        const float m32 = yz2 - wx2;
+        const float phi   = Math::atan2(-m32, m22);
+        const float theta = Math::asin(m12);
+        const float psi   = Math::atan2(-m13, m11);
+        return {phi, theta, psi};
     }
 
-    float Quaternion::dot(const Quaternion &q) const {
-        return w * q.w + x * q.x + y * q.y + z * q.z;
+    Vector3 Quaternion::quat2EulerAnglesXYZ(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m11 = ww + xx - yy - zz;
+        const float m12 = xy2 + wz2;
+        const float m13 = xz2 - wy2;
+        const float m23 = yz2 + wx2;
+        const float m33 = ww - xx - yy + zz;
+        const float phi   = Math::atan2(m23, m33);
+        const float theta = -Math::asin(m13);
+        const float psi   = Math::atan2(m12, m11);
+        return {phi, theta, psi};
     }
 
-    float *Quaternion::ptr() {
-        return (&w);
+    Vector3 Quaternion::quat2EulerAnglesYXZ(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m13 = xz2 - wy2;
+        const float m21 = xy2 - wz2;
+        const float m22 = ww - xx + yy + zz;
+        const float m23 = yz2 + wx2;
+        const float m33 = ww - xx - yy + zz;
+        const float phi   = Math::atan2(-m13, m33);
+        const float theta = Math::asin(m23);
+        const float psi   = Math::atan2(-m21, m22);
+        return {phi, theta, psi};
+    }
+
+    Vector3 Quaternion::quat2EulerAnglesYZX(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m11 = ww + xx - yy - zz;
+        const float m21 = xy2 - wz2;
+        const float m22 = ww - xx + yy + zz;
+        const float m23 = yz2 + wx2;
+        const float m31 = xz2 + wy2;
+        const float phi   = Math::atan2(m31, m11);
+        const float theta = -Math::asin(m21);
+        const float psi   = Math::atan2(m23, m22);
+        return {phi, theta, psi};
+    }
+
+    Vector3 Quaternion::quat2EulerAnglesZYX(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m11 = ww + xx - yy - zz;
+        const float m21 = xy2 - wz2;
+        const float m31 = xz2 + wy2;
+        const float m32 = yz2 - wx2;
+        const float m33 = ww - xx - yy + zz;
+        const float phi   = Math::atan2(-m21, m11);
+        const float theta = Math::asin(m31);
+        const float psi   = Math::atan2(-m32, m33);
+        return {phi, theta, psi};
+    }
+
+    Vector3 Quaternion::quat2EulerAnglesZXY(const Quaternion &quat) {
+        const float ww   = quat.w * quat.w;
+        const float xx   = quat.x * quat.x;
+        const float yy   = quat.y * quat.y;
+        const float zz   = quat.z * quat.z;
+        const float xy2 = 2.0f * quat.x * quat.y;
+        const float wz2 = 2.0f * quat.w * quat.z;
+        const float xz2 = 2.0f * quat.x * quat.z;
+        const float wy2 = 2.0f * quat.w * quat.y;
+        const float yz2 = 2.0f * quat.y * quat.z;
+        const float wx2 = 2.0f * quat.w * quat.x;
+        const float m12 = xy2 + wz2;
+        const float m22 = ww - xx + yy + zz;
+        const float m31 = xz2 + wy2;
+        const float m32 = yz2 - wx2;
+        const float m33 = ww - xx - yy + zz;
+        const float phi   = Math::atan2(m12, m22);
+        const float theta = -Math::asin(m32);
+        const float psi   = Math::atan2(m31, m33);
+        return {phi, theta, psi};
     }
 
     std::string Quaternion::str() const {
-        return "| " + std::to_string(w) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " |";
-    }
-
-    float Quaternion::roll() const {
-        return std::atan2(2.0f * (x * y + w * z), w * w + x * x - y * y - z * z);
-    }
-
-    float Quaternion::pitch() const {
-        const float y_ = 2.0f * (y * z + w * x);
-        const float x_ = w * w - x * x - y * y + z * z;
-
-        if (vec2(x_, y_) == vec2())
-            return 2.0f * std::atan2(x, w);
-
-        return std::atan2(y_, x_);
-    }
-
-    float Quaternion::yaw() const {
-        return std::asin(std::clamp(-2.0f * (x * z - w * y), -1.0f, 1.0f));
+        return "(" + std::to_string(w) + ", " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
     }
 
 } // namespace re

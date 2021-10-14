@@ -30,7 +30,7 @@ void Sponza::onUpdate() {
         direction.y = std::sin(pitch);
         direction.z = std::sin(yaw) * std::cos(pitch);
         transform.rotation += lockSpeed * time::deltaTime() * quat(direction);
-        transform.rotation.normalise();
+        transform.rotation.normalize();
     }
 }
 

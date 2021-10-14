@@ -38,7 +38,7 @@ namespace re {
      * @return Transform world matrix
      */
     Matrix4 Transform::worldMatrix() const {
-        Matrix3 rotationMatrix = rotation.rotationMatrix();
+        Matrix3 rotationMatrix = rotation.getMatrix();
         return {
             { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },
             { scale.y * rotationMatrix[0][1], scale.y * rotationMatrix[1][1], scale.y * rotationMatrix[2][1], 0.0f },
@@ -49,7 +49,7 @@ namespace re {
 
     // TODO: Fix normal transform matrix
     Matrix3 Transform::normalMatrix() const {
-        Matrix3 rotationMatrix = rotation.norm() == 1.0f ? rotation.rotationMatrix() : rotation.unit().rotationMatrix();
+        Matrix3 rotationMatrix = rotation.getMatrix();
         vec3 invScale = scale.inversed();
         return {
             { invScale.x * rotationMatrix[0][0], invScale.x * rotationMatrix[1][0], invScale.x * rotationMatrix[2][0] },
@@ -90,7 +90,7 @@ namespace re {
      * @return Get Euler Angles from quaternion
      */
     Vector3 Transform::getEulerAngles() const {
-        return rotation.getEulerAngles();
+        return rotation.getAngles();
     }
 
     /**

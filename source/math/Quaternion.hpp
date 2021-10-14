@@ -5,112 +5,207 @@
 #include <limits>
 #include <string>
 
+#include "Vector3.hpp"
+#include "Matrix3.hpp"
+
 
 namespace re {
 
-    class Vector3;
-    class Matrix3;
-
     class Quaternion {
     public:
-        Quaternion();
+        inline Quaternion() = default;
 
-        Quaternion(float s, float i, float j, float k);
+        inline Quaternion(float w, float x, float y, float z);
 
-        Quaternion(float s, const Vector3& v);
+        inline explicit Quaternion(const Vector3& angles);
 
-        explicit Quaternion(const Vector3& eulerAngles);
+        explicit Quaternion(const float* v);
 
-        explicit Quaternion(const float* p);
+        explicit Quaternion(const double* v);
 
-        explicit Quaternion(const double * p);
+        inline Quaternion(const Quaternion& q) = default;
 
-        Quaternion(const Quaternion& q);
+        [[nodiscard]] inline float lengthSqrt() const;
 
-        Quaternion& operator=(const Quaternion& q);
+        [[nodiscard]] float length() const;
 
-        float& operator[](size_t i);
+        [[nodiscard]] bool isUnit() const;
 
-        const float& operator[](size_t i) const;
+        void normalize();
 
-        bool operator==(const Quaternion& q) const;
+        [[nodiscard]] Quaternion normalized() const;
 
-        bool operator!=(const Quaternion& q) const;
+        [[nodiscard]] inline float dot(const Quaternion& q) const;
 
-        Quaternion operator-() const;
+        [[nodiscard]] inline Quaternion conjugate() const;
 
-        Quaternion operator+(float n) const;
+        void inverse();
 
-        Quaternion operator+(const Quaternion& q) const;
+        [[nodiscard]] Quaternion inversed() const;
 
-        Quaternion operator-(float n) const;
+        [[nodiscard]] inline Vector3 getAngles() const;
 
-        Quaternion operator-(const Quaternion& q) const;
+        [[nodiscard]] Matrix3 getMatrix() const;
 
-        Quaternion operator*(float n) const;
+        static Quaternion eulerAngles2QuatXZY(const Vector3& angles);
 
-        Quaternion operator*(const Quaternion& q) const;
+        static Quaternion eulerAngles2QuatXYZ(const Vector3& angles);
 
-        Quaternion operator/(float n) const;
+        static Quaternion eulerAngles2QuatYXZ(const Vector3& angles);
 
-        Quaternion& operator+=(float n);
+        static Quaternion eulerAngles2QuatYZX(const Vector3& angles);
 
-        Quaternion& operator+=(const Quaternion& q);
+        static Quaternion eulerAngles2QuatZYX(const Vector3& angles);
 
-        Quaternion& operator-=(float n);
+        static Quaternion eulerAngles2QuatZXY(const Vector3& angles);
 
-        Quaternion& operator-=(const Quaternion& q);
+        static Vector3 quat2EulerAnglesXZY(const Quaternion& quat);
 
-        Quaternion& operator*=(float n);
+        static Vector3 quat2EulerAnglesXYZ(const Quaternion& quat);
 
-        Quaternion& operator*=(const Quaternion& q);
+        static Vector3 quat2EulerAnglesYXZ(const Quaternion& quat);
 
-        Quaternion& operator/=(float n);
+        static Vector3 quat2EulerAnglesYZX(const Quaternion& quat);
 
-        [[nodiscard]] Vector3 getVectorPart() const;
+        static Vector3 quat2EulerAnglesZYX(const Quaternion& quat);
 
-        [[nodiscard]] Matrix3 rotationMatrix() const;
-
-        void setRotationMatrix(const Matrix3& m);
-
-        [[nodiscard]] Vector3 getEulerAngles() const;
-
-        [[nodiscard]] Quaternion conjugate() const;
-
-        [[nodiscard]] float norm() const;
-
-        void normalise();
-
-        [[nodiscard]] Quaternion inverse() const;
-
-        [[nodiscard]] Quaternion unit() const;
-
-        [[nodiscard]] float dot(const Quaternion& q) const;
-
-        float* ptr();
+        static Vector3 quat2EulerAnglesZXY(const Quaternion& quat);
 
         [[nodiscard]] std::string str() const;
 
-        [[nodiscard]] float roll() const;
+        inline Quaternion& operator=(const Quaternion&) = default;
 
-        [[nodiscard]] float pitch() const;
+        inline Quaternion& operator=(Quaternion&&) = default;
 
-        [[nodiscard]] float yaw() const;
+        inline float& operator[](size_t i);
 
-    public:
-        float w{1.0f}, x{}, y{}, z{};
+        inline const float& operator[](size_t i) const;
+
+        inline Quaternion operator-() const;
+
+        inline void operator+=(const Quaternion& q);
+
+        inline void operator-=(const Quaternion& q);
+
+        inline void operator*=(float s);
+
+        inline void operator*=(const Quaternion& q);
+
+        inline void operator/=(float s);
+
+        inline Quaternion operator+(const Quaternion& q) const;
+
+        inline Quaternion operator-(const Quaternion& q) const;
+
+        inline Quaternion operator*(float s) const;
+
+        inline Quaternion operator*(const Quaternion& q) const;
+
+        inline Quaternion operator/(float s) const;
+
+        inline bool operator==(const Quaternion& q) const;
+
+        inline bool operator!=(const Quaternion& q) const;
+
+        union {
+            struct {
+                float w, x, y, z;
+            };
+            float values[4]{};
+        };
     };
 
-    inline Quaternion operator+(float n, const Quaternion& q) {
-        return q + n;
+    Quaternion::Quaternion(float w, float x, float y, float z) : w(w), x(x), y(y), z(z) {
+
     }
 
-    inline Quaternion operator-(float n, const Quaternion& q) {
-        return q - n;
+    Quaternion::Quaternion(const Vector3 &angles) {
+        *this = eulerAngles2QuatYZX(angles);
+    }
+
+    float Quaternion::lengthSqrt() const {
+        return dot(*this);
     }
 
     inline Quaternion operator*(float n, const Quaternion& q) {
         return q * n;
+    }
+
+    float Quaternion::dot(const Quaternion &q) const {
+        return w * q.w + x * q.x + y * q.y + z * q.z;
+    }
+
+    Quaternion Quaternion::conjugate() const {
+        return {w, -x, -y, -z};
+    }
+
+    Vector3 Quaternion::getAngles() const {
+        return quat2EulerAnglesYZX(*this);
+    }
+
+    float &Quaternion::operator[](size_t i) {
+        return values[i];
+    }
+
+    const float &Quaternion::operator[](size_t i) const {
+        return values[i];
+    }
+
+    Quaternion Quaternion::operator-() const {
+        return {-w, -x, -y, -z};
+    }
+
+    void Quaternion::operator+=(const Quaternion &q) {
+        *this = *this + q;
+    }
+
+    void Quaternion::operator-=(const Quaternion &q) {
+        *this = *this - q;
+    }
+
+    void Quaternion::operator*=(float s) {
+        *this = *this * s;
+    }
+
+    void Quaternion::operator*=(const Quaternion &q) {
+        *this = *this * q;
+    }
+
+    void Quaternion::operator/=(float s) {
+        *this = *this / s;
+    }
+
+    Quaternion Quaternion::operator+(const Quaternion &q) const {
+        return {w + q.w, x + q.x, y + q.y, z + q.z};
+    }
+
+    Quaternion Quaternion::operator-(const Quaternion &q) const {
+        return {w - q.w, x - q.x, y - q.y, z - q.z};
+    }
+
+    Quaternion Quaternion::operator*(float s) const {
+        return {w * s, x * s, y * s, z * s};
+    }
+
+    Quaternion Quaternion::operator*(const Quaternion &q) const {
+        return {
+                w * q.w - x * q.x - y * q.y - z * q.z,
+                w * q.x + x * q.w + y * q.z - z * q.y,
+                w * q.y - x * q.z + y * q.w + z * q.x,
+                w * q.z + x * q.y - y * q.x + x * q.w
+        };
+    }
+
+    Quaternion Quaternion::operator/(float s) const {
+        return {w / s, x / s, y / s, z / s};
+    }
+
+    bool Quaternion::operator==(const Quaternion &q) const {
+        return w == q.w && x == q.x && y == q.y && z == q.z;
+    }
+
+    bool Quaternion::operator!=(const Quaternion &q) const {
+        return w != q.w && x != q.x && y != q.y && z != q.z;
     }
 
     using quat = Quaternion;
