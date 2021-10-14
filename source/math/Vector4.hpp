@@ -100,18 +100,34 @@ namespace re {
         w = v.w;
     }
 
+    /**
+     *
+     * @return Vector length without apply squared root
+     */
     float Vector4::lengthSqrt() const {
         return dot(*this);
     }
 
+    /**
+     *
+     * @return Dot product(Scalar product) between this vector and another\n
+     * @link https://www.wikiwand.com/en/Dot_product.
+     */
     float Vector4::dot(const Vector4 &v) const {
         return x * v.x + y * v.y + z * v.z + w * v.w;
     }
 
+    /**
+     * Turn this vector in its inverse
+     */
     void Vector4::inverse() {
         *this = inversed();
     }
 
+    /**
+     *
+     * @return Inverse of this vector. 1 divided by each component.
+     */
     Vector4 Vector4::inversed() const {
         return {-x, -y, -z, -w};
     }

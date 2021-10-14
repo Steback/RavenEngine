@@ -27,22 +27,42 @@ namespace re {
         return Math::abs(lengthSqrt() - 1.0f) < 2.0f * tol;
     }
 
+    /**
+     * Turns this quaternion into its unit quaternion
+     */
     void Quaternion::normalize() {
         *this = normalized();
     }
 
+    /**
+     *
+     * @return Unit quaternion of this quaternion
+     * @link https://www.wikiwand.com/en/Quaternion#/Unit_quaternion
+     */
     Quaternion Quaternion::normalized() const {
         return *this / length();
     }
 
+    /**
+     * Turn this quaternion into its inverse
+     */
     void Quaternion::inverse() {
         *this = inversed();
     }
 
+    /**
+     *
+     * @return Inverse of this quaternion
+     * @link https://www.wikiwand.com/en/Quaternion#/Definition
+     */
     Quaternion Quaternion::inversed() const {
         return conjugate() / length();
     }
 
+    /**
+     *
+     * @return Rotation matrix of this Quaternion
+     */
     Matrix3 Quaternion::getMatrix() const {
         mat3 result(1.0f);
         const float xx = x * x;
@@ -69,6 +89,10 @@ namespace re {
         return result;
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form X - Z - Y
+     */
     Quaternion Quaternion::eulerAngles2QuatXZY(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -83,6 +107,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form X - Y - Z
+     */
     Quaternion Quaternion::eulerAngles2QuatXYZ(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -97,6 +125,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form Y - X - Z
+     */
     Quaternion Quaternion::eulerAngles2QuatYXZ(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -111,6 +143,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form Y - Z - X
+     */
     Quaternion Quaternion::eulerAngles2QuatYZX(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -125,6 +161,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form Z - Y - X
+     */
     Quaternion Quaternion::eulerAngles2QuatZYX(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -139,6 +179,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Euler angles of a Quaternion in form Z - X - Y
+     */
     Quaternion Quaternion::eulerAngles2QuatZXY(const Vector3 &angles) {
         const float c1 = Math::cos(0.5f * angles.x);
         const float s1 = Math::sin(0.5f * angles.x);
@@ -153,6 +197,10 @@ namespace re {
         return {w, x, y, z};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form X - Z - Y
+     */
     Vector3 Quaternion::quat2EulerAnglesXZY(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;
@@ -175,6 +223,10 @@ namespace re {
         return {phi, theta, psi};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form X - Y - Z
+     */
     Vector3 Quaternion::quat2EulerAnglesXYZ(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;
@@ -197,6 +249,10 @@ namespace re {
         return {phi, theta, psi};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form Y - X - Z
+     */
     Vector3 Quaternion::quat2EulerAnglesYXZ(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;
@@ -219,6 +275,10 @@ namespace re {
         return {phi, theta, psi};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form Y - Z - X
+     */
     Vector3 Quaternion::quat2EulerAnglesYZX(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;
@@ -241,6 +301,10 @@ namespace re {
         return {phi, theta, psi};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form Z - Y - X
+     */
     Vector3 Quaternion::quat2EulerAnglesZYX(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;
@@ -263,6 +327,10 @@ namespace re {
         return {phi, theta, psi};
     }
 
+    /**
+     *
+     * @return Convert quaternion to euler angles in form Z - X - Y
+     */
     Vector3 Quaternion::quat2EulerAnglesZXY(const Quaternion &quat) {
         const float ww   = quat.w * quat.w;
         const float xx   = quat.x * quat.x;

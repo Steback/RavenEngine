@@ -11,6 +11,10 @@
 
 namespace re {
 
+    /**
+     * This implementation has W component first\n
+     * W - X - Y - Z
+     */
     class Quaternion {
     public:
         inline Quaternion() = default;
@@ -123,22 +127,36 @@ namespace re {
         *this = eulerAngles2QuatYZX(angles);
     }
 
+    /**
+     *
+     * @return Quaternion length without apply squared root
+     */
     float Quaternion::lengthSqrt() const {
         return dot(*this);
     }
 
-    inline Quaternion operator*(float n, const Quaternion& q) {
-        return q * n;
-    }
-
+    /**
+     *
+     * @return Dot product(Scalar product) between this quaternion and another\n
+     * @link https://www.wikiwand.com/en/Dot_product.
+     */
     float Quaternion::dot(const Quaternion &q) const {
         return w * q.w + x * q.x + y * q.y + z * q.z;
     }
 
+    /**
+     *
+     * @return Conjugate of this Quaternion
+     * @link https://www.wikiwand.com/en/Quaternion#/Conjugation,_the_norm,_and_reciprocal
+     */
     Quaternion Quaternion::conjugate() const {
         return {w, -x, -y, -z};
     }
 
+    /**
+     *
+     * @return Euler angles of this Quaternion in form Y - Z - X.
+     */
     Vector3 Quaternion::getAngles() const {
         return quat2EulerAnglesYZX(*this);
     }
@@ -206,6 +224,10 @@ namespace re {
 
     bool Quaternion::operator!=(const Quaternion &q) const {
         return w != q.w && x != q.x && y != q.y && z != q.z;
+    }
+
+    inline Quaternion operator*(float n, const Quaternion& q) {
+        return q * n;
     }
 
     using quat = Quaternion;

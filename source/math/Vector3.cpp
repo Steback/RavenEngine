@@ -21,14 +21,26 @@ namespace re {
         return Math::sqrt(lengthSqrt());
     }
 
+    /**
+     *
+     * @param tol
+     */
     bool Vector3::isUnit(float tol) const {
         return Math::abs(lengthSqrt() - 1.0f) < 2.0f * tol;
     }
 
+    /**
+     * Turn this vector into its unit vector
+     */
     void Vector3::normalize() {
         *this = normalized();
     }
 
+    /**
+     *
+     * @return Unit vector of this vector
+     * @link https://www.wikiwand.com/en/Unit_vector
+     */
     Vector3 Vector3::normalized() const {
         return *this / length();
     }

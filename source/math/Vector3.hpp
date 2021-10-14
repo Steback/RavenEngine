@@ -96,14 +96,28 @@ namespace re {
 
     }
 
+    /**
+     *
+     * @return Vector length without apply squared root
+     */
     float Vector3::lengthSqrt() const {
         return dot(*this);
     }
 
+    /**
+     *
+     * @return Dot product(Scalar product) between this vector and another\n
+     * @link https://www.wikiwand.com/en/Dot_product.
+     */
     float Vector3::dot(const Vector3 &v) const {
         return x * v.x + y * v.y + z * v.z;
     }
 
+    /**
+     *
+     * @return Cross product between this vector and another\n
+     * @link https://www.wikiwand.com/en/Cross_product
+     */
     Vector3 Vector3::cross(const Vector3 &v) const {
         return {
             y * v.z - z * v.y,
@@ -112,10 +126,17 @@ namespace re {
         };
     }
 
+    /**
+     * Turn this vector in its inverse
+     */
     void Vector3::inverse() {
         *this = inversed();
     }
 
+    /**
+     *
+     * @return Inverse of this vector. 1 divided by each component.
+     */
     Vector3 Vector3::inversed() const {
         return {1.0f / x, 1.0f / y, 1.0f / z};
     }
