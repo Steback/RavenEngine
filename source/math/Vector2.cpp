@@ -19,9 +19,8 @@ namespace re {
         return Math::sqrt(lengthSqrt());
     }
 
-    bool Vector2::isUnit() const {
-        // TODO: Implement Vector2::isUnit
-        return false;
+    bool Vector2::isUnit(float tol) const {
+        return Math::abs(lengthSqrt() - 1.0f) < 2.0f * tol;
     }
 
     void Vector2::normalize() {

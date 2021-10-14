@@ -25,7 +25,7 @@ namespace re {
 
         [[nodiscard]] float length() const;
 
-        [[nodiscard]] bool isUnit() const;
+        [[nodiscard]] bool isUnit(float tol = std::numeric_limits<float>::epsilon()) const;
 
         void normalize();
 

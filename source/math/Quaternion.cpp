@@ -23,9 +23,8 @@ namespace re {
         return Math::sqrt(lengthSqrt());
     }
 
-    bool Quaternion::isUnit() const {
-        // TODO: Implement Quaternion::isUnit
-        return false;
+    bool Quaternion::isUnit(float tol) const {
+        return Math::abs(lengthSqrt() - 1.0f) < 2.0f * tol;
     }
 
     void Quaternion::normalize() {
