@@ -50,7 +50,7 @@ namespace re {
 
         inline Basis scaled(const Vector3& s);
 
-        void setQuaternion(const Quaternion& q, const Vector3& scale = {1.0f, 1.0f, 1.0f});
+        void setQuaternion(const Quaternion& q, const Vector3& s = {1.0f, 1.0f, 1.0f});
 
         [[nodiscard]] Quaternion getQuaternion() const;
 

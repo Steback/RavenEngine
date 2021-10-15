@@ -53,10 +53,9 @@ namespace re {
         return Basis(angles, s) * *this;
     }
 
-    void Basis::setQuaternion(const Quaternion &q, const Vector3 &scale) {
-        float d = q.lengthSqrt();
-        float s = 2.0f / d;
-        float xs = q.x * s, ys = q.y * s, zs = q.z * s;
+    void Basis::setQuaternion(const Quaternion &q, const Vector3 &s) {
+        float d = 2.0f / q.lengthSqrt();
+        float xs = q.x * d, ys = q.y * d, zs = q.z * d;
         float wx = q.w * xs, wy = q.w * ys, wz = q.w * zs;
         float xx = q.x * xs, xy = q.x * ys, xz = q.x * zs;
         float yy = q.y * ys, yz = q.y * zs, zz = q.z * zs;
@@ -64,6 +63,8 @@ namespace re {
         elements[0] = {1.0f - (yy + zz), xy - wz, xz + wy};
         elements[1] = {xy + wz, 1.0f - (xx + zz), yz - wx};
         elements[2] = {xz - wy, yz + wx, 1.0f - (xx + yy)};
+
+        scale(s);
     }
 
     Quaternion Basis::getQuaternion() const {
