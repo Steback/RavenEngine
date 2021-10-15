@@ -112,7 +112,7 @@ namespace re {
             struct {
                 float w, x, y, z;
             };
-            float values[4]{};
+            float values[4] = {1.0f, 0.0f, 0.0f, 0.0f};
         };
     };
 
