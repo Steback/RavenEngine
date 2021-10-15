@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Vector3.hpp"
-#include "Matrix3.hpp"
 
 
 namespace re {
@@ -48,8 +47,6 @@ namespace re {
         [[nodiscard]] Quaternion inversed() const;
 
         [[nodiscard]] inline Vector3 getAngles() const;
-
-        [[nodiscard]] Matrix3 getMatrix() const;
 
         static Quaternion eulerAngles2QuatXZY(const Vector3& angles);
 

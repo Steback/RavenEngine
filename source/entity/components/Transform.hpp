@@ -5,7 +5,6 @@
 #include "Component.hpp"
 
 #include "math/Matrix4.hpp"
-#include "math/Matrix3.hpp"
 #include "math/Vector3.hpp"
 #include "math/Quaternion.hpp"
 
@@ -28,8 +27,6 @@ namespace re {
         Transform(json& component, Entity* owner);
 
         [[nodiscard]] Matrix4 worldMatrix() const;
-
-        [[nodiscard]] Matrix3 normalMatrix() const;
 
         json serialize() override;
 

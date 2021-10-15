@@ -61,36 +61,6 @@ namespace re {
 
     /**
      *
-     * @return Rotation matrix of this Quaternion
-     */
-    Matrix3 Quaternion::getMatrix() const {
-        mat3 result(1.0f);
-        const float xx = x * x;
-        const float yy = y * y;
-        const float zz = z * z;
-        const float xz = x * z;
-        const float xy = x * y;
-        const float yz = y * z;
-        const float wx = w * x;
-        const float wy = w * y;
-        const float wz = w * z;
-
-        result[0][0] = 1.0f - 2.0f * (yy + zz);
-        result[0][1] = 2.0f * (xy + wz);
-        result[0][2] = 2.0f * (xz - wy);
-
-        result[1][0] = 2.0f * (xy - wz);
-        result[1][1] = 1.0f - 2.0f * (xx + zz);
-        result[1][2] = 2.0f * (yz + wx);
-
-        result[2][0] = 2.0f * (xz + wy);
-        result[2][1] = 2.0f * (yz - wx);
-        result[2][2] = 1.0f - 2.0f * (xx + yy);
-        return result;
-    }
-
-    /**
-     *
      * @return Euler angles of a Quaternion in form X - Z - Y
      */
     Quaternion Quaternion::eulerAngles2QuatXZY(const Vector3 &angles) {

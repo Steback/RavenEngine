@@ -2,6 +2,8 @@
 
 #include "nameof.hpp"
 
+#include "math/Basis.hpp"
+
 
 namespace re {
 
@@ -38,23 +40,12 @@ namespace re {
      * @return Transform world matrix
      */
     Matrix4 Transform::worldMatrix() const {
-        Matrix3 rotationMatrix = rotation.getMatrix();
+        Basis rotationMatrix = Basis(rotation, scale);
         return {
-            { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },
-            { scale.y * rotationMatrix[0][1], scale.y * rotationMatrix[1][1], scale.y * rotationMatrix[2][1], 0.0f },
-            { scale.z * rotationMatrix[0][2], scale.z * rotationMatrix[1][2], scale.z * rotationMatrix[2][2], 0.0f },
+            { rotationMatrix[0][0], rotationMatrix[1][0], rotationMatrix[2][0], 0.0f },
+            { rotationMatrix[0][1], rotationMatrix[1][1], rotationMatrix[2][1], 0.0f },
+            { rotationMatrix[0][2], rotationMatrix[1][2], rotationMatrix[2][2], 0.0f },
             { position.x, position.y, position.z, 1.0f }
-        };
-    }
-
-    // TODO: Fix normal transform matrix
-    Matrix3 Transform::normalMatrix() const {
-        Matrix3 rotationMatrix = rotation.getMatrix();
-        vec3 invScale = scale.inversed();
-        return {
-            { invScale.x * rotationMatrix[0][0], invScale.x * rotationMatrix[1][0], invScale.x * rotationMatrix[2][0] },
-            { invScale.y * rotationMatrix[0][1], invScale.y * rotationMatrix[1][1], invScale.y * rotationMatrix[2][1] },
-            { invScale.z * rotationMatrix[0][2], invScale.z * rotationMatrix[1][2], invScale.z * rotationMatrix[2][2] },
         };
     }
 

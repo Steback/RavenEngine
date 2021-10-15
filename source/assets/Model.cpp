@@ -3,7 +3,7 @@
 #include "AssetsManager.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
-#include "math/Matrix3.hpp"
+#include "math/Basis.hpp"
 #include "utils/Utils.hpp"
 #include "files/FilesManager.hpp"
 #include "logs/Logs.hpp"
@@ -16,14 +16,13 @@ namespace re {
      * @return Matrix4 of Node local space.
      */
     Matrix4 Model::Node::getLocalMatrix() const {
-        Matrix3 rotationMatrix = rotation.getMatrix();
-
-        return Matrix4(
-                { scale.x * rotationMatrix[0][0], scale.x * rotationMatrix[1][0], scale.x * rotationMatrix[2][0], 0.0f },
-                { scale.y * rotationMatrix[0][1], scale.y * rotationMatrix[1][1], scale.y * rotationMatrix[2][1], 0.0f },
-                { scale.z * rotationMatrix[0][2], scale.z * rotationMatrix[1][2], scale.z * rotationMatrix[2][2], 0.0f },
+        Basis rotationMatrix = Basis(rotation, scale);
+        return {
+                { rotationMatrix[0][0], rotationMatrix[1][0], rotationMatrix[2][0], 0.0f },
+                { rotationMatrix[0][1], rotationMatrix[1][1], rotationMatrix[2][1], 0.0f },
+                { rotationMatrix[0][2], rotationMatrix[1][2], rotationMatrix[2][2], 0.0f },
                 { translation.x, translation.y, translation.z, 1.0f }
-            ) * matrix;
+        };
     }
 
     /**
