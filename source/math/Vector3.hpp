@@ -42,7 +42,7 @@ namespace re {
 
         [[nodiscard]] std::string str() const;
 
-        inline Vector3& operator=(const Vector3& v);
+        inline Vector3& operator=(const Vector3& v) = default;
 
         inline float& operator[](size_t i);
 
@@ -140,10 +140,6 @@ namespace re {
      */
     Vector3 Vector3::inversed() const {
         return {1.0f / x, 1.0f / y, 1.0f / z};
-    }
-
-    Vector3 &Vector3::operator=(const Vector3 &v) {
-        x = v.x; y = v.y, z = v.z;
     }
 
     float &Vector3::operator[](size_t i) {

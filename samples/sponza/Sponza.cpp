@@ -45,7 +45,9 @@ void Sponza::onDrawImGui() {
             ImGui::InputFloat3(fmt::format("{} Position", entity->getName()).c_str(), transform.position.values);
             ImGui::InputFloat3(fmt::format("{} Size", entity->getName()).c_str(), transform.scale.values);
             ImGui::InputFloat3(fmt::format("{} Rotation", entity->getName()).c_str(), eulerAngles.values);
-            transform.rotation = quat(Math::deg2rad(eulerAngles));
+            vec3 angles = Math::deg2rad(eulerAngles);
+            transform.rotation = quat(Vector3{angles.y, angles.z, angles.x});
+            ImGui::Text("%s", transform.rotation.str().c_str());
         }
         ImGui::Separator();
         {
@@ -53,7 +55,7 @@ void Sponza::onDrawImGui() {
             ImGui::InputFloat3(fmt::format("{} Position", camera->getName()).c_str(), cameraTransform.position.values);
 
             vec3 cameraAngles = Math::rad2deg(cameraTransform.getEulerAngles());
-            ImGui::Text("%s", fmt::format("{} Angles: x: {} - y: {} - z: {}", camera->getName(), cameraAngles.x, cameraAngles.y, cameraAngles.z).c_str());
+            ImGui::Text("%s", fmt::format("{} Angles: {}", camera->getName(), cameraAngles.str()).c_str());
 
             auto& cameraComponent = camera->getComponent<Camera>();
             float fov = Math::rad2deg(cameraComponent.fov);
@@ -66,10 +68,10 @@ void Sponza::onDrawImGui() {
         ImGui::Separator();
         {
             vec2 cursorPosition = input::getCursorPosition();
-            ImGui::Text("%s", fmt::format("Cursor position X: {} - Y: {}", cursorPosition.x, cursorPosition.y).c_str());
+            ImGui::Text("%s", fmt::format("Cursor position: {}", cursorPosition.str()).c_str());
 
             vec2 cursorOffset = input::getCursorOffset();
-            ImGui::Text("%s", fmt::format("Cursor offset X: {} - Y: {}", cursorOffset.x, cursorOffset.y).c_str());
+            ImGui::Text("%s", fmt::format("Cursor offset: {}", cursorOffset.str()).c_str());
         }
         ImGui::Separator();
         {
@@ -86,5 +88,6 @@ void Sponza::onDrawImGui() {
 void Sponza::onLoadScene() {
     entity = scene->getEntity("Sponza");
     camera = scene->getEntity("Camera");
-    eulerAngles = Math::rad2deg(entity->getComponent<Transform>().getEulerAngles());
+    Vector3 angles = Math::rad2deg(entity->getComponent<Transform>().getEulerAngles());
+    eulerAngles = {angles.z, angles.x, angles.y};
 }
