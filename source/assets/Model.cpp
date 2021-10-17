@@ -106,7 +106,6 @@ namespace re {
         newNode.index = nodeIndex;
         newNode.parent = parentIndex;
         newNode.name = node.name;
-        newNode.matrix = Matrix4(1.0f);
 
         if (node.translation.size() == 3) {
             newNode.translation = vec3(node.translation.data());
@@ -118,10 +117,6 @@ namespace re {
 
         if (node.scale.size() == 3) {
             newNode.scale = vec3(node.scale.data());
-        }
-
-        if (node.matrix.size() == 16) {
-            newNode.matrix = mat4(node.matrix.data());
         }
 
         if (node.mesh > -1) {

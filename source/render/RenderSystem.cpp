@@ -76,7 +76,7 @@ namespace re {
 
                 mat4 transformMatrix = transform.worldMatrix();
                 uboTransform.mvp = viewProj * transformMatrix;
-                uboTransform.invTransform = transformMatrix.inverse();
+                uboTransform.invTransform = transformMatrix.inverted();
 
                 meshRender.model->render(commandBuffer, pipeline->getLayout(), uboNode);
                 updateBuffer();

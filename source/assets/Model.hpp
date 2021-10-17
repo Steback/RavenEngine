@@ -29,7 +29,6 @@ namespace re {
             std::string name;
             std::vector<uint32_t> children;
             Mesh* mesh;
-            Matrix4 matrix;
             Vector3 translation;
             Vector3 scale{1.0f};
             Quaternion rotation;
