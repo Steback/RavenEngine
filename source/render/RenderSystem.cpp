@@ -44,10 +44,10 @@ namespace re {
         if (!light) light = scene->getEntity("Light");
 
         auto& cameraComponent = camera->getComponent<Camera>();
-        mat4 viewProj = cameraComponent.getProjection() * cameraComponent.getView();
+        mat4 viewProj = cameraComponent.projection * cameraComponent.view;
 
         if (scene->skybox)
-            scene->skybox->draw(commandBuffer, cameraComponent.getProjection(), Matrix4{1.0f});
+            scene->skybox->draw(commandBuffer, cameraComponent.projection, Matrix4{1.0f});
 
         pipeline->bind(commandBuffer);
 
@@ -91,7 +91,7 @@ namespace re {
     void RenderSystem::update(float aspect) {
         if (camera) {
             auto& cameraComponent = camera->getComponent<Camera>();
-            cameraComponent.setPerspectiveProjection(aspect);
+            cameraComponent.setPerspective(aspect);
         }
     }
 

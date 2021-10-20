@@ -11,8 +11,16 @@
 
 namespace re {
 
-    Camera::Camera(Type type, float fov, float zNear, float zFar, Entity* owner)
-            : Component(owner), type(type), fov(fov), zNear(zNear), zFar(zFar) {
+    /**
+     *
+     * @param fov Field of View(FOV) angle in radians
+     * @param zNear Near plane distance
+     * @param zFar Far plane distance
+     * @param target Camera target
+     * @param owner Valid Entity pointer
+     */
+    Camera::Camera(float fov, float zNear, float zFar, const Vector3& target, Entity* owner)
+            : Component(owner), fov(fov), zNear(zNear), zFar(zFar), target(target) {
 
     }
 
@@ -20,7 +28,14 @@ namespace re {
         serialize(component);
     }
 
-    void Camera::setOrthographicProjection(float left, float right, float top, float bottom) {
+    /**
+     * @brief Set projection as a Orthographic
+     * @param left Left plane distance
+     * @param right Right plane distance
+     * @param top Top plane distance
+     * @param bottom Bottom plane distance
+     */
+    void Camera::setOrthographic(float left, float right, float top, float bottom) {
         projection = mat4(1.0f);
         projection[0][0] = 2.0f / (right - left);
         projection[1][1] = 2.0f / (bottom - top);
@@ -30,7 +45,11 @@ namespace re {
         projection[3][2] = -zNear / (zFar - zNear);
     }
 
-    void Camera::setPerspectiveProjection(float aspect) {
+    /**
+     * @brief Set projection as a Perspective
+     * @param aspect Aspect ratio of current viewport
+     */
+    void Camera::setPerspective(float aspect) {
         const float tanHalfFovy = std::tan(fov * 0.5f);
         projection = mat4{0.0f};
         projection[0][0] = 1.0f / (aspect * tanHalfFovy);
@@ -41,66 +60,51 @@ namespace re {
 
     }
 
-    void Camera::setViewDirection(const vec3 &position, const quat &rotation) {
-        Basis rotMatrix = Basis(rotation);
-        const vec3 u{rotMatrix[0]};
-        const vec3 v{rotMatrix[1]};
-        const vec3 w{rotMatrix[2]};
+    /**
+     * @brief Set view to look at a target
+     * @param up [Optional] Up world vector, By default is (0, 1, 0).
+     * @note The function not require the eye and center as a parameters. Eye vector is the target attribute of Camera
+     * component, and Center is position attribute in Transform component
+     */
+    void Camera::lookAt(const Vector3& up) {
+        vec3 position = owner->getComponent<Transform>().position;
+        const vec3 f((target - position).normalized());
+        const vec3 s(f.cross(up).normalized());
+        const vec3 u(s.cross(f));
 
-        view = mat4{1.f};
-        view[0][0] = u.x;
-        view[1][0] = u.y;
-        view[2][0] = u.z;
-        view[0][1] = v.x;
-        view[1][1] = -v.y;
-        view[2][1] = v.z;
-        view[0][2] = w.x;
-        view[1][2] = w.y;
-        view[2][2] = w.z;
-        view[3][0] = -(u.dot(position));
-        view[3][1] = -(v.dot(position));
-        view[3][2] = -(w.dot(position));
-    }
-
-    // TODO: Implement look at Camera
-    void Camera::setViewTarget(const vec3 &position, const vec3 &target, const vec3 &up) {
-//        setViewDirection(position, target - position, up);
+        view.setIdentity();
+        view[0][0] = s.x;
+        view[1][0] = s.y;
+        view[2][0] = s.z;
+        view[0][1] = u.x;
+        view[1][1] = -u.y;
+        view[2][1] = u.z;
+        view[0][2] = f.x;
+        view[1][2] = f.y;
+        view[2][2] = f.z;
+        view[3][0] = -s.dot(position);
+        view[3][1] = -u.dot(position);
+        view[3][2] = -f.dot(position);
     }
 
     void Camera::update() {
-        auto& transform = owner->getComponent<Transform>();
-        switch (type) {
-            case Camera::DIRECTION:
-                setViewDirection(transform.position, transform.rotation);
-                break;
-            case Camera::LOOK_AT:
-                // TODO: Implement look at Camera
-                break;
-        }
-    }
-
-    const Matrix4 &Camera::getProjection() const {
-        return projection;
-    }
-
-    const Matrix4 &Camera::getView() const {
-        return view;
+        lookAt();
     }
 
     json Camera::serialize() {
         return {
-            {std::string(NAMEOF(type)), type},
             {std::string(NAMEOF(fov)), fov},
             {std::string(NAMEOF(zNear)), zNear},
             {std::string(NAMEOF(zFar)), zFar},
+            {std::string(NAMEOF(target)), target.values},
         };
     }
 
     void Camera::serialize(json &component) {
-        type = component[std::string(NAMEOF(type))].get<Type>();
         fov = component[std::string(NAMEOF(fov))].get<float>();
         zNear = component[std::string(NAMEOF(zNear))].get<float>();
         zFar = component[std::string(NAMEOF(zFar))].get<float>();
+        target = Vector3(component[std::string(NAMEOF(target))].get<std::array<float, 3>>().data());
     }
 
 } // namespace re

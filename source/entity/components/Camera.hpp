@@ -11,43 +11,28 @@
 
 namespace re {
 
-    // TODO: Do changes in Camera component and add Doxygen comments
     class Camera : public Component {
     public:
-        enum Type {
-            DIRECTION = 1,
-            LOOK_AT = 2
-        };
-
-    public:
-        explicit Camera(Type type, float fov, float zNear, float zFar, Entity* owner);
+        explicit Camera(float fov, float zNear, float zFar, const Vector3& target, Entity* owner);
 
         Camera(json& component, Entity* owner);
 
-        void setOrthographicProjection(float left, float right, float top, float bottom);
+        void setOrthographic(float left, float right, float top, float bottom);
 
-        void setPerspectiveProjection(float aspect);
+        void setPerspective(float aspect);
 
-        void setViewDirection(const vec3 &position, const quat &rotation);
-
-        void setViewTarget(const vec3& position, const vec3& target, const vec3& up = {0.f, -1.f, 0.f});
+        void lookAt(const Vector3& up = {0.0f, 1.0f, 0.0f});
 
         void update();
-
-        [[nodiscard]] const Matrix4& getProjection() const;
-
-        [[nodiscard]] const Matrix4& getView() const;
 
         json serialize() override;
 
         void serialize(json &component) override;
 
     public:
-        Type type{};
         float fov{Math::deg2rad(45.0f)};
         float zNear{0.1f}, zFar{100};
-
-    private:
+        Vector3 target;
         Matrix4 projection{1.0f};
         Matrix4 view{1.0f};
     };

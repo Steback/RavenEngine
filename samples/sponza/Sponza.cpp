@@ -18,19 +18,12 @@ void Sponza::onUpdate() {
     if (!camera) return;
 
     auto& transform = camera->getComponent<Transform>();
-
     vec2 cursorOffset = input::getCursorOffset();
+
     if (input::getKey(input::KEY_LEFT_SHIFT) && input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MOUSE_BUTTON_LEFT)) {
 
     } else if (input::getKey(input::KEY_LEFT_ALT) && input::getMouseButton(input::MOUSE_BUTTON_LEFT)) {
-        float yaw = cursorOffset.x;
-        float pitch = cursorOffset.y;
-        vec3 direction;
-        direction.x = std::cos(yaw) * std::cos(pitch);
-        direction.y = std::sin(pitch);
-        direction.z = std::sin(yaw) * std::cos(pitch);
-        transform.rotation += lockSpeed * time::deltaTime() * quat(direction);
-        transform.rotation.normalize();
+
     }
 }
 
@@ -88,6 +81,7 @@ void Sponza::onDrawImGui() {
 void Sponza::onLoadScene() {
     entity = scene->getEntity("Sponza");
     camera = scene->getEntity("Camera");
+    cameraTarget = camera->getComponent<Camera>().target;
     Vector3 angles = Math::rad2deg(entity->getComponent<Transform>().getEulerAngles());
     eulerAngles = {angles.z, angles.x, angles.y};
 }
