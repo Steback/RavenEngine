@@ -18,7 +18,7 @@ link_libraries(${THIRD_PARTY})
 include_directories(bindings)
 file(GLOB_RECURSE IMGUI_BINDINGS bindings/*.cpp)
 
-### Source ###
+### Engine ###
 include_directories(source)
-add_subdirectory(source)
+add_subdirectory(source/engine)
 link_libraries(RavenEngine)
