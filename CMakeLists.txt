@@ -22,9 +22,3 @@ file(GLOB_RECURSE IMGUI_BINDINGS bindings/*.cpp)
 include_directories(source)
 add_subdirectory(source)
 link_libraries(RavenEngine)
-
-### Samples ###
-add_subdirectory(samples)
-
-### Tests ###
-add_subdirectory(tests)
