@@ -18,7 +18,13 @@ link_libraries(${THIRD_PARTY})
 include_directories(bindings)
 file(GLOB_RECURSE IMGUI_BINDINGS bindings/*.cpp)
 
+### Config ###
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 ### Engine ###
 include_directories(source)
 add_subdirectory(source/engine)
 link_libraries(RavenEngine)
+
+### Editor ###
+add_subdirectory(source/editor)

@@ -7,8 +7,7 @@ cmake-build-debug/
 cmake-build-release/
 
 ### Binaries ###
-bin/samples
-bin/tests
+bin/
 
 ### Shaders ###
 *.spv
