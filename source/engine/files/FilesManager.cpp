@@ -70,7 +70,7 @@ namespace re::files {
                 return File(filePath);
         }
 
-        throwEx(fmt::format("Failed to find file: ", name));
+        throwEx(fmt::format("Failed to find file: {}", name));
 
         return File(name);
     }
