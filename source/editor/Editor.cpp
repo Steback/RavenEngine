@@ -7,9 +7,10 @@ namespace re {
 
     Editor::Editor(CLI::App &app) : Base("Editor", app) {
         scene = std::make_shared<Scene>();
-        camera = scene->addEntity("Editor Camera");
+        camera = std::make_shared<Entity>("Camera", scene->getRegistry().create(), scene.get());
         camera->addComponent<Transform>(Vector3{}, Vector3{1.0f}, Vector3{});
         camera->addComponent<Camera>(Math::deg2rad(45.0f), 0.01f, 100.0f, cameraTarget);
+        scene->setMainCamera(camera);
 
         windowSize = renderer->getWindowSize();
         scenePanelPos = {0.0f, mainMenuHeight};

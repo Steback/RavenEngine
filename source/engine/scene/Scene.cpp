@@ -14,7 +14,6 @@
 
 namespace re {
 
-    // TODO: Refactored Scene class and add Doxygen comments
     Scene::Scene() = default;
 
     Scene::Scene(std::string fileName) : fileName(std::move(fileName)) {
@@ -23,26 +22,39 @@ namespace re {
 
     Scene::~Scene() = default;
 
+    /**
+     * Create a entity just with the name
+     */
     std::shared_ptr<Entity> Scene::addEntity(const std::string &name) {
         std::shared_ptr<Entity> entity = std::make_shared<Entity>(name, registry.create(), this);
         entities.push_back(entity);
         return entity;
     }
 
+    /**
+     * Create a entity and its components from JSON
+     */
     std::shared_ptr<Entity> Scene::addEntity(json &jsonEntity) {
         std::shared_ptr<Entity> entity = std::make_shared<Entity>(jsonEntity, registry.create(), this);
         entities.push_back(entity);
         return entity;
     }
 
-    void Scene::load() {
+    /**
+     *
+     * @param name [Optional] If is no empty clean the current scene, set the new file and load it.
+     */
+    void Scene::load(const std::string& name) {
+        if (!name.empty()) fileName = name;
+
         File file = files::getFile(fileName);
 
         json scene;
         file.read(scene);
 
-        for (auto& entityJson : scene[std::string(NAMEOF(entities))])
+        for (auto& entityJson : scene[std::string(NAMEOF(entities))]) {
             auto entity = addEntity(entityJson);
+        }
 
         // TODO: Temporally solution. Need to find a better approach
         while (true) {
@@ -83,8 +95,7 @@ namespace re {
     }
 
     void Scene::update() {
-        for (auto& entity : registry.view<Camera>())
-            registry.get<Camera>(entity).update();
+        mainCamera->getComponent<Camera>().update();
     }
 
     bool Scene::loaded() const {
@@ -97,6 +108,14 @@ namespace re {
 
     void Scene::loadSkybox(const std::string& name, VkRenderPass renderPass) {
         skybox = AssetsManager::getInstance()->loadSkybox(name, renderPass);
+    }
+
+    void Scene::setMainCamera(std::shared_ptr<Entity> newCamera) {
+        mainCamera = std::move(newCamera);
+    }
+
+    std::shared_ptr<Entity> Scene::getMainCamera() const {
+        return mainCamera;
     }
 
 } // namespace re

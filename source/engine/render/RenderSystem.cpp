@@ -40,7 +40,7 @@ namespace re {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::renderScene(VkCommandBuffer commandBuffer, const std::shared_ptr<Scene>& scene) {
-        if (!camera) camera = scene->getEntity("Camera");
+        if (!camera) camera = scene->getMainCamera();
         if (!light) light = scene->getEntity("Light");
 
         auto& cameraComponent = camera->getComponent<Camera>();

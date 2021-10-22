@@ -36,7 +36,7 @@ namespace re {
 
         std::shared_ptr<Entity> addEntity(json& entity);
 
-        void load();
+        void load(const std::string& name = "");
 
         void save();
 
@@ -54,11 +54,16 @@ namespace re {
 
         void loadSkybox(const std::string& name, VkRenderPass renderPass);
 
+        void setMainCamera(std::shared_ptr<Entity> newCamera);
+
+        std::shared_ptr<Entity> getMainCamera() const;
+
     private:
         std::string fileName;
         entt::registry registry;
         std::vector<std::shared_ptr<Entity>> entities;
         std::unique_ptr<Skybox> skybox;
+        std::shared_ptr<Entity> mainCamera;
         bool wasLoaded{};
     };
 
