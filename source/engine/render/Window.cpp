@@ -2,6 +2,7 @@
 
 #include "engine/utils/Utils.hpp"
 #include "engine/input/InputSystem.hpp"
+#include "engine/math/Vector2.hpp"
 
 
 namespace re {
@@ -78,6 +79,10 @@ namespace re {
      */
     void Window::resetWindowResizedFlag() {
         framebufferResized = false;
+    }
+
+    Vector2 Window::getSize() const {
+        return {static_cast<float>(width), static_cast<float>(height)};
     }
 
     void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) {

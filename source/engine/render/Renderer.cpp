@@ -4,9 +4,10 @@
 #include "Instance.hpp"
 #include "Device.hpp"
 #include "SwapChain.hpp"
+#include "ui/ImGuiRender.hpp"
+#include "engine/math/Vector2.hpp"
 #include "engine/utils/Utils.hpp"
 #include "engine/config/Config.hpp"
-#include "engine/render/ui/ImGuiRender.hpp"
 
 
 namespace re {
@@ -216,6 +217,10 @@ namespace re {
      */
     uint32_t Renderer::getImageCount() const {
         return swapChain->getImageCount();
+    }
+
+    Vector2 Renderer::getWindowSize() const {
+        return window->getSize();
     }
 
     void Renderer::createCommandBuffers() {

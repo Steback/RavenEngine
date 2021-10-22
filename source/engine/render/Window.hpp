@@ -7,7 +7,10 @@
 #include "vulkan/vulkan.h"
 #include "GLFW/glfw3.h"
 
+
 namespace re {
+
+    class Vector2;
 
     class Window {
     public:
@@ -26,6 +29,8 @@ namespace re {
         void resetWindowResizedFlag();
 
         [[nodiscard]] GLFWwindow* getHandle() const;
+
+        [[nodiscard]] Vector2 getSize() const;
 
     private:
         static void framebufferResizeCallback(GLFWwindow *window, int width, int height);

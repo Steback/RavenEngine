@@ -22,6 +22,7 @@ namespace re {
     class Instance;
     class Device;
     class SwapChain;
+    class Vector2;
 
     class Renderer : NonCopyable {
     public:
@@ -58,6 +59,8 @@ namespace re {
         void renderImGui(VkCommandBuffer commandBuffer);
 
         [[nodiscard]] uint32_t getImageCount() const;
+
+        Vector2 getWindowSize() const;
 
     private:
         void createCommandBuffers();
