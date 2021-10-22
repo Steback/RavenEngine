@@ -26,6 +26,8 @@ namespace re {
         friend class RenderSystem;
 
     public:
+        Scene();
+
         explicit Scene(std::string fileName);
 
         ~Scene() override;
