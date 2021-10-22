@@ -14,7 +14,7 @@ namespace re {
         windowSize = renderer->getWindowSize();
         scenePanelPos = {0.0f, mainMenuHeight};
         scenePanelSize = {defaultPanelWidth, windowSize.y * 0.6f};
-        elementPanelPos = {windowSize.x - defaultPanelWidth, 22.0f};
+        elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
         elementPanelSize = {defaultPanelWidth, windowSize.y};
     }
 
@@ -55,9 +55,11 @@ namespace re {
 
     void Editor::scenePanel() {
         ImGui::SetNextWindowPos({scenePanelPos.x, scenePanelPos.y});
-        ImGui::SetNextWindowSize({scenePanelSize.x, scenePanelSize.y});
+        ImGui::SetNextWindowSize({scenePanelSize.x, scenePanelSize.y - mainMenuHeight});
         ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
         {
+            scenePanelSize.x = ImGui::GetWindowSize().x;
+
             ImGui::BeginTabBar("Scene Info", ImGuiTabBarFlags_None);
             {
                 if (ImGui::BeginTabItem("Scene")) {
@@ -72,20 +74,21 @@ namespace re {
 
     void Editor::elementPanel() {
         ImGui::SetNextWindowPos({elementPanelPos.x, elementPanelPos.y});
-        ImGui::SetNextWindowSize({elementPanelSize.x, elementPanelSize.y});
+        ImGui::SetNextWindowSize({elementPanelSize.x, elementPanelSize.y - mainMenuHeight});
         ImGui::Begin("Element", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
         {
-
+            elementPanelSize.x = ImGui::GetWindowSize().x;
+            elementPanelPos.x = windowSize.x - elementPanelSize.x;
         }
         ImGui::End();
     }
 
     void Editor::miscPanel() {
-        ImGui::SetNextWindowPos({scenePanelPos.x, scenePanelSize.y + mainMenuHeight});
+        ImGui::SetNextWindowPos({scenePanelPos.x, scenePanelSize.y});
         ImGui::SetNextWindowSize({windowSize.x - elementPanelSize.x, windowSize.y - scenePanelSize.y});
         ImGui::Begin("Misc", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
         {
-
+            scenePanelSize.y = ImGui::GetWindowPos().y;
         }
         ImGui::End();
     }
