@@ -118,4 +118,8 @@ namespace re {
         return mainCamera;
     }
 
+    void Scene::setSceneFileName(const std::string &name) {
+        fileName = name;
+    }
+
 } // namespace re

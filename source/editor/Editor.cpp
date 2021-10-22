@@ -17,6 +17,8 @@ namespace re {
         scenePanelSize = {defaultPanelWidth, windowSize.y * 0.6f};
         elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
         elementPanelSize = {defaultPanelWidth, windowSize.y};
+
+        sceneInspector = std::make_unique<SceneInspector>(scene);
     }
 
     void Editor::onUpdate() {
@@ -64,7 +66,7 @@ namespace re {
             ImGui::BeginTabBar("Scene Info", ImGuiTabBarFlags_None);
             {
                 if (ImGui::BeginTabItem("Scene")) {
-
+                    sceneInspector->drawScene();
                     ImGui::EndTabItem();
                 }
             }
@@ -93,6 +95,5 @@ namespace re {
         }
         ImGui::End();
     }
-
 
 }

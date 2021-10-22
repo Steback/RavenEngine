@@ -58,6 +58,8 @@ namespace re {
 
         std::shared_ptr<Entity> getMainCamera() const;
 
+        void setSceneFileName(const std::string& name);
+
     private:
         std::string fileName;
         entt::registry registry;

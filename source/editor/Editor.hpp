@@ -3,6 +3,7 @@
 
 
 #include "engine/Base.hpp"
+#include "SceneInspector.hpp"
 
 
 namespace re {
@@ -25,6 +26,7 @@ namespace re {
         void miscPanel();
 
         std::shared_ptr<Entity> camera;
+        std::unique_ptr<SceneInspector> sceneInspector;
         float mainMenuHeight{22.0f};
         float defaultPanelWidth{300.0f};
         vec3 cameraTarget;
@@ -33,6 +35,7 @@ namespace re {
         vec2 elementPanelSize;
         vec2 scenePanelPos;
         vec2 elementPanelPos;
+        bool saveSceneOpen = false;
     };
 
 }
