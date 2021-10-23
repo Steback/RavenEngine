@@ -105,4 +105,34 @@ namespace re {
             addComponent<Light>(entity[nameComponent]);
     }
 
+    std::shared_ptr<Entity> Entity::addChild(const std::string &childName) {
+        std::shared_ptr<Entity> child = std::make_shared<Entity>(childName, scene->registry.create(), scene);
+        children.push_back(child);
+        return child;
+    }
+
+    std::shared_ptr<Entity> Entity::getChild(const std::string &childName) {
+        for (auto& child : children) {
+            if (child->name == childName) return child;
+
+            if (!child->children.empty()) {
+                return child->getChild(childName);
+            }
+        }
+
+        return nullptr;
+    }
+
+    void Entity::setParent(std::shared_ptr<Entity> newParent) {
+        parent = std::move(newParent);
+    }
+
+    std::shared_ptr<Entity> Entity::getParent() {
+        return parent;
+    }
+
+    std::vector<std::shared_ptr<Entity>> &Entity::getChildren() {
+        return children;
+    }
+
 } // namespace re

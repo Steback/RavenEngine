@@ -122,4 +122,8 @@ namespace re {
         fileName = name;
     }
 
+    std::vector<std::shared_ptr<Entity>> &Scene::getEntities() {
+        return entities;
+    }
+
 } // namespace re

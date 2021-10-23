@@ -38,10 +38,22 @@ namespace re {
 
         void serialize(json& entity);
 
+        std::shared_ptr<Entity> addChild(const std::string& childName);
+
+        std::shared_ptr<Entity> getChild(const std::string& childName);
+
+        void setParent(std::shared_ptr<Entity> newParent);
+
+        std::shared_ptr<Entity> getParent();
+
+        std::vector<std::shared_ptr<Entity>>& getChildren();
+
     private:
         Scene* scene;
         id_t id;
         std::string name;
+        std::shared_ptr<Entity> parent;
+        std::vector<std::shared_ptr<Entity>> children;
     };
 
     template<typename T, typename ...Args>

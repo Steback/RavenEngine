@@ -60,6 +60,8 @@ namespace re {
 
         void setSceneFileName(const std::string& name);
 
+        std::vector<std::shared_ptr<Entity>>& getEntities();
+
     private:
         std::string fileName;
         entt::registry registry;

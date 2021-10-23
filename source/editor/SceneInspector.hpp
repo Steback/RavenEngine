@@ -8,6 +8,7 @@
 namespace re {
 
     class Scene;
+    class Entity;
 
     class SceneInspector {
     public:
@@ -16,6 +17,10 @@ namespace re {
         void drawScene();
 
     private:
+        void showEntityTree(const std::shared_ptr<Entity>& entity);
+
+        void popupContext();
+
         std::shared_ptr<Scene> scene;
     };
 
