@@ -23,6 +23,8 @@ namespace re {
 
         void popupContext();
 
+        void addEntity(const std::shared_ptr<Entity>& entity = nullptr);
+
         std::shared_ptr<Scene> scene;
         std::shared_ptr<Entity> selectedEntity;
     };
