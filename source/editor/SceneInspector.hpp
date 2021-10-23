@@ -21,7 +21,7 @@ namespace re {
     private:
         void showEntityTree(const std::shared_ptr<Entity>& entity);
 
-        void popupContext();
+        void popupContext(const std::shared_ptr<Entity>& entity = nullptr);
 
         void addEntity(const std::shared_ptr<Entity>& entity = nullptr);
 

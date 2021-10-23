@@ -13,7 +13,11 @@ namespace re {
     }
 
     void SceneInspector::drawScene() {
-        popupContext();
+        // Window itself popup
+        if (ImGui::BeginPopupContextWindow()) {
+            popupContext();
+            ImGui::EndPopup();
+        }
 
         for (auto& entity : scene->getEntities()) {
             showEntityTree(entity);
@@ -24,7 +28,7 @@ namespace re {
         bool nodeOpen = ImGui::TreeNodeEx(entity->getName().c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick);
 
         if (ImGui::BeginPopupContextItem()) {
-            if (ImGui::Selectable("Add Entity")) { addEntity(entity); };
+            popupContext(entity);
             ImGui::EndPopup();
         }
 
@@ -38,15 +42,12 @@ namespace re {
         }
     }
 
-    void SceneInspector::popupContext() {
-        if (ImGui::BeginPopupContextWindow()) {
-            if (ImGui::Selectable("Add Entity")) { addEntity(); };
-            ImGui::EndPopup();
-        }
-    }
-
     std::shared_ptr<Entity> SceneInspector::getSelectedEntity() {
         return selectedEntity;
+    }
+
+    void SceneInspector::popupContext(const std::shared_ptr<Entity> &entity) {
+        if (ImGui::Selectable("Add Entity")) { addEntity(entity); };
     }
 
     void SceneInspector::addEntity(const std::shared_ptr<Entity>& entity) {
