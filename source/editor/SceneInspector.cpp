@@ -21,10 +21,16 @@ namespace re {
     }
 
     void SceneInspector::showEntityTree(const std::shared_ptr<Entity>& entity) {
-        if (ImGui::TreeNode(entity->getName().c_str())) {
+        bool nodeOpen = ImGui::TreeNodeEx(entity->getName().c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick);
+
+        if (ImGui::IsItemClicked()) selectedEntity = entity;
+
+        if (nodeOpen) {
             for (auto& child : entity->getChildren()) {
                 showEntityTree(child);
             }
+
+            ImGui::TreePop();
         }
     }
 
@@ -33,6 +39,10 @@ namespace re {
             if (ImGui::Selectable("Add Entity")) { scene->addEntity("Entity"); };
             ImGui::EndPopup();
         }
+    }
+
+    std::shared_ptr<Entity> SceneInspector::getSelectedEntity() {
+        return selectedEntity;
     }
 
 } // namespace re

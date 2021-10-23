@@ -19,6 +19,7 @@ namespace re {
         elementPanelSize = {defaultPanelWidth, windowSize.y};
 
         sceneInspector = std::make_unique<SceneInspector>(scene);
+        elementInspector = std::make_unique<ElementInspector>();
     }
 
     void Editor::onUpdate() {
@@ -82,6 +83,8 @@ namespace re {
         {
             elementPanelSize.x = ImGui::GetWindowSize().x;
             elementPanelPos.x = windowSize.x - elementPanelSize.x;
+            elementInspector->setEntity(sceneInspector->getSelectedEntity());
+            elementInspector->showEntityData();
         }
         ImGui::End();
     }

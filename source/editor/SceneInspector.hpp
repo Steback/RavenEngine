@@ -16,12 +16,15 @@ namespace re {
 
         void drawScene();
 
+        std::shared_ptr<Entity> getSelectedEntity();
+
     private:
         void showEntityTree(const std::shared_ptr<Entity>& entity);
 
         void popupContext();
 
         std::shared_ptr<Scene> scene;
+        std::shared_ptr<Entity> selectedEntity;
     };
 
 } // namespace re

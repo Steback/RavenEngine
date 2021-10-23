@@ -4,6 +4,7 @@
 
 #include "engine/Base.hpp"
 #include "SceneInspector.hpp"
+#include "ElementInspector.hpp"
 
 
 namespace re {
@@ -27,6 +28,7 @@ namespace re {
 
         std::shared_ptr<Entity> camera;
         std::unique_ptr<SceneInspector> sceneInspector;
+        std::unique_ptr<ElementInspector> elementInspector;
         float mainMenuHeight{22.0f};
         float defaultPanelWidth{300.0f};
         vec3 cameraTarget;
