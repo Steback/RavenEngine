@@ -37,7 +37,9 @@ namespace re {
         vec2 elementPanelSize;
         vec2 scenePanelPos;
         vec2 elementPanelPos;
-        bool saveSceneOpen = false;
+#ifdef RE_DEBUG
+        bool imguiDemoWindow = false;
+#endif
     };
 
 }

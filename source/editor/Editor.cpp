@@ -28,11 +28,12 @@ namespace re {
     }
 
     void Editor::onDrawImGui() {
-        ImGui::ShowDemoWindow();
         mainMenuBar();
         scenePanel();
         elementPanel();
         miscPanel();
+
+        if (imguiDemoWindow) ImGui::ShowDemoWindow(&imguiDemoWindow);
     }
 
     void Editor::mainMenuBar() {
@@ -50,7 +51,9 @@ namespace re {
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Help")) {
-
+#ifdef RE_DEBUG
+                if (ImGui::MenuItem("ImGui Demo")) { imguiDemoWindow = true; }
+#endif
                 ImGui::EndMenu();
             }
         }
