@@ -4,6 +4,7 @@
 
 #include "engine/scene/Scene.hpp"
 #include "engine/entity/Entity.hpp"
+#include "engine/entity/components/Transform.hpp"
 
 
 namespace re {
@@ -52,9 +53,9 @@ namespace re {
 
     void SceneInspector::addEntity(const std::shared_ptr<Entity>& entity) {
         if (entity) {
-            entity->addChild("Entity");
+            entity->addChild("Entity")->addComponent<Transform>(vec3{}, vec3{}, vec3{});
         } else {
-            scene->addEntity("Entity");
+            scene->addEntity("Entity")->addComponent<Transform>(vec3{}, vec3{}, vec3{});
         }
     }
 

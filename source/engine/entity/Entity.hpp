@@ -20,13 +20,13 @@ namespace re {
         ~Entity() override;
 
         template<typename T, typename ...Args>
-        T& addComponent(Args&& ...args);
+        inline T& addComponent(Args&& ...args);
 
         template<typename T>
-        T& getComponent();
+        inline T& getComponent();
 
         template<typename T>
-        bool hasComponent();
+        inline bool hasComponent();
 
         [[nodiscard]] id_t getId() const;
 

@@ -14,12 +14,11 @@ namespace re {
         friend Entity;
 
     public:
+        explicit Component(Entity* owner);
+
         virtual json serialize();
 
         virtual void serialize(json& component);
-
-    protected:
-        explicit Component(Entity* owner);
 
     protected:
         Entity* owner;

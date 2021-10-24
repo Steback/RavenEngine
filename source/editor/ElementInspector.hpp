@@ -20,6 +20,8 @@ namespace re {
     private:
         void elementName();
 
+        void componentsInfo();
+
         std::shared_ptr<Entity> element;
     };
 
