@@ -8,10 +8,7 @@
 namespace re {
 
     // TODO: Refactored Base class and add Doxygen comments
-    Base::Base(const std::string& appName, CLI::App& app) {
-        cli::CliOptions::singleton = new cli::CliOptions(app);
-        cli::addFlag("compile-shaders", "Compile shaders at moment to create shader module");
-
+    Base::Base(const std::string& appName) {
         FilesManager::singleton = new files::FilesManager();
         files::addPath("logs", true);
         files::addPath("assets");
@@ -29,16 +26,19 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
         jobs::JobSystem::singleton = new jobs::JobSystem();
+
+        cli::CliConfig::singleton = new cli::CliConfig(appName);
+        cli::addFlag("compile-shaders", "Compile shaders at moment to create its module");
     }
 
     Base::~Base() {
+        delete cli::CliConfig::singleton;
         delete jobs::JobSystem::singleton;
         delete AssetsManager::singleton;
         delete input::InputSystem::singleton;
         delete Time::singleton;
         delete log::LogsManager::singleton;
         delete FilesManager::singleton;
-        delete cli::CliOptions::singleton;
     }
 
     void Base::loop() {
@@ -52,6 +52,7 @@ namespace re {
     }
 
     void Base::run() {
+        cli::checkFlags();
         loop();
     }
 

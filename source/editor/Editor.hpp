@@ -11,7 +11,7 @@ namespace re {
 
     class Editor : public Base {
     public:
-        explicit Editor(CLI::App& app);
+        explicit Editor();
 
         void onDrawImGui() override;
 

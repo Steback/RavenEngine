@@ -5,7 +5,7 @@
 
 namespace re {
 
-    Editor::Editor(CLI::App &app) : Base("Editor", app) {
+    Editor::Editor() : Base("Raven Engine Editor") {
         scene = std::make_shared<Scene>();
         camera = std::make_shared<Entity>("Camera", scene->getRegistry().create(), scene.get());
         camera->addComponent<Transform>(Vector3{}, Vector3{1.0f}, Vector3{});

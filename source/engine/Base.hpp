@@ -17,7 +17,7 @@
 #include "engine/assets/AssetsManager.hpp"
 #include "engine/render/RenderSystem.hpp"
 #include "engine/scene/Scene.hpp"
-#include "engine/config/CliOptions.hpp"
+#include "engine/config/CliConfig.hpp"
 #include "engine/jobSystem/JobSystem.hpp"
 #include "engine/input/Input.hpp"
 #include "engine/time/Time.hpp"
@@ -27,7 +27,7 @@ namespace re {
 
     class Base : NonCopyable {
     public:
-        explicit Base(const std::string& appName, CLI::App& app);
+        explicit Base(const std::string& appName);
 
         ~Base() override;
 

@@ -2,11 +2,9 @@
 
 
 int main(int argc, char** arg) {
-    CLI::App app("Raven Engine CLI flags");
-
     try {
-        re::Editor editor(app);
-        CLI11_PARSE(app, argc, arg);
+        re::Editor editor;
+        CLI11_PARSE(re::cli::getApp(), argc, arg);
         editor.run();
     } catch (const std::exception& e) {
         re::log::error(e.what());
