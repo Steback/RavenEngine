@@ -18,6 +18,9 @@ namespace re {
         elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
         elementPanelSize = {defaultPanelWidth, windowSize.y};
 
+        AssetsManager::getInstance()->setupDescriptorsPool(renderer->getImageCount());
+        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model");
+
         sceneInspector = std::make_unique<SceneInspector>(scene);
         elementInspector = std::make_unique<ElementInspector>();
     }

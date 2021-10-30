@@ -6,11 +6,15 @@
 #include <vector>
 
 #include "vulkan/vulkan.h"
-#include "shaderc/shaderc.hpp"
 
 #include "engine/files/File.hpp"
 #include "engine/utils/NonCopyable.hpp"
 
+
+namespace glslang {
+    class TProgram;
+    class TType;
+}
 
 namespace re {
 
@@ -47,33 +51,7 @@ namespace re {
          * @param code
          * @param stage
          */
-        static void compileShader(File& file, const VkShaderStageFlagBits& stage);
-
-        /**
-         *
-         * @param sourceName
-         * @param kind
-         * @param source
-         * @return GLSL shader source text after preprocessing.
-         */
-        static std::string preprocessShader(const std::string& sourceName, shaderc_shader_kind kind, const std::string& source);
-
-        /**
-         * @brief Compiles a shader to a SPIR-V binary
-         * @param sourceName
-         * @param kind
-         * @param source
-         * @param optimize
-         * @return Binary as a vector of 32-bit words.
-         */
-        static std::vector<uint32_t> compile(const std::string& sourceName, shaderc_shader_kind kind, const std::string& source, bool optimize = false);
-
-        /**
-         *
-         * @param extension
-         * @return Shaderc shader kind for compile
-         */
-        static shaderc_shader_kind getKind(const VkShaderStageFlagBits& stage);
+        void compileShader(File& file, const VkShaderStageFlagBits& stage);
 
     private:
         void createShaderModule(const std::vector<uint32_t>& code);
