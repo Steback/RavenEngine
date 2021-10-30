@@ -9,13 +9,15 @@ namespace re {
 
     // TODO: Refactored Base class and add Doxygen comments
     Base::Base(const std::string& appName) {
-        FilesManager::singleton = new files::FilesManager();
+        // Default search paths
+        files::FilesManager::setRootPath();
+        // TODO: Change logs path to use OS specific config paths
         files::addPath("logs", true);
         files::addPath("assets");
         files::addPath("shaders");
         files::addPath("data");
 
-        log::LogsManager::singleton = new log::LogsManager();
+        // TODO: Set more logs files
         log::addFile(log::DEFAULT_FILE_NAME);
 
         config = Config("config.json");
@@ -37,8 +39,6 @@ namespace re {
         delete AssetsManager::singleton;
         delete input::InputSystem::singleton;
         delete Time::singleton;
-        delete log::LogsManager::singleton;
-        delete FilesManager::singleton;
     }
 
     void Base::loop() {

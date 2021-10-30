@@ -5,12 +5,13 @@
 
 namespace re::files {
 
-    FilesManager* FilesManager::singleton;
+    std::unordered_map<std::string, std::filesystem::path> FilesManager::paths;
+
 
     /**
-     * @brief Construct instance and setup Root path(Project path)
+     * @brief Set project root path
      */
-    FilesManager::FilesManager() {
+    void FilesManager::setRootPath() {
         std::filesystem::path root = std::filesystem::current_path();
 
         if (root.filename() == "samples" || root.filename() == "tests")
@@ -28,16 +29,6 @@ namespace re::files {
             throwEx("Failed to setup root path");
 
         paths["root"] = root;
-    }
-
-    FilesManager::~FilesManager() = default;
-
-    /**
-     *
-     * @return Singleton instance
-     */
-    FilesManager *FilesManager::getInstance() {
-        return singleton;
     }
 
     /**

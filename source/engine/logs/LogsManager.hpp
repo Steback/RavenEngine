@@ -20,15 +20,12 @@ namespace re {
             LogsManager();
 
         public:
-            static LogsManager* instance();
+            static void addFile(const char* name);
 
-            void addFile(const char* name);
-
-            void writeFile(const std::string& name, spdlog::level::level_enum lvl, const std::string &message);
+            static void writeFile(const std::string& name, spdlog::level::level_enum lvl, const std::string &message);
 
         private:
-            static LogsManager* singleton;
-            std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> files;
+            static std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> files;
         };
 
     } // namespace logs

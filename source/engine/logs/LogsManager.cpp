@@ -9,17 +9,13 @@ namespace re::log {
 
     const char* const DEFAULT_LOGS_PATTERN = "[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v";
 
-    LogsManager* LogsManager::singleton;
+    std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> LogsManager::files;
 
     LogsManager::LogsManager() {
         spdlog::set_pattern(DEFAULT_LOGS_PATTERN);
 
         for (auto& file : std::filesystem::directory_iterator(files::getPath("logs")))
             std::filesystem::remove(file);
-    }
-
-    LogsManager *LogsManager::instance() {
-        return singleton;
     }
 
     void LogsManager::addFile(const char *name) {

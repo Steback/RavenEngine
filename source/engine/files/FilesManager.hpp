@@ -20,34 +20,29 @@ namespace re {
         class FilesManager : NonCopyable {
             friend re::Base;
 
-            FilesManager();
-
         public:
-            ~FilesManager() override;
+            static void setRootPath();
 
-            static FilesManager* getInstance();
+            static void addPath(const char* name, bool create = false);
 
-            void addPath(const char* name, bool create = false);
+            static std::filesystem::path getPath(const char* name);
 
-            std::filesystem::path getPath(const char* name);
-
-            File getFile(const char* name);
+            static File getFile(const char* name);
 
         private:
-            static FilesManager* singleton;
-            std::unordered_map<std::string, std::filesystem::path> paths;
+            static std::unordered_map<std::string, std::filesystem::path> paths;
         };
 
         inline File getFile(const std::string& name) {
-            return FilesManager::getInstance()->getFile(name.c_str());
+            return FilesManager::getFile(name.c_str());
         }
 
         inline void addPath(const std::string& name, bool create = false) {
-            FilesManager::getInstance()->addPath(name.c_str(), create);
+            FilesManager::addPath(name.c_str(), create);
         }
 
         inline std::filesystem::path getPath(const std::string& name) {
-            return FilesManager::getInstance()->getPath(name.c_str());
+            return FilesManager::getPath(name.c_str());
         }
 
     } // namespace files
