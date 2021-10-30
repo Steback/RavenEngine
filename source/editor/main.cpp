@@ -9,7 +9,7 @@ int main(int argc, char** arg) {
         CLI11_PARSE(app, argc, arg);
         editor.run();
     } catch (const std::exception& e) {
-        re::logs::log(e.what());
+        re::log::error(e.what());
     }
 
     return 0;

@@ -1482,7 +1482,7 @@ Changed:
 Fixed:
 @li failure of ktxWriteKTXF to pad image rows to 4 bytes as required by the KTX
     format.
-@li ktxWriteKTXF exiting with KTX_FILE_WRITE_ERROR when attempting to write
+@li ktxWriteKTXF exiting with KTX_FILE_WRITE_ERROR when attempting to writeFile
     more than 1 byte of face-LOD padding.
 
 Although there is only a very minor API change, the addition of ktxErrorString,

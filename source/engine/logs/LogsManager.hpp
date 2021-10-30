@@ -12,34 +12,23 @@ namespace re {
 
     class Base;
 
-    namespace logs {
-
-        const char* const DEFAULT_LOGS_FILE_NAME = "runtime.log";
-        const char* const DEFAULT_LOGS_PATTERN = "[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v";
-
-        enum Type {
-            INFO = 0,
-            ERROR = 1,
-            WARNING = 2
-        };
+    namespace log {
 
         class LogsManager {
-            friend re::Base;
+            friend Base;
 
             LogsManager();
 
         public:
-            ~LogsManager();
-
-            static LogsManager* getInstance();
+            static LogsManager* instance();
 
             void addFile(const char* name);
 
-            std::shared_ptr<spdlog::logger> getFile(const char* name);
+            void writeFile(const std::string& name, spdlog::level::level_enum lvl, const std::string &message);
 
         private:
             static LogsManager* singleton;
-            std::unordered_map<uint32_t , std::shared_ptr<spdlog::logger>> files;
+            std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> files;
         };
 
     } // namespace logs

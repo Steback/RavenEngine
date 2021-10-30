@@ -18,8 +18,8 @@ namespace re {
         files::addPath("shaders");
         files::addPath("data");
 
-        logs::LogsManager::singleton = new logs::LogsManager();
-        logs::addFile(logs::DEFAULT_LOGS_FILE_NAME);
+        log::LogsManager::singleton = new log::LogsManager();
+        log::addFile(log::DEFAULT_FILE_NAME);
 
         config = Config("config.json");
         config.load();
@@ -36,7 +36,7 @@ namespace re {
         delete AssetsManager::singleton;
         delete input::InputSystem::singleton;
         delete Time::singleton;
-        delete logs::LogsManager::singleton;
+        delete log::LogsManager::singleton;
         delete FilesManager::singleton;
         delete cli::CliOptions::singleton;
     }

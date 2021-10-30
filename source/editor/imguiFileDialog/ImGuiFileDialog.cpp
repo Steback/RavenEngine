@@ -2276,7 +2276,7 @@ namespace IGFD
 
 					// peu importe le resultat on vire le fichicer
 					// remove form this list
-					// write => thread concurency issues
+					// writeFile => thread concurency issues
 					prThumbnailFileDatasToGetMutex.lock();
 					prThumbnailFileDatasToGet.pop_front();
 					prThumbnailFileDatasToGetMutex.unlock();
@@ -2330,7 +2330,7 @@ namespace IGFD
 					//|| file->fileExt == ".hdr" => format float so in few times
 					)
 				{
-					// write => thread concurency issues
+					// writeFile => thread concurency issues
 					prThumbnailFileDatasToGetMutex.lock();
 					prThumbnailFileDatasToGet.push_back(vFileInfos);
 					vFileInfos->thumbnailInfo.isLoadingOrLoaded = true;
@@ -2344,7 +2344,7 @@ namespace IGFD
 	{
 		if (vFileInfos.use_count())
 		{
-			// write => thread concurency issues
+			// writeFile => thread concurency issues
 			prThumbnailToCreateMutex.lock();
 			prThumbnailToCreate.push_back(vFileInfos);
 			prThumbnailToCreateMutex.unlock();
@@ -2353,7 +2353,7 @@ namespace IGFD
 
 	void IGFD::ThumbnailFeature::prAddThumbnailToDestroy(IGFD_Thumbnail_Info vIGFD_Thumbnail_Info)
 	{
-		// write => thread concurency issues
+		// writeFile => thread concurency issues
 		prThumbnailToDestroyMutex.lock();
 		prThumbnailToDestroy.push_back(vIGFD_Thumbnail_Info);
 		prThumbnailToDestroyMutex.unlock();

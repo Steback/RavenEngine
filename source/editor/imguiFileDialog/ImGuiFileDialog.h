@@ -530,7 +530,7 @@ in this mode dirent is not more required
 
 ### Customize ImGuiFileDialog :
 
-You just need to write your own config file by override the file : ImGuiFileDialog/ImGuiFileDialogConfig.h
+You just need to writeFile your own config file by override the file : ImGuiFileDialog/ImGuiFileDialogConfig.h
 like i do here with CustomImGuiFileDialogConfig.h
 
 After that, for let ImGuiFileDialog your own custom file,

@@ -19,7 +19,7 @@ namespace re {
 
             // TODO: Change this when File header will refactored
             if (!std::filesystem::exists(fileLoaded.getPath())) {
-                logs::log(fmt::format("Shader include could not be loaded: {}", headerName));
+                log::error(fmt::format("Shader include could not be loaded: {}", headerName));
                 return nullptr;
             }
 
@@ -32,7 +32,7 @@ namespace re {
 
             // TODO: Change this when File header will refactored
             if (!std::filesystem::exists(fileLoaded.getPath())) {
-                logs::log(fmt::format("Shader include could not be loaded: {}", headerName));
+                log::error(fmt::format("Shader include could not be loaded: {}", headerName));
                 return nullptr;
             }
 
@@ -169,7 +169,7 @@ namespace re {
         File shader = files::getFile(fileName);
 
         if (cli::getFlag("compile-shaders")) {
-            logs::log("Compile Shaders");
+            log::info("Compile Shaders");
             Shader::compileShader(shader, stage);
         } else {
             shader.setPath(shader.getPath() + ".spv");
@@ -203,7 +203,7 @@ namespace re {
     }
 
     void Shader::compileShader(File& file, const VkShaderStageFlagBits& stage) {
-        logs::log(fmt::format("Compile shader: {}", file.getName()));
+        log::info(fmt::format("Compile shader: {}", file.getName()));
 
         // Starts converting GLSL to SPIR-V.
         auto language = getEshLanguage(stage);
@@ -232,21 +232,21 @@ namespace re {
         std::string str;
 
         if (!shader.preprocess(&resources, defaultVersion, ENoProfile, false, false, messages, &str, includer)) {
-            logs::log(shader.getInfoLog());
-            logs::log(shader.getInfoDebugLog());
-            logs::log("SPRIV shader preprocess failed!", logs::ERROR);
+            log::error(shader.getInfoLog());
+            log::error(shader.getInfoDebugLog());
+            log::error("SPRIV shader preprocess failed!");
         }
 
         if (!shader.parse(&resources, defaultVersion, true, messages, includer)) {
-            logs::log(shader.getInfoLog());
-            logs::log(shader.getInfoDebugLog());
-            logs::log("SPRIV shader parse failed!", logs::ERROR);
+            log::error(shader.getInfoLog());
+            log::error(shader.getInfoDebugLog());
+            log::error("SPRIV shader parse failed!");
         }
 
         program.addShader(&shader);
 
         if (!program.link(messages) || !program.mapIO())
-            logs::log("Error while linking shader program.\n", logs::ERROR);
+            log::error("Error while linking shader program.\n");
 
         program.buildReflection();
 

@@ -5,57 +5,52 @@
 #include "engine/files/FilesManager.hpp"
 
 
-namespace re::logs {
+namespace re::log {
+
+    const char* const DEFAULT_LOGS_PATTERN = "[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v";
 
     LogsManager* LogsManager::singleton;
 
-    /**
-     * @brief Construct instance and clean up logs files
-     */
     LogsManager::LogsManager() {
         spdlog::set_pattern(DEFAULT_LOGS_PATTERN);
 
-        for (auto& file : std::filesystem::directory_iterator(files::getPath("logs"))) {
+        for (auto& file : std::filesystem::directory_iterator(files::getPath("logs")))
             std::filesystem::remove(file);
-        }
     }
 
-    LogsManager::~LogsManager() = default;
-
-    /**
-     *
-     * @return Singleton instance
-     */
-    LogsManager *LogsManager::getInstance() {
+    LogsManager *LogsManager::instance() {
         return singleton;
     }
 
-    /**
-     *
-     * @param name File name to create
-     */
-    void LogsManager::addFile(const char* name) {
-        uint32_t hashName = std::hash<std::string>()(name);
-
-        if (files.find(hashName) == files.end()) {
+    void LogsManager::addFile(const char *name) {
+        if (files.find(std::string(name)) == files.end()) {
             auto logger = spdlog::basic_logger_mt(name, (files::getPath("logs") / name).string());
             logger->set_pattern(DEFAULT_LOGS_PATTERN);
-            files[hashName] = logger;
+            files[name] = logger;
         }
     }
 
-    /**
-     *
-     * @param name Valid file name
-     * @return Pointer to spdlog::logger
-     */
-    std::shared_ptr<spdlog::logger> LogsManager::getFile(const char* name) {
-        uint32_t hashName = std::hash<std::string>()(name);
-
-        if (files.find(hashName) != files.end())
-            return files[hashName];
-
-        return nullptr;
+    void LogsManager::writeFile(const std::string& name, spdlog::level::level_enum lvl, const std::string &message) {
+        switch (lvl) {
+            case spdlog::level::trace:
+                files[name]->trace(message);
+                break;
+            case spdlog::level::debug:
+                files[name]->debug(message);
+                break;
+            case spdlog::level::info:
+                files[name]->info(message);
+                break;
+            case spdlog::level::warn:
+                files[name]->warn(message);
+                break;
+            case spdlog::level::err:
+                files[name]->error(message);
+                break;
+            case spdlog::level::critical:
+                files[name]->critical(message);
+                break;
+        }
     }
 
 } // namespace re::logs

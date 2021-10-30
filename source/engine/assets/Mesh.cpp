@@ -38,7 +38,7 @@ namespace re {
     Mesh::Mesh(std::string name, std::shared_ptr<Device> device, const tinygltf::Model &model, const tinygltf::Node &node)
             : Asset(std::move(name), Type::MESH), device(std::move(device)) {
 #ifdef RE_DEBUG
-        logs::log(fmt::format("Load Mesh: {}", this->name));
+        log::info(fmt::format("Load Mesh: {}", this->name));
 #endif
         const tinygltf::Mesh& mesh = model.meshes[node.mesh];
         Mesh::Data data = Mesh::loadMesh(model, mesh);
