@@ -11,13 +11,6 @@ namespace re::log {
 
     std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> LogsManager::files;
 
-    LogsManager::LogsManager() {
-        spdlog::set_pattern(DEFAULT_LOGS_PATTERN);
-
-        for (auto& file : std::filesystem::directory_iterator(files::getPath("logs")))
-            std::filesystem::remove(file);
-    }
-
     void LogsManager::addFile(const char *name) {
         if (files.find(std::string(name)) == files.end()) {
             auto logger = spdlog::basic_logger_mt(name, (files::getPath("logs") / name).string());
@@ -47,6 +40,11 @@ namespace re::log {
                 files[name]->critical(message);
                 break;
         }
+    }
+
+    void LogsManager::cleanLogsFiles() {
+        for (auto& file : std::filesystem::directory_iterator(files::getPath("logs")))
+            std::filesystem::remove(file);
     }
 
 } // namespace re::logs

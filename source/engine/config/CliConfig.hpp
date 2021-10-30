@@ -22,30 +22,23 @@ namespace re {
         public:
             static CliConfig* instance();
 
-            void addFlag(const std::string &name, const std::string& desc, const std::string& flagName = "");
+            void addFlag(const std::string &name, const std::string& desc);
 
             bool getFlag(const std::string& name);
-
-            void checkFlags();
 
             CLI::App& getApp();
 
         private:
             static CliConfig* singleton;
             CLI::App app;
-            std::unordered_map<std::string, bool> flags;
         };
 
         inline void addFlag(const std::string &name, const std::string& desc, const std::string& flagName = "") {
-            CliConfig::instance()->addFlag(name, desc, flagName);
+            CliConfig::instance()->addFlag(name, desc);
         }
 
         inline bool getFlag(const std::string& name) {
             return CliConfig::instance()->getFlag(name);
-        }
-
-        inline void checkFlags() {
-            CliConfig::instance()->checkFlags();
         }
 
         inline CLI::App& getApp() {

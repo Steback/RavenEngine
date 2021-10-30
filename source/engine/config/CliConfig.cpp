@@ -26,11 +26,11 @@ namespace re::cli {
      * @param desc Flag description
      * @param flagName [Optional] Specific flag name(such as "--flag -f") with shortcut. Is necessarily add '--'
      */
-    void CliConfig::addFlag(const std::string &name, const std::string& desc, const std::string& flagName) {
+    void CliConfig::addFlag(const std::string &name, const std::string& desc) {
 #ifdef RE_DEBUG
         log::info(fmt::format("CLI flag: {}. Added to flags list", name));
 #endif
-        app.add_flag(flagName.empty() ? "--" + name : flagName, desc);
+        app.add_flag(name, desc);
     }
 
     /**
@@ -39,15 +39,6 @@ namespace re::cli {
      */
     bool CliConfig::getFlag(const std::string &name) {
         return app.get_option(name)->as<bool>();
-    }
-
-    /**
-     * @brief Check which flags in list was added to program
-     */
-    void CliConfig::checkFlags() {
-        for (auto& [name, value] : flags) {
-            if (value) log::info(fmt::format("CLI flag: {}. Added to program", name));
-        }
     }
 
     CLI::App &CliConfig::getApp() {

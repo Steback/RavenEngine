@@ -18,7 +18,11 @@ namespace re {
         files::addPath("data");
 
         // TODO: Set more logs files
+        log::LogsManager::cleanLogsFiles();
         log::addFile(log::DEFAULT_FILE_NAME);
+
+        cli::CliConfig::singleton = new cli::CliConfig(appName);
+        cli::addFlag("--compile-shaders", "Compile shaders at moment to create its module");
 
         config = Config("config.json");
         config.load();
@@ -28,9 +32,6 @@ namespace re {
         renderer = std::make_unique<Renderer>(appName, config);
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
         jobs::JobSystem::singleton = new jobs::JobSystem();
-
-        cli::CliConfig::singleton = new cli::CliConfig(appName);
-        cli::addFlag("compile-shaders", "Compile shaders at moment to create its module");
     }
 
     Base::~Base() {
@@ -52,7 +53,6 @@ namespace re {
     }
 
     void Base::run() {
-        cli::checkFlags();
         loop();
     }
 

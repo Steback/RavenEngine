@@ -17,12 +17,12 @@ namespace re {
         class LogsManager {
             friend Base;
 
-            LogsManager();
-
         public:
             static void addFile(const char* name);
 
             static void writeFile(const std::string& name, spdlog::level::level_enum lvl, const std::string &message);
+
+            static void cleanLogsFiles();
 
         private:
             static std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> files;

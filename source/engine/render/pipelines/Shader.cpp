@@ -168,7 +168,7 @@ namespace re {
             : device(device), stage(stage) {
         File shader = files::getFile(fileName);
 
-        if (cli::getFlag("compile-shaders")) {
+        if (cli::getFlag("--compile-shaders")) {
             log::info("Compile Shaders");
             Shader::compileShader(shader, stage);
         } else {
