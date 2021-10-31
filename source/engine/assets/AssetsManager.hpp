@@ -29,7 +29,7 @@ namespace re {
     };
 
     class AssetsManager : NonCopyable {
-        friend class Base;
+        friend class Engine;
 
         explicit AssetsManager(std::shared_ptr<Device> device);
 

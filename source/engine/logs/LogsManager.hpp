@@ -10,12 +10,12 @@
 
 namespace re {
 
-    class Base;
+    class Application;
 
     namespace log {
 
         class LogsManager {
-            friend Base;
+            friend Application;
 
         public:
             static void addFile(const char* name);

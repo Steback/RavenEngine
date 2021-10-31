@@ -9,7 +9,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace re {

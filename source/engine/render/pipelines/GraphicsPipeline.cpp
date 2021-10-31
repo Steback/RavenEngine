@@ -1,7 +1,7 @@
 #include "GraphicsPipeline.hpp"
 
 #include "engine/assets/Mesh.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 
 
 // TODO: Refactored Graphics pipeline class and add Doxygen comments

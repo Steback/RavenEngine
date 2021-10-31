@@ -9,7 +9,7 @@
 #include "Vector3.hpp"
 #include "Vector4.hpp"
 #include "Quaternion.hpp"
-#include "engine/utils/Typedefs.hpp"
+#include "engine/core/Typedefs.hpp"
 
 
 namespace re {

@@ -9,7 +9,7 @@
 #include "vulkan/vulkan.h"
 #include "vk_mem_alloc.h"
 
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace re {

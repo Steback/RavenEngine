@@ -4,7 +4,7 @@
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "engine/render/Device.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 #include "engine/render/buffers/Buffer.hpp"
 #include "engine/scene/Skybox.hpp"
 

@@ -7,10 +7,8 @@
 
 namespace re {
 
-    class Base;
-
     class Time {
-        friend Base;
+        friend class Engine;
 
         Time();
 

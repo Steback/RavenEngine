@@ -9,18 +9,18 @@
 #include <condition_variable>
 #include <utility>
 
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace re {
 
-    class Base;
+    class Engine;
 
     namespace jobs {
         using Job = std::function<void()>;
 
         class JobSystem : NonCopyable {
-            friend re::Base;
+            friend re::Engine;
 
             JobSystem();
 

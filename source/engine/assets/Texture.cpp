@@ -3,7 +3,7 @@
 #include "stb_image.h"
 #include "ktx.h"
 
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 #include "engine/render/Device.hpp"
 #include "engine/render/buffers/Buffer.hpp"
 #include "engine/files/FilesManager.hpp"

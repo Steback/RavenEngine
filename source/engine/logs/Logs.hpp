@@ -5,7 +5,7 @@
 #include "spdlog/spdlog.h"
 
 #include "LogsManager.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 
 
 namespace re::log {

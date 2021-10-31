@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 #include "engine/input/InputSystem.hpp"
 #include "engine/math/Vector2.hpp"
 

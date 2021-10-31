@@ -8,7 +8,7 @@
 #include "vulkan/vulkan.h"
 
 #include "engine/files/File.hpp"
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace glslang {

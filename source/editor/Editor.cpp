@@ -1,36 +1,42 @@
 #include "Editor.hpp"
 
+#include "imgui.h"
+
 #include "engine/entity/Entity.hpp"
 
 
 namespace re {
 
-    Editor::Editor() : Base("Raven Engine Editor") {
-        scene = std::make_shared<Scene>();
+    Editor::Editor() : Application("Raven Engine Editor") {
+        std::shared_ptr<Scene> scene = std::make_shared<Scene>();
         camera = std::make_shared<Entity>("Camera", scene->getRegistry().create(), scene.get());
         camera->addComponent<Transform>(Vector3{}, Vector3{1.0f}, Vector3{});
         camera->addComponent<Camera>(Math::deg2rad(45.0f), 0.01f, 100.0f, cameraTarget);
         scene->setMainCamera(camera);
-
-        windowSize = renderer->getWindowSize();
-        scenePanelPos = {0.0f, mainMenuHeight};
-        scenePanelSize = {defaultPanelWidth, windowSize.y * 0.6f};
-        elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
-        elementPanelSize = {defaultPanelWidth, windowSize.y};
-
-        AssetsManager::getInstance()->setupDescriptorsPool(renderer->getImageCount());
-        renderSystem = std::make_unique<RenderSystem>(renderer->getDevice(), renderer->getRenderPass(), "model");
+        engine->setScene(scene);
 
         sceneInspector = std::make_unique<SceneInspector>(scene);
         elementInspector = std::make_unique<ElementInspector>();
     }
 
-    void Editor::onUpdate() {
+    void Editor::setup() {
+        AssetsManager::getInstance()->setupDescriptorsPool(engine->getRenderer().getImageCount());
+        std::unique_ptr<RenderSystem> renderSystem = std::make_unique<RenderSystem>(engine->getRenderer().getDevice(), engine->getRenderer().getRenderPass(), "model");
+        engine->setRenderSystem(std::move(renderSystem));
+
+        windowSize = engine->getRenderer().getWindowSize();
+        scenePanelPos = {0.0f, mainMenuHeight};
+        scenePanelSize = {defaultPanelWidth, windowSize.y * 0.6f};
+        elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
+        elementPanelSize = {defaultPanelWidth, windowSize.y};
+    }
+
+    void Editor::update() {
         ImGuiIO& io = ImGui::GetIO();
         windowSize = {io.DisplaySize.x, io.DisplaySize.y};
     }
 
-    void Editor::onDrawImGui() {
+    void Editor::drawImGui() {
         mainMenuBar();
         scenePanel();
         elementPanel();

@@ -4,7 +4,7 @@
 #include "glslang/Public/ShaderLang.h"
 
 #include "engine/logs/Logs.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 #include "engine/files/FilesManager.hpp"
 #include "engine/config/CliConfig.hpp"
 

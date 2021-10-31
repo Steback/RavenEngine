@@ -264,7 +264,7 @@ struct ktxOrientation {
 /**
  * @class ktxTexture
  * @~English
- * @brief Base class representing a texture.
+ * @brief Application class representing a texture.
  *
  * ktxTextures should be created only by one of the provided
  * functions and these fields should be considered read-only.
@@ -631,7 +631,7 @@ typedef struct ktxTexture1 {
     ktx_uint32_t glFormat; /*!< Format of the texture data, e.g., GL_RGB. */
     ktx_uint32_t glInternalformat; /*!< Internal format of the texture data,
                                         e.g., GL_RGB8. */
-    ktx_uint32_t glBaseInternalformat; /*!< Base format of the texture data,
+    ktx_uint32_t glBaseInternalformat; /*!< Application format of the texture data,
                                             e.g., GL_RGB. */
     ktx_uint32_t glType; /*!< Type of the texture data, e.g, GL_UNSIGNED_BYTE.*/
     struct ktxTexture1_private* _private; /*!< Private data. */

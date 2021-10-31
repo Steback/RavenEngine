@@ -8,17 +8,17 @@
 #include <functional>
 
 #include "File.hpp"
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace re {
 
-    class Base;
+    class Application;
 
     namespace files {
 
         class FilesManager : NonCopyable {
-            friend re::Base;
+            friend re::Application;
 
         public:
             static void setRootPath();

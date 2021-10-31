@@ -10,7 +10,7 @@
 #include "engine/external/Json.hpp"
 #include "vulkan/vulkan.h"
 
-#include "engine/utils/NonCopyable.hpp"
+#include "engine/core/NonCopyable.hpp"
 
 
 namespace re {

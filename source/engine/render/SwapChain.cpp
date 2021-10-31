@@ -5,7 +5,7 @@
 #include "Device.hpp"
 #include "Image.hpp"
 #include "Instance.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 
 
 namespace re {

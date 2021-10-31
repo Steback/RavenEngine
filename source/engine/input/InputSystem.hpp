@@ -11,7 +11,7 @@
 
 namespace re {
 
-    class Base;
+    class Engine;
     class Window;
 
     namespace input {
@@ -152,7 +152,7 @@ namespace re {
         };
 
         class InputSystem {
-            friend Base;
+            friend Engine;
             friend Window;
 
             InputSystem();

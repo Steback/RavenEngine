@@ -4,7 +4,7 @@
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "engine/math/Basis.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 #include "engine/files/FilesManager.hpp"
 #include "engine/logs/Logs.hpp"
 

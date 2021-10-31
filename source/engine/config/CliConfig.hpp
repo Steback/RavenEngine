@@ -10,12 +10,12 @@
 
 namespace re {
 
-    class Base;
+    class Engine;
 
     namespace cli {
 
         class CliConfig {
-            friend re::Base;
+            friend re::Engine;
 
             explicit CliConfig(const std::string& appName);
 

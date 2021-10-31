@@ -2,22 +2,24 @@
 #define RAVENENGINE_EDITOR_HPP
 
 
-#include "engine/Base.hpp"
+#include "engine/core/Application.hpp"
 #include "SceneInspector.hpp"
 #include "ElementInspector.hpp"
 
 
 namespace re {
 
-    class Editor : public Base {
+    class Editor : public Application {
     public:
         explicit Editor();
 
-        void onDrawImGui() override;
-
-        void onUpdate() override;
-
     private:
+        void setup() override;
+
+        void drawImGui() override;
+
+        void update() override;
+
         void mainMenuBar();
 
         void scenePanel();

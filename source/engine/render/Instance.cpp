@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 
 #include "engine/logs/Logs.hpp"
-#include "engine/utils/Utils.hpp"
+#include "engine/core/Utils.hpp"
 
 
 #ifdef RE_DEBUG
@@ -60,7 +60,7 @@ void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create
 namespace re {
 
     /**
-     * @brief Create Vulkan Instance and set Debug utils if required
+     * @brief Create Vulkan Instance and set Debug core if required
      * @param appName Application name
      * @param layers Required validation layers
      */
@@ -93,7 +93,7 @@ namespace re {
         populateDebugMessengerCreateInfo(debugUtilsMessengerInfo);
 
         checkResult(CreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerInfo, nullptr, &debugMessenger),
-                    "Failed to create debug utils messenger");
+                    "Failed to create debug core messenger");
 #endif
     }
 
