@@ -12,7 +12,6 @@ imgui/1.84.1
 cli11/2.0.0
 stb/cci.20210713
 nameof/0.10.1
-glslang/11.5.0
 spirv-cross/cci.20210621
 
 [generators]
