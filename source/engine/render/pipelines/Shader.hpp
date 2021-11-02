@@ -31,6 +31,8 @@ namespace re {
 
         static VkShaderStageFlagBits getStage(const std::string& ext);
 
+        void compileShader(const std::filesystem::path& file) const;
+
         void createShaderModule(const std::filesystem::path& file);
 
         VkShaderStageFlagBits stage;

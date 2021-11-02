@@ -17,8 +17,8 @@ namespace re  {
     GraphicsPipeline::GraphicsPipeline(VkDevice device, const std::string& vertName, const std::string& fragName,
                                        const ConfigInfo& configInfo, const std::vector<VkDescriptorSetLayout>& layouts,
                                        const std::vector<VkPushConstantRange>& constantRanges) : device(device) {
-        vertexShader = std::make_unique<Shader>(device, vertName, VK_SHADER_STAGE_VERTEX_BIT);
-        fragmentShader = std::make_unique<Shader>(device, fragName, VK_SHADER_STAGE_FRAGMENT_BIT);
+        auto vertexShader = std::make_unique<Shader>(device, vertName);
+        auto fragmentShader = std::make_unique<Shader>(device, fragName);
 
         VkPipelineShaderStageCreateInfo shaderStages[2] = {
                 vertexShader->getPipelineStageCreateInfo(),

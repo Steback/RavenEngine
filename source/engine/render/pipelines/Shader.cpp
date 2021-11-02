@@ -1,5 +1,7 @@
 #include "Shader.hpp"
 
+#include "shaderc/shaderc.hpp"
+
 #include "engine/core/Utils.hpp"
 #include "engine/files/FilesManager.hpp"
 #include "engine/config/CliConfig.hpp"
@@ -7,10 +9,32 @@
 
 namespace re {
 
+    shaderc_shader_kind getKind(const VkShaderStageFlagBits& stage) {
+        switch (stage) {
+            case VK_SHADER_STAGE_VERTEX_BIT:
+                return shaderc_glsl_vertex_shader;
+            case VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT:
+                return shaderc_glsl_tess_control_shader;
+            case VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT:
+                return shaderc_glsl_tess_evaluation_shader;
+            case VK_SHADER_STAGE_GEOMETRY_BIT:
+                return shaderc_glsl_geometry_shader;
+            case VK_SHADER_STAGE_FRAGMENT_BIT:
+                return shaderc_glsl_fragment_shader;
+            case VK_SHADER_STAGE_COMPUTE_BIT:
+                return shaderc_glsl_compute_shader;
+        }
+
+        return shaderc_glsl_anyhit_shader;
+    }
+
     Shader::Shader(VkDevice device, const std::string& name) : device(device) {
         auto file = files::getPath("shaders") / name;
         stage = Shader::getStage(file.extension());
-        createShaderModule(file.parent_path() / (name + ".spv"));
+
+        if (cli::getFlag("--compile-shaders")) compileShader(file);
+
+        createShaderModule(file.string() + ".spv");
     }
 
     Shader::~Shader() {
@@ -43,6 +67,29 @@ namespace re {
         if (ext == ".frag")
             return VK_SHADER_STAGE_FRAGMENT_BIT;
         return VK_SHADER_STAGE_ALL;
+    }
+
+    void Shader::compileShader(const std::filesystem::path &file) const {
+        shaderc::Compiler compiler;
+        shaderc::CompileOptions options;
+        shaderc_shader_kind kind = getKind(stage);
+
+        const std::vector<char> source = files::File(file).read();
+        shaderc::PreprocessedSourceCompilationResult result = compiler.PreprocessGlsl(source.data(), source.size(), kind, file.filename().c_str(), options);
+
+        if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+            throwEx(result.GetErrorMessage());
+
+        auto preprocessed = std::string(result.cbegin(), result.cend());
+        shaderc::SpvCompilationResult shModule = compiler.CompileGlslToSpv(preprocessed.c_str(),  preprocessed.size(), kind, file.filename().c_str(), options);
+
+        if (shModule.GetCompilationStatus() != shaderc_compilation_status_success)
+            throwEx(shModule.GetErrorMessage());
+
+        auto binary = std::vector<uint32_t>(shModule.begin(), shModule.end());
+
+        File spvFile(file.string() + ".spv");
+        spvFile.write(binary);
     }
 
     void Shader::createShaderModule(const std::filesystem::path& file) {

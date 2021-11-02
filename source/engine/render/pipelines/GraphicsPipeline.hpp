@@ -35,8 +35,6 @@ namespace re {
         static void defaultConfigInfo(ConfigInfo& configInfo, VkRenderPass renderPass);
 
     private:
-        std::unique_ptr<Shader> vertexShader;
-        std::unique_ptr<Shader> fragmentShader;
         VkDevice device{};
         VkPipeline pipeline{};
         VkPipelineLayout layout{};
