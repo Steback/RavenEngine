@@ -405,7 +405,7 @@ namespace re {
 
     void Device::createAllocator(const std::shared_ptr<Instance> &instance_) {
         VmaAllocatorCreateInfo allocatorInfo{};
-        allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_2;
+        allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_1;
         allocatorInfo.device = device;
         allocatorInfo.physicalDevice = physicalDevice;
         allocatorInfo.instance = instance_->getInstance();
