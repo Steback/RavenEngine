@@ -7,7 +7,7 @@ namespace re {
 
     Time::Time() {
         deltaTime = 0;
-        currentTime = std::chrono::high_resolution_clock::now();
+//        currentTime = std::chrono::high_resolution_clock::now();
     }
 
     Time *Time::getInstance() {
@@ -16,8 +16,8 @@ namespace re {
 
     void Time::update() {
         auto newTime = std::chrono::high_resolution_clock::now();
-        deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-        currentTime = newTime;
+//        deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+//        currentTime = newTime;
     }
 
     float Time::getDeltaTime() const {

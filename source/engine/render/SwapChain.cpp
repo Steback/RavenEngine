@@ -1,6 +1,7 @@
 #include "SwapChain.hpp"
 
 #include <limits>
+#include <array>
 
 #include "Device.hpp"
 #include "Image.hpp"
@@ -56,7 +57,7 @@ namespace re {
 
         if (swapChain) {
             vkDestroySwapchainKHR(logicalDevice, swapChain, nullptr);
-            swapChain = nullptr;
+            swapChain = VK_NULL_HANDLE;
         }
 
         for (auto& image : depthImages)

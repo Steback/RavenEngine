@@ -7,12 +7,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CONAN_DISABLE_CHECK_COMPILER OFF)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(NO_OUTPUT_DIRS)
-link_libraries(${CONAN_LIBS})
-
-### Third Party ###
-include_directories(third-party/include)
-file(GLOB_RECURSE THIRD_PARTY third-party/lib/libktx.so)
-link_libraries(${THIRD_PARTY})
 
 ### Bindings ###
 include_directories(bindings)
@@ -24,7 +18,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 ### Engine ###
 include_directories(source)
 add_subdirectory(source/engine)
-link_libraries(RavenEngine)
 
 ### Editor ###
 add_subdirectory(source/editor)

@@ -18,7 +18,7 @@ namespace re::files {
             root = root.parent_path();
 
 #ifdef _WIN64
-        if (root.filename() == "Release")
+        if (root.filename() == "Release" || root.filename() == "Debug")
             root = root.parent_path().parent_path();
 #else
         if (root.filename() == "bin")

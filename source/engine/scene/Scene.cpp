@@ -52,7 +52,7 @@ namespace re {
         json scene;
         file.read(scene);
 
-        for (auto& entityJson : scene[std::string(NAMEOF(entities))]) {
+        for (auto& entityJson : scene["entities"]) {
             auto entity = addEntity(entityJson);
         }
 

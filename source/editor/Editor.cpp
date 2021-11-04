@@ -42,7 +42,9 @@ namespace re {
         elementPanel();
         miscPanel();
 
+#ifdef RE_DEBUG
         if (imguiDemoWindow) ImGui::ShowDemoWindow(&imguiDemoWindow);
+#endif
     }
 
     void Editor::mainMenuBar() {

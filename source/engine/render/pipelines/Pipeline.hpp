@@ -30,7 +30,7 @@ namespace re {
             VkPipelineDepthStencilStateCreateInfo depthStencilInfo{};
             std::vector<VkDynamicState> dynamicStateEnables;
             VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
-            VkRenderPass renderPass{nullptr};
+            VkRenderPass renderPass{VK_NULL_HANDLE};
             uint32_t subpass{0};
         };
 

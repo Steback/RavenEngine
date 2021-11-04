@@ -30,7 +30,7 @@ namespace re {
 
     Shader::Shader(VkDevice device, const std::string& name) : device(device) {
         auto file = files::getPath("shaders") / name;
-        stage = Shader::getStage(file.extension());
+        stage = Shader::getStage(file.extension().string());
 
         if (cli::getFlag("--compile-shaders")) compileShader(file);
 
@@ -75,13 +75,13 @@ namespace re {
         shaderc_shader_kind kind = getKind(stage);
 
         const std::vector<char> source = files::File(file).read();
-        shaderc::PreprocessedSourceCompilationResult result = compiler.PreprocessGlsl(source.data(), source.size(), kind, file.filename().c_str(), options);
+        shaderc::PreprocessedSourceCompilationResult result = compiler.PreprocessGlsl(source.data(), source.size(), kind, file.filename().string().c_str(), options);
 
         if (result.GetCompilationStatus() != shaderc_compilation_status_success)
             throwEx(result.GetErrorMessage());
 
         auto preprocessed = std::string(result.cbegin(), result.cend());
-        shaderc::SpvCompilationResult shModule = compiler.CompileGlslToSpv(preprocessed.c_str(),  preprocessed.size(), kind, file.filename().c_str(), options);
+        shaderc::SpvCompilationResult shModule = compiler.CompileGlslToSpv(preprocessed.c_str(),  preprocessed.size(), kind, file.filename().string().c_str(), options);
 
         if (shModule.GetCompilationStatus() != shaderc_compilation_status_success)
             throwEx(shModule.GetErrorMessage());

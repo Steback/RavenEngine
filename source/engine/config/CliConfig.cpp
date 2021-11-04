@@ -22,9 +22,8 @@ namespace re::cli {
 
     /**
      *
-     * @param name Flag name(without --)
+     * @param name Flag name. Remember add -- to name. If you want abbreviations like -x, add them(Example: "-f, --flag")
      * @param desc Flag description
-     * @param flagName [Optional] Specific flag name(such as "--flag -f") with shortcut. Is necessarily add '--'
      */
     void CliConfig::addFlag(const std::string &name, const std::string& desc) {
 #ifdef RE_DEBUG
