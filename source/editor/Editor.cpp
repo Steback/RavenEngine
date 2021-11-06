@@ -29,11 +29,25 @@ namespace re {
         scenePanelSize = {defaultPanelWidth, windowSize.y * 0.6f};
         elementPanelPos = {windowSize.x - defaultPanelWidth, mainMenuHeight};
         elementPanelSize = {defaultPanelWidth, windowSize.y};
+
+        uint32_t flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove;
+        sceneWindow = ui::ImWindow("Scene", scenePanelSize, scenePanelPos, flags);
+        elementWindow = ui::ImWindow("Element", elementPanelSize, elementPanelPos, flags);
+        miscWindow = ui::ImWindow("Misc", elementPanelSize, elementPanelPos, flags);
     }
 
     void Editor::update() {
         ImGuiIO& io = ImGui::GetIO();
         windowSize = {io.DisplaySize.x, io.DisplaySize.y};
+
+        sceneWindow.position = {scenePanelPos.x, scenePanelPos.y};
+        sceneWindow.size = {scenePanelSize.x, scenePanelSize.y - mainMenuHeight};
+
+        elementWindow.position = {elementPanelPos.x, elementPanelPos.y};
+        elementWindow.size = {elementPanelSize.x, elementPanelSize.y - mainMenuHeight};
+
+        miscWindow.position = {scenePanelPos.x, scenePanelSize.y};
+        miscWindow.size = {windowSize.x - elementPanelSize.x, windowSize.y - scenePanelSize.y};
     }
 
     void Editor::drawImGui() {
@@ -72,10 +86,7 @@ namespace re {
     }
 
     void Editor::scenePanel() {
-        ImGui::SetNextWindowPos({scenePanelPos.x, scenePanelPos.y});
-        ImGui::SetNextWindowSize({scenePanelSize.x, scenePanelSize.y - mainMenuHeight});
-        ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
-        {
+        sceneWindow.draw([&, this]{
             scenePanelSize.x = ImGui::GetWindowSize().x;
 
             ImGui::BeginTabBar("Scene Info", ImGuiTabBarFlags_None);
@@ -86,31 +97,21 @@ namespace re {
                 }
             }
             ImGui::EndTabBar();
-        }
-        ImGui::End();
+        });
     }
 
     void Editor::elementPanel() {
-        ImGui::SetNextWindowPos({elementPanelPos.x, elementPanelPos.y});
-        ImGui::SetNextWindowSize({elementPanelSize.x, elementPanelSize.y - mainMenuHeight});
-        ImGui::Begin("Element", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
-        {
+        elementWindow.draw([&, this]{
             elementPanelSize.x = ImGui::GetWindowSize().x;
             elementPanelPos.x = windowSize.x - elementPanelSize.x;
             elementInspector->setEntity(sceneInspector->getSelectedEntity());
             elementInspector->showEntityData();
-        }
-        ImGui::End();
+        });
     }
 
     void Editor::miscPanel() {
-        ImGui::SetNextWindowPos({scenePanelPos.x, scenePanelSize.y});
-        ImGui::SetNextWindowSize({windowSize.x - elementPanelSize.x, windowSize.y - scenePanelSize.y});
-        ImGui::Begin("Misc", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
-        {
+        miscWindow.draw([&, this]{
             scenePanelSize.y = ImGui::GetWindowPos().y;
-        }
-        ImGui::End();
+        });
     }
-
 }

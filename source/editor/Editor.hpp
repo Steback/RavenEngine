@@ -2,9 +2,10 @@
 #define RAVENENGINE_EDITOR_HPP
 
 
-#include "engine/core/Application.hpp"
 #include "SceneInspector.hpp"
 #include "ElementInspector.hpp"
+#include "engine/core/Application.hpp"
+#include "engine/render/ui/ImWindow.h"
 
 
 namespace re {
@@ -39,6 +40,9 @@ namespace re {
         vec2 elementPanelSize;
         vec2 scenePanelPos;
         vec2 elementPanelPos;
+        ui::ImWindow sceneWindow;
+        ui::ImWindow elementWindow;
+        ui::ImWindow miscWindow;
 #ifdef RE_DEBUG
         bool imguiDemoWindow = false;
 #endif
