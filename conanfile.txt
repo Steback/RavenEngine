@@ -5,14 +5,12 @@ nlohmann_json/3.9.1
 vulkan-headers/1.2.182
 vulkan-loader/1.2.182
 vulkan-memory-allocator/2.3.0
-catch2/2.13.7
 tinygltf/2.5.0
 entt/3.8.1
 imgui/1.84.1
 cli11/2.1.1
 stb/cci.20210713
 nameof/0.10.1
-shaderc/2021.1
 spirv-cross/cci.20210621
 ktx/4.0.0
 
@@ -20,6 +18,7 @@ ktx/4.0.0
 cmake
 
 [imports]
+./bin, glslangValidator -> ../bin
 ./res/bindings, imgui_impl_glfw.cpp -> ../bindings
 ./res/bindings, imgui_impl_glfw.h -> ../bindings
 ./res/bindings, imgui_impl_vulkan.cpp -> ../bindings

@@ -12,6 +12,7 @@ namespace re {
         files::addPath("assets");
         files::addPath("shaders");
         files::addPath("data");
+        files::addPath("tools");
 
         // TODO: Set more logs files
         log::LogsManager::cleanLogsFiles();

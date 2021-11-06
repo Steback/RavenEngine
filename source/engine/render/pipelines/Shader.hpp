@@ -11,11 +11,6 @@
 #include "engine/core/NonCopyable.hpp"
 
 
-namespace glslang {
-    class TProgram;
-    class TType;
-}
-
 namespace re {
 
     /**
@@ -31,7 +26,7 @@ namespace re {
 
         static VkShaderStageFlagBits getStage(const std::string& ext);
 
-        void compileShader(const std::filesystem::path& file) const;
+        static void compileShader(const std::filesystem::path& file) ;
 
         void createShaderModule(const std::filesystem::path& file);
 
