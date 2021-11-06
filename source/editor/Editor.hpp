@@ -5,7 +5,7 @@
 #include "SceneInspector.hpp"
 #include "ElementInspector.hpp"
 #include "engine/core/Application.hpp"
-#include "engine/render/ui/ImWindow.h"
+#include "engine/render/ui/ImWindow.hpp"
 
 
 namespace re {

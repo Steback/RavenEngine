@@ -1,5 +1,5 @@
-#ifndef RAVENENGINE_IMWINDOW_H
-#define RAVENENGINE_IMWINDOW_H
+#ifndef RAVENENGINE_IMWINDOW_HPP
+#define RAVENENGINE_IMWINDOW_HPP
 
 
 #include <string>
@@ -29,4 +29,4 @@ namespace re::ui {
 
 } // namespace re
 
-#endif //RAVENENGINE_IMWINDOW_H
+#endif //RAVENENGINE_IMWINDOW_HPP

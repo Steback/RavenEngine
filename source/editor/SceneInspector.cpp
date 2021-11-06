@@ -1,10 +1,9 @@
 #include "SceneInspector.hpp"
 
-#include "imgui.h"
-
 #include "engine/scene/Scene.hpp"
 #include "engine/entity/Entity.hpp"
 #include "engine/entity/components/Transform.hpp"
+#include "engine/render/ui/ImElements.hpp"
 
 
 namespace re {
@@ -15,10 +14,9 @@ namespace re {
 
     void SceneInspector::drawScene() {
         // Window itself popup
-        if (ImGui::BeginPopupContextWindow()) {
+        ui::imPopupContextWindow([&, this]{
             popupContext();
-            ImGui::EndPopup();
-        }
+        });
 
         for (auto& entity : scene->getEntities()) {
             showEntityTree(entity);
@@ -26,14 +24,13 @@ namespace re {
     }
 
     void SceneInspector::showEntityTree(const std::shared_ptr<Entity>& entity) {
-        bool nodeOpen = ImGui::TreeNodeEx(entity->getName().c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick);
+        bool nodeOpen = ui::imTreeNodeEx(entity->getName(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick);
 
-        if (ImGui::BeginPopupContextItem()) {
+        ui::imPopupContextItem([&, this]{
             popupContext(entity);
-            ImGui::EndPopup();
-        }
+        });
 
-        if (ImGui::IsItemClicked()) selectedEntity = entity;
+        if (ui::imIsClicked()) selectedEntity = entity;
 
         if (nodeOpen) {
             for (auto& child : entity->getChildren()) {
@@ -48,7 +45,7 @@ namespace re {
     }
 
     void SceneInspector::popupContext(const std::shared_ptr<Entity> &entity) {
-        if (ImGui::Selectable("Add Entity")) { addEntity(entity); };
+        ui::imSelectable("Add Entity", [&, this]{ addEntity(entity); });
     }
 
     void SceneInspector::addEntity(const std::shared_ptr<Entity>& entity) {

@@ -2917,7 +2917,7 @@ namespace IGFD
 		else if (span_all_columns && g.CurrentTable)
 			TablePushBackgroundChannel();
 
-		// We use NoHoldingActiveID on menus so user can click and _hold_ on a menu then drag to browse child entries
+		// We use NoHoldingActiveID on menus so user can click and _hold_ on a imMenu then drag to browse child entries
 		ImGuiButtonFlags button_flags = 0;
 		if (flags & ImGuiSelectableFlags_NoHoldingActiveID) { button_flags |= ImGuiButtonFlags_NoHoldingActiveId; }
 		if (flags & ImGuiSelectableFlags_SelectOnClick) { button_flags |= ImGuiButtonFlags_PressedOnClick; }

@@ -1,10 +1,10 @@
 #include "ElementInspector.hpp"
 
-#include "imgui.h"
 #include "nameof.hpp"
 
 #include "engine/entity/Entity.hpp"
 #include "engine/entity/components/Transform.hpp"
+#include "engine/render/ui/ImElements.hpp"
 
 
 namespace re {
@@ -18,32 +18,25 @@ namespace re {
 
     void ElementInspector::showEntityData() {
         if (element) {
-            ImGui::Text("ID: %i", element->getId());
-            elementName();
+            ui::imText("ID {}", element->getId());
+            element->setName(ui::imInputText("Name", element->getName()));
             componentsInfo();
         }
     }
 
-    void ElementInspector::elementName() {
-        std::array<char, 30> buffer{};
-        std::copy(element->getName().begin(), element->getName().end(), buffer.begin());
-        ImGui::InputText("Name", buffer.data(), buffer.size());
-        element->setName(buffer.data());
-    }
-
     void ElementInspector::componentsInfo() {
-        if (ImGui::CollapsingHeader(NAMEOF_SHORT_TYPE(Transform).data())) {
+        ui::imCollapsingHeader(NAMEOF_SHORT_TYPE(Transform).data(), [&, this]{
             auto& transform = element->getComponent<Transform>();
 
-            ImGui::InputFloat3("Position", transform.position.values);
+            ui::imInputVec3("Position", transform.position);
 
             vec3 rotate = transform.rotation.getAngles();
             vec3 angles = {rotate.z, rotate.x, rotate.y};
-            ImGui::InputFloat3("Rotation", angles.values);
+            ui::imInputVec3("Rotation", angles);
             transform.rotation = quat(Vector3{angles.y, angles.z, angles.x});
 
-            ImGui::InputFloat3("Scale", transform.scale.values);
-        }
+            ui::imInputVec3("Scale", transform.scale);
+        });
     }
 
 } // namespace re

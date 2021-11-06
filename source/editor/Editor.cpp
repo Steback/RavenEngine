@@ -1,8 +1,7 @@
 #include "Editor.hpp"
 
-#include "imgui.h"
-
 #include "engine/entity/Entity.hpp"
+#include "engine/render/ui/ImElements.hpp"
 
 
 namespace re {
@@ -62,41 +61,31 @@ namespace re {
     }
 
     void Editor::mainMenuBar() {
-        ImGui::BeginMainMenuBar();
-        {
-            if (ImGui::BeginMenu("File")) {
-                if (ImGui::MenuItem("New")) {}
-                if (ImGui::MenuItem("Save")) {}
-                if (ImGui::MenuItem("Save as")) {}
-                if (ImGui::MenuItem("Open")) {}
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Edit")) {
+        ui::imMainMenuBar([&, this]{
+            ui::imMenu("File", [&]{
+                ui::imMenuItem("New", [&]{});
+                ui::imMenuItem("Save", [&]{});
+                ui::imMenuItem("Save as", [&]{});
+                ui::imMenuItem("Open", [&]{});
+            });
+            ui::imMenu("Edit", [&]{
 
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Help")) {
+            });
+            ui::imMenu("Help", [&]{
 #ifdef RE_DEBUG
-                if (ImGui::MenuItem("ImGui Demo")) { imguiDemoWindow = true; }
+                ui::imMenuItem("ImGui Demo", [&]{ imguiDemoWindow = true; });
 #endif
-                ImGui::EndMenu();
-            }
-        }
-        ImGui::EndMenuBar();
+            });
+        });
     }
 
     void Editor::scenePanel() {
         sceneWindow.draw([&, this]{
             scenePanelSize.x = ImGui::GetWindowSize().x;
 
-            ImGui::BeginTabBar("Scene Info", ImGuiTabBarFlags_None);
-            {
-                if (ImGui::BeginTabItem("Scene")) {
-                    sceneInspector->drawScene();
-                    ImGui::EndTabItem();
-                }
-            }
-            ImGui::EndTabBar();
+            ui::imTabBar("Scene Info", [&]{
+                ui::imTabItem("Scene", [&]{ sceneInspector->drawScene(); });
+            }, ImGuiTabBarFlags_None);
         });
     }
 
