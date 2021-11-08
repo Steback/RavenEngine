@@ -1,5 +1,7 @@
 #include "Shader.hpp"
 
+#include "spirv_glsl.hpp"
+
 #include "engine/core/Utils.hpp"
 #include "engine/files/FilesManager.hpp"
 #include "engine/config/CliConfig.hpp"
@@ -56,11 +58,27 @@ namespace re {
         std::filesystem::path glslValidator = files::getPath("bin") / "glslangValidator";
 #endif
 
-        std::system((glslValidator.string() + " -V " + file.string() + " -o " + (file.string() + ".spv")).c_str());
+        std::system((glslValidator.string() + " -V " + file.string() + " -o " + (file.string() + ".spv --auto-map-bindings")).c_str());
     }
 
     void Shader::createShaderModule(const std::filesystem::path& file) {
         std::vector<uint32_t> code = File(file).readBytes();
+
+        spirv_cross::CompilerGLSL glsl(std::vector<uint32_t>(code.data(), code.data() + code.size() / sizeof(uint32_t)));
+        spirv_cross::ShaderResources shaderResources = glsl.get_shader_resources();
+
+        for (auto& resource : shaderResources.uniform_buffers) {
+            uint32_t set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+            uint32_t binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
+            resources[resource.name] = {set, binding, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER};
+        }
+
+        for (auto& resource : shaderResources.sampled_images) {
+            uint32_t set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+            uint32_t binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
+            log::info(fmt::format("Image {} at set = {}, binging = {}", resource.name, set, binding));
+            resources[resource.name] = {set, binding, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER};
+        }
 
         VkShaderModuleCreateInfo createInfo{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
         createInfo.codeSize = code.size();

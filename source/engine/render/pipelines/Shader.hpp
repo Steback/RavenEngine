@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "vulkan/vulkan.h"
 
@@ -18,6 +19,12 @@ namespace re {
      */
     class Shader : NonCopyable {
     public:
+        struct Resource {
+            uint32_t set;
+            uint32_t binding;
+            VkDescriptorType type;
+        };
+
         Shader(VkDevice device, const std::string& name);
 
         ~Shader() override;
@@ -32,6 +39,7 @@ namespace re {
 
         VkShaderStageFlagBits stage;
         VkShaderModule module{};
+        std::unordered_map<std::string, Resource> resources;
 
     private:
         VkDevice device;
