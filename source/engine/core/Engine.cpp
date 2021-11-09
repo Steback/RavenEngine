@@ -27,6 +27,7 @@ namespace re {
 
     Engine::~Engine() {
         delete AssetsManager::singleton;
+        delete DescriptorsManager::singleton;
         delete jobs::JobSystem::singleton;
         delete Time::singleton;
         delete cli::CliConfig::singleton;
@@ -38,6 +39,7 @@ namespace re {
         Time::singleton = new Time();
         jobs::JobSystem::singleton = new jobs::JobSystem();
         renderer = std::make_unique<Renderer>("", config);
+        DescriptorsManager::singleton = new Descriptors::Manager(renderer->getDevice()->getDevice());
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
     }
 

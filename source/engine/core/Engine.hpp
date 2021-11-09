@@ -10,12 +10,14 @@
 #include "engine/input/Input.hpp"
 #include "engine/assets/AssetsManager.hpp"
 #include "engine/render/Renderer.hpp"
+#include "engine/render/Device.hpp"
 #include "engine/jobSystem/JobSystem.hpp"
 #include "engine/render/RenderSystem.hpp"
 #include "engine/scene/Scene.hpp"
 #include "engine/config/Config.hpp"
 #include "engine/files/FilesManager.hpp"
 #include "engine/config/CliConfig.hpp"
+#include "engine/render/Descriptors.hpp"
 
 
 namespace re {
