@@ -36,8 +36,6 @@ namespace re {
         void update(float aspect);
 
     private:
-        void setupDescriptors();
-
         // TODO: Remove this. Temporally uboBuffer.
         void setupBuffer();
 

@@ -35,8 +35,6 @@ namespace re {
         void draw(VkCommandBuffer commandBuffer, const mat4& proj, const mat4& transform);
 
     private:
-        void setupDescriptors();
-
         void setupBuffer();
 
     private:

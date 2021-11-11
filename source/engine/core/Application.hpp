@@ -10,6 +10,8 @@
 namespace re {
 
     class Application : NonCopyable {
+        friend class Engine;
+
     public:
         explicit Application(const std::string& appName);
 

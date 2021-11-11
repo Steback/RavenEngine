@@ -32,7 +32,6 @@ namespace re {
                 this->device->getDevice(),
                 shadersName + ".vert", shadersName + ".frag",
                 configInfo,
-                std::vector<VkDescriptorSetLayout>{AssetsManager::getInstance()->getDescriptorSetLayout(UBO), AssetsManager::getInstance()->getDescriptorSetLayout(MATERIAL)},
                 std::vector<VkPushConstantRange>{materialPushConstant}
         );
     }
@@ -93,38 +92,6 @@ namespace re {
             auto& cameraComponent = camera->getComponent<Camera>();
             cameraComponent.setPerspective(aspect);
         }
-    }
-
-    // TODO: Remove this descriptor pool and layout from here
-    void RenderSystem::setupDescriptors() {
-        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
-
-        std::array<VkWriteDescriptorSet, 3> writeDescriptorSets{};
-        writeDescriptorSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeDescriptorSets[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        writeDescriptorSets[0].descriptorCount = 1;
-        writeDescriptorSets[0].dstSet = uboDescriptorSet;
-        writeDescriptorSets[0].dstBinding = 0;
-        VkDescriptorBufferInfo transformDescriptor = uboTransformBuffer->descriptorInfo();
-        writeDescriptorSets[0].pBufferInfo = &transformDescriptor;
-
-        writeDescriptorSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeDescriptorSets[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        writeDescriptorSets[1].descriptorCount = 1;
-        writeDescriptorSets[1].dstSet = uboDescriptorSet;
-        writeDescriptorSets[1].dstBinding = 1;
-        VkDescriptorBufferInfo nodeDescriptor = uboNodeBuffer->descriptorInfo();
-        writeDescriptorSets[1].pBufferInfo = &nodeDescriptor;
-
-        writeDescriptorSets[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeDescriptorSets[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        writeDescriptorSets[2].descriptorCount = 1;
-        writeDescriptorSets[2].dstSet = uboDescriptorSet;
-        writeDescriptorSets[2].dstBinding = 2;
-        VkDescriptorBufferInfo lightDescriptor = uboLightBuffer->descriptorInfo();
-        writeDescriptorSets[2].pBufferInfo = &lightDescriptor;
-
-        vkUpdateDescriptorSets(device->getDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);
     }
 
     // TODO: Change how uniform buffer are used by RenderSystem

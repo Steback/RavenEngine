@@ -1,9 +1,11 @@
 #include "Engine.hpp"
 
+#include "Application.hpp"
+
 
 namespace re {
 
-    Engine::Engine(const std::string& appName, Config& config) : config(config) {
+    Engine::Engine(const std::string& appName, Config& config, Application& app) : config(config), app(app) {
         input::InputSystem::singleton = new input::InputSystem();
 
         files::FilesManager::setRootPath();
@@ -41,29 +43,46 @@ namespace re {
         renderer = std::make_unique<Renderer>("", config);
         DescriptorsManager::singleton = new Descriptors::Manager(renderer->getDevice()->getDevice());
         AssetsManager::singleton = new AssetsManager(renderer->getDevice());
+
+        app.setup();
+    }
+
+    void Engine::loadScene() {
+        if (!scene)
+            scene = std::make_shared<Scene>();
+
+        scene->load();
+    }
+
+    void Engine::allocateDesriptors() {
+
     }
 
     // TODO: Find a better solution for this callbacks in update and render
-    void Engine::loop(const std::function<void()>& updateCallback, const std::function<void()>& renderUiCallback) {
+    void Engine::loop() {
+        setup();
+        loadScene();
+        allocateDesriptors();
+
         while (renderer->isWindowOpen()) {
             glfwPollEvents();
-            update(updateCallback);
-            render(renderUiCallback);
+            update();
+            render();
         }
 
         renderer->waitDeviceIde();
     }
 
-    void Engine::update(const std::function<void()>& updateCallback) {
+    void Engine::update() {
         Time::getInstance()->update();
 
         if (renderSystem) renderSystem->update(renderer->getAspectRatio());
 
         scene->update();
-        updateCallback();
+        app.update();
     }
 
-    void Engine::render(const std::function<void()>& renderUiCallback) {
+    void Engine::render() {
         auto commandBuffer = renderer->beginFrame();
         renderer->beginSwapChainRenderPass(commandBuffer);
 
@@ -73,9 +92,7 @@ namespace re {
         }
 
         renderer->newImGuiFrame();
-
-        renderUiCallback();
-
+        app.drawImGui();
         renderer->renderImGui(commandBuffer);
 
         renderer->endSwapChainRenderPass(commandBuffer);

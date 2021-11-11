@@ -21,7 +21,7 @@ namespace re {
             friend class Writer;
 
         public:
-            Pool(VkDevice device, const std::vector<VkDescriptorPoolSize> &sizes, uint32_t maxSetsCount = 1000, VkDescriptorPoolCreateFlags flags = 0);
+            Pool(VkDevice device, const std::vector<VkDescriptorPoolSize> &sizes, uint32_t maxSetsCount = 1000, VkDescriptorPoolCreateFlags flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 
             ~Pool() override;
 
@@ -83,7 +83,7 @@ namespace re {
 
             static Manager* instance();
 
-            Pool& createPool(const std::vector<VkDescriptorPoolSize> &sizes, uint32_t maxSetsCount = 1000, VkDescriptorPoolCreateFlags flags = 0);
+            Pool& createPool(const std::vector<VkDescriptorPoolSize> &sizes, uint32_t maxSetsCount = 1000, VkDescriptorPoolCreateFlags flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 
             Pool& getPool();
 

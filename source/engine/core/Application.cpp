@@ -4,15 +4,13 @@
 namespace re {
 
     Application::Application(const std::string& appName) {
-        engine = std::make_unique<Engine>(appName, config);
+        engine = std::make_unique<Engine>(appName, config, *this);
     }
 
     Application::~Application() = default;
 
     void Application::run() {
-        engine->setup();
-        setup();
-        engine->loop([&, this]{ update(); }, [&, this]{ drawImGui(); });
+        engine->loop();
     }
 
     void Application::setup() {

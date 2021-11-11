@@ -22,19 +22,25 @@
 
 namespace re {
 
+    class Application;
+
     class Engine : NonCopyable {
     public:
-        Engine(const std::string& appName, Config& config);
+        Engine(const std::string& appName, Config& config, Application& app);
 
         ~Engine() override;
 
         void setup();
 
-        void loop(const std::function<void()>& updateCallback = nullptr, const std::function<void()>& renderUiCallback = nullptr);
+        void loadScene();
 
-        void update(const std::function<void()>& updateCallback);
+        void allocateDesriptors();
 
-        void render(const std::function<void()>& renderUiCallback);
+        void loop();
+
+        void update();
+
+        void render();
 
         void setScene(std::shared_ptr<Scene> newScene);
 
@@ -45,6 +51,7 @@ namespace re {
         void setRenderSystem(std::unique_ptr<RenderSystem> newRenderSystem);
 
     private:
+        Application& app;
         Config& config;
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<RenderSystem> renderSystem;

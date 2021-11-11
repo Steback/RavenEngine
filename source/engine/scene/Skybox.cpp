@@ -49,29 +49,6 @@ namespace re {
 //        mesh->draw(commandBuffer);
     }
 
-    // TODO: Remove this descriptor pool and layout from here
-    void Skybox::setupDescriptors() {
-        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::UBO, &uboDescriptorSet);
-        AssetsManager::getInstance()->allocateDescriptorSet(DescriptorSetType::TEXTURE, &textureDescriptorSet);
-
-        std::vector<VkWriteDescriptorSet> writeDescriptors(2);
-        writeDescriptors[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeDescriptors[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        writeDescriptors[0].descriptorCount = 1;
-        writeDescriptors[0].dstSet = uboDescriptorSet;
-        writeDescriptors[0].dstBinding = 0;
-        VkDescriptorBufferInfo descriptor = uboBuffer->descriptorInfo();
-        writeDescriptors[0].pBufferInfo = &descriptor;
-
-        writeDescriptors[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeDescriptors[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        writeDescriptors[1].descriptorCount = 1;
-        writeDescriptors[1].dstSet = textureDescriptorSet;
-        writeDescriptors[1].dstBinding = 0;
-        writeDescriptors[1].pImageInfo = &texture->descriptor;
-        vkUpdateDescriptorSets(device->getDevice(), static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
-    }
-
     void Skybox::setupBuffer() {
         uboBuffer = std::make_unique<UniformBuffer>(
                 device->getAllocator(),

@@ -38,12 +38,6 @@ namespace re {
 
         static AssetsManager* getInstance();
 
-        void setupDescriptorsPool(uint32_t imageCount);
-
-        void allocateDescriptorSet(DescriptorSetType type,  VkDescriptorSet* set);
-
-        VkDescriptorSetLayout getDescriptorSetLayout(DescriptorSetType type);
-
         std::unique_ptr<Skybox> loadSkybox(const std::string &name, VkRenderPass renderPass);
 
         template<typename T, typename ...Args>
@@ -59,10 +53,6 @@ namespace re {
 
     private:
         AssetsManager() = default;
-
-        void setupDescriptorSetsLayout();
-
-        void setupMaterialDescriptorsSets();
 
     private:
         static AssetsManager* singleton;
